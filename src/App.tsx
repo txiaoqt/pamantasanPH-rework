@@ -11,6 +11,7 @@ import Universities from './pages/Universities';
 import Programs from './pages/Programs';
 import Compare from './pages/Compare';
 import About from './pages/About';
+import UniversityDetails from './pages/UniversityDetails';
 
 function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -30,6 +31,7 @@ function App() {
             </main>
           } />
           <Route path="/universities" element={<Universities />} />
+          <Route path="/universities/:id" element={<UniversityDetails />} />
           <Route path="/programs" element={<Programs />} />
           <Route path="/compare" element={<Compare />} />
           <Route path="/about" element={<About />} />
