@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { Search, MapPin, Filter, Star, Users, BookOpen, Heart, BarChart3, ExternalLink, Grid, List } from 'lucide-react';
 
 interface University {
@@ -178,8 +179,10 @@ function UniversityCard({ viewMode, ...university }: UniversityCardProps) {
                 <BarChart3 className="h-4 w-4" />
               </button>
               <button className="px-4 py-2 bg-maroon-800 text-white rounded-lg hover:bg-maroon-700 transition-colors flex items-center">
-                <ExternalLink className="h-4 w-4 mr-1" />
-                View
+                <Link to={`/universities/${university.id}`} className="flex items-center">
+                  <ExternalLink className="h-4 w-4 mr-1" />
+                  View Details
+                </Link>
               </button>
             </div>
           </div>
@@ -264,8 +267,10 @@ function UniversityCard({ viewMode, ...university }: UniversityCardProps) {
             Compare
           </button>
           <button className="flex-1 flex items-center justify-center px-4 py-2 bg-maroon-800 text-white rounded-lg hover:bg-maroon-700 transition-all duration-300">
-            <ExternalLink className="h-4 w-4 mr-1" />
-            View
+            <Link to={`/universities/${university.id}`} className="flex items-center">
+              <ExternalLink className="h-4 w-4 mr-1" />
+              View Details
+            </Link>
           </button>
         </div>
       </div>

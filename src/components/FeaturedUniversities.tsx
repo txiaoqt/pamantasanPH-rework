@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Star, Users, BookOpen, MapPin, Heart, BarChart3, ExternalLink } from 'lucide-react';
 
 interface UniversityCardProps {
@@ -97,8 +98,10 @@ function UniversityCard({
             Compare
           </button>
           <button className="flex-1 flex items-center justify-center px-4 py-2 bg-gradient-to-r from-red-900 to-red-700 text-white rounded-lg hover:from-red-800 hover:to-red-600 transition-all duration-300">
-            <ExternalLink className="h-4 w-4 mr-1" />
-            View Details
+            <Link to={`/universities/${index + 1}`} className="flex items-center">
+              <ExternalLink className="h-4 w-4 mr-1" />
+              View Details
+            </Link>
           </button>
         </div>
       </div>
