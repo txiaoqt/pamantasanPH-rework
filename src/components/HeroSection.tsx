@@ -10,7 +10,7 @@ export default function HeroSection() {
       {/* Background with overlay */}
       <div className="absolute inset-0">
         <img
-          src="https://images.pexels.com/photos/207692/pexels-photo-207692.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop"
+          src="/Images/pup.jpg"
           alt="University campus"
           className="w-full h-full object-cover"
         />
@@ -28,7 +28,7 @@ export default function HeroSection() {
           </h1>
           
           <p className="text-xl md:text-2xl text-gray-100 mb-12 leading-relaxed">
-            Discover, compare, and choose from over 120 universities
+            Discover, compare, and choose from over xxx universities
             <br className="hidden sm:block" />
             across the Philippines
           </p>
@@ -76,7 +76,7 @@ export default function HeroSection() {
               <div className="inline-flex items-center justify-center w-16 h-16 bg-yellow-400 rounded-full mb-4">
                 <Building className="h-8 w-8 text-red-900" />
               </div>
-              <div className="text-4xl md:text-5xl font-bold text-white mb-2">120+</div>
+              <div className="text-4xl md:text-5xl font-bold text-white mb-2">TBA</div>
               <div className="text-gray-200 text-lg">Universities</div>
             </div>
             
@@ -84,7 +84,7 @@ export default function HeroSection() {
               <div className="inline-flex items-center justify-center w-16 h-16 bg-yellow-400 rounded-full mb-4">
                 <MapPin className="h-8 w-8 text-red-900" />
               </div>
-              <div className="text-4xl md:text-5xl font-bold text-white mb-2">81</div>
+              <div className="text-4xl md:text-5xl font-bold text-white mb-2">TBA</div>
               <div className="text-gray-200 text-lg">Provinces</div>
             </div>
             
@@ -92,7 +92,7 @@ export default function HeroSection() {
               <div className="inline-flex items-center justify-center w-16 h-16 bg-yellow-400 rounded-full mb-4">
                 <Users className="h-8 w-8 text-red-900" />
               </div>
-              <div className="text-4xl md:text-5xl font-bold text-white mb-2">50K+</div>
+              <div className="text-4xl md:text-5xl font-bold text-white mb-2">TBA</div>
               <div className="text-gray-200 text-lg">Students Helped</div>
             </div>
           </div>

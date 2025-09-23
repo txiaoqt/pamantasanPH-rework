@@ -41,52 +41,29 @@ export default function PlatformOverview() {
   const stats = [
     {
       title: 'Total Universities',
-      value: '124',
+      value: 'TBA',
       subtitle: 'Registered Institutions',
-      change: '+12',
+      change: 'TBA',
       icon: <BookOpen className="h-5 w-5 text-red-700" />,
       changeType: 'positive' as const
     },
     {
       title: 'Provinces Covered',
-      value: '81',
+      value: 'TBA',
       subtitle: 'Across the Philippines',
-      change: '+3',
+      change: 'TBA',
       icon: <MapPin className="h-5 w-5 text-red-700" />,
       changeType: 'positive' as const
     },
     {
-      title: 'Student Reviews',
-      value: '2,847',
-      subtitle: 'This month',
-      change: '+247',
-      icon: <Star className="h-5 w-5 text-red-700" />,
-      changeType: 'positive' as const
-    },
-    {
-      title: 'Average Rating',
-      value: '4.2',
-      subtitle: 'Out of 5.0',
-      change: '+0.1',
-      icon: <Star className="h-5 w-5 text-red-700" />,
-      changeType: 'positive' as const
-    },
-    {
       title: 'Programs Available',
-      value: '1,850+',
+      value: 'TBA',
       subtitle: 'Degree programs',
-      change: '+85',
+      change: 'TBA',
       icon: <BookOpen className="h-5 w-5 text-red-700" />,
       changeType: 'positive' as const
     },
-    {
-      title: 'Monthly Visitors',
-      value: '52,843',
-      subtitle: 'Unique users',
-      change: '+8.2%',
-      icon: <Eye className="h-5 w-5 text-red-700" />,
-      changeType: 'positive' as const
-    }
+    
   ];
 
   return (
@@ -97,7 +74,7 @@ export default function PlatformOverview() {
             Platform Overview
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Comprehensive data and insights about Philippine higher education
+            A centralized portal providing comprehensive admission requirements, deadlines, and guidance for Philippine colleges and universities.
           </p>
         </div>
 

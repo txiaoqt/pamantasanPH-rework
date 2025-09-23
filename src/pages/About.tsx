@@ -48,22 +48,28 @@ function ValueCard({ icon, title, description }: ValueCardProps) {
 export default function About() {
   const teamMembers = [
     {
-      name: 'Maria Santos',
-      role: 'Founder & CEO',
-      image: 'https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
-      description: 'Former education consultant with 15+ years of experience helping Filipino students find their perfect university match.'
+      name: 'Alyssa Marie Dela Cruz',
+      role: 'Project Manager, Frontend Developer',
+      image: 'Images/alyssa.jpg',
+      description: 'lorem ipsum dolor'
     },
     {
-      name: 'Juan Dela Cruz',
-      role: 'Head of Technology',
-      image: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
-      description: 'Tech entrepreneur passionate about using technology to democratize access to quality education in the Philippines.'
+      name: 'Christopher Natada',
+      role: 'Full stack Vibecoder',
+      image: 'Images/toff.jpg',
+      description: 'lorem ipsum'
     },
     {
-      name: 'Ana Reyes',
-      role: 'Head of Partnerships',
-      image: 'https://images.pexels.com/photos/3756679/pexels-photo-3756679.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
-      description: 'University relations expert who has built partnerships with over 120 educational institutions across the country.'
+      name: 'Naomi Erika Angel De Guzman',
+      role: 'UI/UX Designer',
+      image: 'Images/nami.jpg',
+      description: 'lorem ipsum'
+    },
+    {
+      name: 'Daniella Simara',
+      role: 'Full stack Developer',
+      image: 'Images/dani.png',
+      description: 'lorem ipsum'
     }
   ];
 
@@ -96,9 +102,9 @@ export default function About() {
       <div className="bg-gradient-to-br from-maroon-900 via-maroon-800 to-red-900 text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">About UniFinder PH</h1>
+            <h1 className="text-4xl md:text-6xl font-bold mb-6">About PamantasanPH</h1>
             <p className="text-xl md:text-2xl text-maroon-100 max-w-4xl mx-auto leading-relaxed">
-              Empowering Filipino students to find their perfect university match through 
+              Empowering Filipino students to find their perfect university match through
               comprehensive data, authentic reviews, and innovative tools.
             </p>
           </div>
@@ -112,12 +118,12 @@ export default function About() {
             <div>
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Our Mission</h2>
               <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-                We believe every Filipino student deserves access to quality education. Our mission is to 
-                democratize university information and make the college selection process transparent, 
+                We believe every Filipino student deserves access to quality education. Our mission is to
+                democratize university information and make the college selection process transparent,
                 accessible, and student-centered.
               </p>
               <p className="text-lg text-gray-600 leading-relaxed">
-                Since 2024, we've helped over 50,000 students discover universities that align with 
+                Since 2024, we've helped over 50,000 students discover universities that align with
                 their goals, budget, and aspirations across all 81 provinces of the Philippines.
               </p>
             </div>
@@ -149,7 +155,7 @@ export default function About() {
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Our Values</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              The principles that guide everything we do at UniFinder PH
+              The principles that guide everything we do at PamantasanPH
             </p>
           </div>
 
@@ -213,15 +219,16 @@ export default function About() {
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Meet Our Team</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Passionate educators and technologists dedicated to transforming Philippine higher education
+              Passionate learners and tech enthusiasts working to make college admissions smarter, simpler, and more accessible to the Philippines.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {teamMembers.map((member, index) => (
               <TeamMember key={index} {...member} />
             ))}
           </div>
+
         </div>
       </section>
 
@@ -234,26 +241,26 @@ export default function About() {
 
           <div className="prose prose-lg mx-auto text-gray-600">
             <p className="text-xl leading-relaxed mb-6">
-              UniFinder PH was born from a simple observation: choosing the right university in the Philippines 
-              was unnecessarily difficult and often unfair. Students from remote provinces had limited access 
+              PamantasanPH was born from a simple observation: choosing the right university in the Philippines
+              was unnecessarily difficult and often unfair. Students from remote provinces had limited access
               to information, while those in Metro Manila had overwhelming choices but little guidance.
             </p>
 
             <p className="text-lg leading-relaxed mb-6">
-              Our founder, Maria Santos, experienced this firsthand when helping her younger siblings navigate 
-              university selection. Despite her background in education consulting, she found it challenging 
+              Our founder, Maria Santos, experienced this firsthand when helping her younger siblings navigate
+              university selection. Despite her background in education consulting, she found it challenging
               to gather comprehensive, unbiased information about universities across the archipelago.
             </p>
 
             <p className="text-lg leading-relaxed mb-6">
-              In 2024, we launched UniFinder PH with a vision: every Filipino student, regardless of their 
-              location or background, should have access to the same quality of information when making one 
+              In 2024, we launched PamantasanPH with a vision: every Filipino student, regardless of their
+              location or background, should have access to the same quality of information when making one
               of the most important decisions of their lives.
             </p>
 
             <p className="text-lg leading-relaxed">
-              Today, we're proud to be the Philippines' most comprehensive university discovery platform, 
-              trusted by students, parents, and educators nationwide. But we're just getting started – 
+              Today, we're proud to be the Philippines' most comprehensive university discovery platform,
+              trusted by students, parents, and educators nationwide. But we're just getting started –
               our goal is to help every Filipino student find their perfect educational match.
             </p>
           </div>
@@ -265,7 +272,7 @@ export default function About() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">Join Our Mission</h2>
           <p className="text-xl text-maroon-100 mb-8 leading-relaxed">
-            Whether you're a student, educator, or university administrator, 
+            Whether you're a student, educator, or university administrator,
             you can be part of transforming Philippine higher education.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

@@ -23,8 +23,8 @@ export default function Header({ mobileMenuOpen, setMobileMenuOpen }: HeaderProp
               <GraduationCap className="h-6 w-6 text-yellow-400" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-red-900">UniFinder PH</h1>
-              <p className="text-xs text-gray-600">Excellence in Education</p>
+              <h1 className="text-xl font-bold text-red-900">PamantasanPH</h1>
+              <p className="text-xs text-gray-600">Simplifying College Admissions</p>
             </div>
           </Link>
 
@@ -69,6 +69,15 @@ export default function Header({ mobileMenuOpen, setMobileMenuOpen }: HeaderProp
             >
               About
             </Link>
+            <Link 
+              to="/saved" 
+              className={`transition-colors font-medium ${
+                isActive('/saved') ? 'text-maroon-900' : 'text-gray-700 hover:text-maroon-900'
+              }`}
+            >
+              Saved
+            </Link>
+            
           </nav>
 
           <button
@@ -127,6 +136,15 @@ export default function Header({ mobileMenuOpen, setMobileMenuOpen }: HeaderProp
               >
                 About
               </Link>
+              <Link 
+                to="/saved" 
+                className={`transition-colors font-medium py-2 ${
+                  isActive('/saved') ? 'text-maroon-900' : 'text-gray-700 hover:text-maroon-900'
+                }`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Saved  
+              </Link>       
             </nav>
           </div>
         )}

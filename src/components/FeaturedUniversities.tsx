@@ -1,20 +1,28 @@
 import React from 'react';
 import { Star, Users, BookOpen, MapPin, Heart, BarChart3, ExternalLink } from 'lucide-react';
+import { Link } from "react-router-dom";
+import { universities } from "./data/universities"; // ✅ import shared data
 
 interface UniversityCardProps {
+  id: number;
   name: string;
   location: string;
+  province: string;
   established: string;
-  type: 'Public' | 'Private';
+  type: string; // allow all valid values
   rating: number;
   students: string;
   programs: number;
   description: string;
   subjects: string[];
   imageUrl: string;
+  tuitionRange: string;
+  accreditation: string[];
 }
 
+
 function UniversityCard({
+  id,
   name,
   location,
   established,
@@ -24,7 +32,9 @@ function UniversityCard({
   programs,
   description,
   subjects,
-  imageUrl
+  imageUrl,
+  tuitionRange,
+  accreditation
 }: UniversityCardProps) {
   return (
     <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group border border-gray-100">
@@ -35,11 +45,10 @@ function UniversityCard({
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
         <div className="absolute top-4 left-4">
-          <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-            type === 'Public' 
-              ? 'bg-blue-100 text-blue-800' 
-              : 'bg-purple-100 text-purple-800'
-          }`}>
+          <span className={`px-3 py-1 rounded-full text-sm font-medium ${type === 'Public'
+            ? 'bg-blue-100 text-blue-800'
+            : 'bg-purple-100 text-purple-800'
+            }`}>
             {type}
           </span>
         </div>
@@ -96,10 +105,13 @@ function UniversityCard({
             <BarChart3 className="h-4 w-4 mr-1" />
             Compare
           </button>
-          <button className="flex-1 flex items-center justify-center px-4 py-2 bg-gradient-to-r from-red-900 to-red-700 text-white rounded-lg hover:from-red-800 hover:to-red-600 transition-all duration-300">
+          <Link
+            to={`/universities/${id}`}
+            className="px-4 py-2 bg-maroon-800 text-white rounded-lg hover:bg-maroon-700 transition-colors flex items-center"
+          >
             <ExternalLink className="h-4 w-4 mr-1" />
-            View Details
-          </button>
+            View
+          </Link>
         </div>
       </div>
     </div>
@@ -107,45 +119,6 @@ function UniversityCard({
 }
 
 export default function FeaturedUniversities() {
-  const universities = [
-    {
-      name: 'University of the Philippines Diliman',
-      location: 'Quezon City, Metro Manila',
-      established: '1908',
-      type: 'Public' as const,
-      rating: 4.6,
-      students: '27,000',
-      programs: 5,
-      description: 'The flagship campus of the University of the Philippines System, known for academic excellence.',
-      subjects: ['Engineering', 'Medicine', 'Law', '+2 more'],
-      imageUrl: 'https://images.pexels.com/photos/1595391/pexels-photo-1595391.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop'
-    },
-    {
-      name: 'Ateneo de Manila University',
-      location: 'Quezon City, Metro Manila',
-      established: '1859',
-      type: 'Private' as const,
-      rating: 4.5,
-      students: '12,500',
-      programs: 4,
-      description: 'A premier Jesuit university known for holistic education and leadership development.',
-      subjects: ['Business', 'Liberal Arts', 'Engineering', '+1 more'],
-      imageUrl: 'https://images.pexels.com/photos/1454360/pexels-photo-1454360.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop'
-    },
-    {
-      name: 'De La Salle University',
-      location: 'Manila, Metro Manila',
-      established: '1911',
-      type: 'Private' as const,
-      rating: 4.4,
-      students: '20,000',
-      programs: 4,
-      description: 'A leading Christian Brothers university with strong focus on innovation and technology.',
-      subjects: ['Engineering', 'Business', 'Computer Science', '+1 more'],
-      imageUrl: 'https://images.pexels.com/photos/207692/pexels-photo-207692.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop'
-    }
-  ];
-
   return (
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -158,23 +131,28 @@ export default function FeaturedUniversities() {
               Top-rated institutions across the Philippines
             </p>
           </div>
+
           <div className="mt-6 md:mt-0">
-            <button className="bg-gradient-to-r from-red-900 to-red-700 text-white px-6 py-3 rounded-xl hover:from-red-800 hover:to-red-600 transition-all duration-300 font-semibold">
-              View All →
-            </button>
+            <Link to="/universities">
+              <button className="bg-gradient-to-r from-red-900 to-red-700 text-white px-6 py-3 rounded-xl hover:from-red-800 hover:to-red-600 transition-all duration-300 font-semibold">
+                View All →
+              </button>
+            </Link>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {universities.map((university, index) => (
-            <UniversityCard key={index} {...university} />
+          {universities.slice(0, 3).map((university) => ( // ✅ only show first 3 featured
+            <UniversityCard key={university.id} {...university} />
           ))}
         </div>
 
         <div className="text-center mt-12">
-          <button className="bg-gradient-to-r from-red-900 to-red-700 text-white px-8 py-4 rounded-xl hover:from-red-800 hover:to-red-600 transition-all duration-300 font-semibold text-lg">
-            Browse All Universities →
-          </button>
+          <Link to="/universities">
+            <button className="bg-gradient-to-r from-red-900 to-red-700 text-white px-8 py-4 rounded-xl hover:from-red-800 hover:to-red-600 transition-all duration-300 font-semibold text-lg">
+              Browse All Universities →
+            </button>
+          </Link>
         </div>
       </div>
     </section>
