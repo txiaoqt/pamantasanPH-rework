@@ -15,17 +15,54 @@ export interface University {
   students: string;
   programs: number;
   description: string;
+  longDescription?: string;
   subjects: string[];
   imageUrl: string;
+  galleryImages?: string[];
   tuitionRange: string;
   accreditation: string[];
+  admissionRate?: string;
+  graduationRate?: string;
+  employmentRate?: string;
+  campusSize?: string;
+  founded?: string;
+  website?: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  facilities?: string[];
+  achievements?: string[];
+  admissionRequirements?: string[];
   admissionStatus: 'open' | 'not-yet-open' | 'closed';
   admissionDeadline: string;
+  scholarships?: string[];
+  studentLife?: {
+    clubs: number;
+    sports: number;
+    dormitories: boolean;
+    library: boolean;
+  };
+  academicCalendar?: {
+    semesterStart: string;
+    semesterEnd: string;
+    applicationDeadline: string;
+  };
+  rankings?: {
+    national: number;
+    regional: number;
+    category: string;
+  };
+  mapLocation?: {
+    lat: number;
+    lng: number;
+  };
 }
 
 export interface UniversityCardProps extends University {
   viewMode: 'grid' | 'list';
+  admissionStatus: 'open' | 'not-yet-open' | 'closed';
 }
+
 
 function AdmissionStatusBadge({ status, deadline }: { status: 'open' | 'not-yet-open' | 'closed', deadline: string }) {
   const getStatusConfig = () => {

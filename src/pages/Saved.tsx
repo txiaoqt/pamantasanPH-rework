@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Heart, Trash2, ExternalLink, BarChart3, Calendar, AlertCircle, CheckCircle, Clock } from 'lucide-react';
+import { Heart, Trash2, ExternalLink, BarChart3, AlertCircle, CheckCircle, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { universities } from '../components/data/universities';
 
@@ -29,53 +29,48 @@ export default function Saved() {
     localStorage.removeItem('savedUniversities');
   };
 
-  const getAdmissionStatus = (universityId: number) => {
-    // Mock admission status based on university ID
-    const statusMap: { [key: number]: 'open' | 'not-yet-open' | 'closed' } = {
-      1: 'open',
-      2: 'not-yet-open', 
-      3: 'closed',
-      4: 'open',
-      5: 'not-yet-open',
-      6: 'open'
-    };
-    return statusMap[universityId] || 'not-yet-open';
-  };
-
-  const getStatusConfig = (status: 'open' | 'not-yet-open' | 'closed') => {
+  const getStatusConfig = (status: string, deadline: string | undefined) => {
     switch (status) {
       case 'open':
         return {
           label: 'Admission Open',
           color: 'bg-green-100 text-green-800 border-green-200',
           icon: <CheckCircle className="h-4 w-4" />,
-          deadline: 'Deadline: March 31, 2024'
+          deadline: `Deadline: ${deadline}`
         };
       case 'not-yet-open':
         return {
           label: 'Opening Soon',
           color: 'bg-yellow-100 text-yellow-800 border-yellow-200',
           icon: <Clock className="h-4 w-4" />,
-          deadline: 'Opens: January 15, 2024'
+          deadline: 'Opens: TBD'
         };
       case 'closed':
         return {
           label: 'Admission Closed',
           color: 'bg-red-100 text-red-800 border-red-200',
           icon: <AlertCircle className="h-4 w-4" />,
-          deadline: 'Next cycle: June 2024'
+          deadline: `Next cycle: ${deadline}`
+        };
+      default:
+        return {
+          label: 'Status N/A',
+          color: 'bg-gray-100 text-gray-800 border-gray-200',
+          icon: <AlertCircle className="h-4 w-4" />,
+          deadline: 'Deadline: N/A'
         };
     }
   };
 
-  const savedUniversityData = savedUniversities.map(saved => {
-    const university = universities.find(u => u.id === saved.id);
-    return university ? { ...university, savedAt: saved.savedAt } : null;
-  }).filter(Boolean);
+  const savedUniversityData = savedUniversities
+    .map(saved => {
+      const university = universities.find(u => u.id === saved.id);
+      return university ? { ...university, savedAt: saved.savedAt } : null;
+    })
+    .filter(Boolean);
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <div className="bg-gradient-to-br from-maroon-900 via-maroon-800 to-red-900 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Saved Universities</h1>
@@ -104,7 +99,6 @@ export default function Saved() {
           </div>
         ) : (
           <>
-            {/* Header Actions */}
             <div className="flex items-center justify-between mb-8">
               <div>
                 <h2 className="text-2xl font-bold text-gray-900">
@@ -123,14 +117,12 @@ export default function Saved() {
               )}
             </div>
 
-            {/* Saved Universities Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {savedUniversityData.map((university) => {
                 if (!university) return null;
-                
-                const status = getAdmissionStatus(university.id);
-                const statusConfig = getStatusConfig(status);
-                
+
+                const statusConfig = getStatusConfig(university.admissionStatus, university.admissionDeadline);
+
                 return (
                   <div key={university.id} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
                     <div className="relative h-48">
@@ -162,13 +154,11 @@ export default function Saved() {
                       <h3 className="text-xl font-bold text-gray-900 mb-2">{university.name}</h3>
                       <p className="text-gray-600 text-sm mb-4 line-clamp-2">{university.description}</p>
 
-                      {/* Admission Status */}
                       <div className={`flex items-center justify-between p-3 rounded-lg border mb-4 ${statusConfig.color}`}>
                         <div className="flex items-center">
                           {statusConfig.icon}
                           <span className="ml-2 font-medium">{statusConfig.label}</span>
                         </div>
-                        <Calendar className="h-4 w-4" />
                       </div>
                       
                       <div className="text-sm text-gray-600 mb-4">
@@ -178,19 +168,16 @@ export default function Saved() {
                         </div>
                       </div>
 
-                      {/* University Info */}
                       <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
                         <span>{university.students} students</span>
                         <span>{university.programs} programs</span>
                         <span>★ {university.rating}</span>
                       </div>
 
-                      {/* Saved Date */}
                       <div className="text-xs text-gray-500 mb-4">
                         Saved on {new Date(university.savedAt).toLocaleDateString()}
                       </div>
 
-                      {/* Actions */}
                       <div className="flex gap-2">
                         <button className="flex-1 flex items-center justify-center px-3 py-2 text-maroon-700 border border-maroon-200 rounded-lg hover:bg-maroon-50 transition-colors">
                           <BarChart3 className="h-4 w-4 mr-1" />
@@ -210,7 +197,6 @@ export default function Saved() {
               })}
             </div>
 
-            {/* Admission Status Legend */}
             <div className="mt-12 bg-white rounded-xl p-6 shadow-lg">
               <h3 className="text-lg font-bold text-gray-900 mb-4">Admission Status Guide</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

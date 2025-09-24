@@ -158,6 +158,7 @@ export default function Universities() {
               key={university.id}
               viewMode={viewMode}
               {...university}
+              admissionStatus={university.admissionStatus}
             />
           ))}
         </div>

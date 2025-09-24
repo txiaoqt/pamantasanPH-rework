@@ -13,7 +13,8 @@ import Compare from './pages/Compare';
 import About from './pages/About';
 import Saved from './pages/Saved';
 import ScrollToTop from './ScrollToTop';
-import UniversityDetails from './components/UniversityDetails';
+import UniversityDetails from './pages/UniversityDetails';
+import UniversityList from './pages/UniversityList';
 
 function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -40,7 +41,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/saved" element={<Saved />} />
             <Route path="/universities/:id" element={<UniversityDetails />} />
-
+            <Route path="/universities" element={<UniversityList />} />
           </Routes>
         </ScrollToTop>
 

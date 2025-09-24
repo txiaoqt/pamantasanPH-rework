@@ -10,7 +10,7 @@ interface UniversityCardProps {
   location: string;
   province: string;
   established: string;
-  type: string; // allow all valid values
+  type: string;
   rating: number;
   students: string;
   programs: number;
@@ -190,7 +190,7 @@ export default function FeaturedUniversities() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {universities.slice(0, 3).map((university) => ( // ✅ only show first 3 featured
+          {universities.slice(0, 3).map((university) => (
             <UniversityCard key={university.id} {...university} />
           ))}
         </div>
