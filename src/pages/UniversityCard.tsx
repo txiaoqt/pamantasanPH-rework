@@ -2,6 +2,7 @@
 import React from 'react';
 import { MapPin, Star, Users, BookOpen, Heart, BarChart3, ExternalLink } from 'lucide-react';
 import { Link } from "react-router-dom";
+import { useSavedUniversities } from '../hooks/useSavedUniversities';
 
 export interface University {
   id: number;
@@ -18,13 +19,50 @@ export interface University {
   imageUrl: string;
   tuitionRange: string;
   accreditation: string[];
+  admissionStatus: 'open' | 'not-yet-open' | 'closed';
+  admissionDeadline: string;
 }
 
 export interface UniversityCardProps extends University {
   viewMode: 'grid' | 'list';
 }
 
+function AdmissionStatusBadge({ status, deadline }: { status: 'open' | 'not-yet-open' | 'closed', deadline: string }) {
+  const getStatusConfig = () => {
+    switch (status) {
+      case 'open':
+        return {
+          label: 'Open',
+          color: 'bg-green-100 text-green-800 border-green-200',
+          dot: 'bg-green-500'
+        };
+      case 'not-yet-open':
+        return {
+          label: 'Soon',
+          color: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+          dot: 'bg-yellow-500'
+        };
+      case 'closed':
+        return {
+          label: 'Closed',
+          color: 'bg-red-100 text-red-800 border-red-200',
+          dot: 'bg-red-500'
+        };
+    }
+  };
+
+  const config = getStatusConfig();
+
+  return (
+    <div className={`flex items-center px-2 py-1 rounded-full text-xs font-medium border ${config.color}`}>
+      <div className={`w-2 h-2 rounded-full mr-1 ${config.dot}`}></div>
+      {config.label}
+    </div>
+  );
+}
 export default function UniversityCard({ viewMode, ...university }: UniversityCardProps) {
+  const { isSaved, toggleSaved } = useSavedUniversities();
+
   if (viewMode === 'list') {
     return (
       <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex">
@@ -52,6 +90,7 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
                 }`}>
                 {university.type}
               </span>
+              <AdmissionStatusBadge status={university.admissionStatus} deadline={university.admissionDeadline} />
               <div className="flex items-center bg-yellow-50 px-2 py-1 rounded-full">
                 <Star className="h-4 w-4 text-yellow-500 fill-current mr-1" />
                 <span className="text-sm font-medium text-gray-900">{university.rating}</span>
@@ -73,8 +112,15 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
               </div>
             </div>
             <div className="flex gap-2">
-              <button className="p-2 text-maroon-700 border border-maroon-200 rounded-lg hover:bg-maroon-50 transition-colors">
-                <Heart className="h-4 w-4" />
+              <button 
+                onClick={() => toggleSaved(university.id)}
+                className={`p-2 border rounded-lg transition-colors ${
+                  isSaved(university.id)
+                    ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'
+                    : 'text-maroon-700 border-maroon-200 hover:bg-maroon-50'
+                }`}
+              >
+                <Heart className={`h-4 w-4 ${isSaved(university.id) ? 'fill-current' : ''}`} />
               </button>
               <button className="p-2 text-maroon-700 border border-maroon-200 rounded-lg hover:bg-maroon-50 transition-colors">
                 <BarChart3 className="h-4 w-4" />
@@ -114,6 +160,9 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
           <Star className="h-4 w-4 text-yellow-500 fill-current mr-1" />
           <span className="text-sm font-medium text-gray-900">{university.rating}</span>
         </div>
+        <div className="absolute bottom-4 left-4">
+          <AdmissionStatusBadge status={university.admissionStatus} deadline={university.admissionDeadline} />
+        </div>
       </div>
 
       <div className="p-6">
@@ -141,6 +190,9 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
           </div>
         </div>
 
+        <div className="mb-4 text-xs text-gray-600">
+          📅 {university.admissionDeadline}
+        </div>
         <div className="mb-6">
           <div className="flex flex-wrap gap-2">
             {university.subjects.slice(0, 3).map((subject, index) => (
@@ -160,9 +212,16 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
         </div>
 
         <div className="flex gap-2">
-          <button className="flex-1 flex items-center justify-center px-4 py-2 text-maroon-700 border border-maroon-200 rounded-lg hover:bg-maroon-50 transition-all duration-300">
-            <Heart className="h-4 w-4 mr-1" />
-            Save
+          <button 
+            onClick={() => toggleSaved(university.id)}
+            className={`flex-1 flex items-center justify-center px-4 py-2 border rounded-lg transition-all duration-300 ${
+              isSaved(university.id)
+                ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'
+                : 'text-maroon-700 border-maroon-200 hover:bg-maroon-50'
+            }`}
+          >
+            <Heart className={`h-4 w-4 mr-1 ${isSaved(university.id) ? 'fill-current' : ''}`} />
+            {isSaved(university.id) ? 'Saved' : 'Save'}
           </button>
           <button className="flex-1 flex items-center justify-center px-4 py-2 text-maroon-700 border border-maroon-200 rounded-lg hover:bg-maroon-50 transition-all duration-300">
             <BarChart3 className="h-4 w-4 mr-1" />

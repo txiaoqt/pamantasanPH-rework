@@ -11,6 +11,7 @@ import Universities from './pages/Universities';
 import Programs from './pages/Programs';
 import Compare from './pages/Compare';
 import About from './pages/About';
+import Saved from './pages/Saved';
 import ScrollToTop from './ScrollToTop';
 import UniversityDetails from './components/UniversityDetails';
 
@@ -37,6 +38,7 @@ function App() {
             <Route path="/programs" element={<Programs />} />
             <Route path="/compare" element={<Compare />} />
             <Route path="/about" element={<About />} />
+            <Route path="/saved" element={<Saved />} />
             <Route path="/universities/:id" element={<UniversityDetails />} />
 
           </Routes>

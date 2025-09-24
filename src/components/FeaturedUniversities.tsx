@@ -2,6 +2,7 @@ import React from 'react';
 import { Star, Users, BookOpen, MapPin, Heart, BarChart3, ExternalLink } from 'lucide-react';
 import { Link } from "react-router-dom";
 import { universities } from "./data/universities"; // ✅ import shared data
+import { useSavedUniversities } from '../hooks/useSavedUniversities';
 
 interface UniversityCardProps {
   id: number;
@@ -18,6 +19,8 @@ interface UniversityCardProps {
   imageUrl: string;
   tuitionRange: string;
   accreditation: string[];
+  admissionStatus: 'open' | 'not-yet-open' | 'closed';
+  admissionDeadline: string;
 }
 
 
@@ -34,8 +37,37 @@ function UniversityCard({
   subjects,
   imageUrl,
   tuitionRange,
-  accreditation
+  accreditation,
+  admissionStatus,
+  admissionDeadline
 }: UniversityCardProps) {
+  const { isSaved, toggleSaved } = useSavedUniversities();
+
+  const getStatusConfig = () => {
+    switch (admissionStatus) {
+      case 'open':
+        return {
+          label: 'Open',
+          color: 'bg-green-100 text-green-800 border-green-200',
+          dot: 'bg-green-500'
+        };
+      case 'not-yet-open':
+        return {
+          label: 'Soon',
+          color: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+          dot: 'bg-yellow-500'
+        };
+      case 'closed':
+        return {
+          label: 'Closed',
+          color: 'bg-red-100 text-red-800 border-red-200',
+          dot: 'bg-red-500'
+        };
+    }
+  };
+
+  const statusConfig = getStatusConfig();
+
   return (
     <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group border border-gray-100">
       <div className="relative h-48">
@@ -55,6 +87,12 @@ function UniversityCard({
         <div className="absolute top-4 right-4 flex items-center bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full">
           <Star className="h-4 w-4 text-yellow-500 fill-current mr-1" />
           <span className="text-sm font-medium text-gray-900">{rating}</span>
+        </div>
+        <div className="absolute bottom-4 left-4">
+          <div className={`flex items-center px-2 py-1 rounded-full text-xs font-medium border ${statusConfig.color}`}>
+            <div className={`w-2 h-2 rounded-full mr-1 ${statusConfig.dot}`}></div>
+            {statusConfig.label}
+          </div>
         </div>
       </div>
 
@@ -83,6 +121,9 @@ function UniversityCard({
           </div>
         </div>
 
+        <div className="mb-4 text-xs text-gray-600">
+          📅 {admissionDeadline}
+        </div>
         <div className="mb-6">
           <div className="flex flex-wrap gap-2">
             {subjects.map((subject, index) => (
@@ -97,9 +138,16 @@ function UniversityCard({
         </div>
 
         <div className="flex gap-2">
-          <button className="flex-1 flex items-center justify-center px-4 py-2 text-red-700 border border-red-200 rounded-lg hover:bg-red-50 transition-all duration-300">
-            <Heart className="h-4 w-4 mr-1" />
-            Save
+          <button 
+            onClick={() => toggleSaved(id)}
+            className={`flex-1 flex items-center justify-center px-4 py-2 border rounded-lg transition-all duration-300 ${
+              isSaved(id)
+                ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'
+                : 'text-red-700 border-red-200 hover:bg-red-50'
+            }`}
+          >
+            <Heart className={`h-4 w-4 mr-1 ${isSaved(id) ? 'fill-current' : ''}`} />
+            {isSaved(id) ? 'Saved' : 'Save'}
           </button>
           <button className="flex-1 flex items-center justify-center px-4 py-2 text-red-700 border border-red-200 rounded-lg hover:bg-red-50 transition-all duration-300">
             <BarChart3 className="h-4 w-4 mr-1" />
