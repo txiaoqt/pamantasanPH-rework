@@ -2,32 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Heart, Trash2, ExternalLink, BarChart3, AlertCircle, CheckCircle, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { universities } from '../components/data/universities';
-
-interface SavedUniversity {
-  id: number;
-  savedAt: string;
-}
+import { useSavedUniversities } from '../hooks/useSavedUniversities';
 
 export default function Saved() {
-  const [savedUniversities, setSavedUniversities] = useState<SavedUniversity[]>([]);
-
-  useEffect(() => {
-    const saved = localStorage.getItem('savedUniversities');
-    if (saved) {
-      setSavedUniversities(JSON.parse(saved));
-    }
-  }, []);
-
-  const removeSaved = (id: number) => {
-    const updated = savedUniversities.filter(saved => saved.id !== id);
-    setSavedUniversities(updated);
-    localStorage.setItem('savedUniversities', JSON.stringify(updated));
-  };
-
-  const clearAll = () => {
-    setSavedUniversities([]);
-    localStorage.removeItem('savedUniversities');
-  };
+  const { savedUniversities, toggleSaved, clearAll, isLoaded } = useSavedUniversities();
 
   const getStatusConfig = (status: string, deadline: string | undefined) => {
     switch (status) {
@@ -142,7 +120,7 @@ export default function Saved() {
                       </div>
                       <div className="absolute top-4 right-4">
                         <button
-                          onClick={() => removeSaved(university.id)}
+                          onClick={() => toggleSaved(university.id)}
                           className="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors"
                         >
                           <Heart className="h-4 w-4 fill-current" />
