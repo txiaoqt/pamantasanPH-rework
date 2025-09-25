@@ -41,7 +41,7 @@ function UniversityCard({
   admissionStatus,
   admissionDeadline
 }: UniversityCardProps) {
-  const { isSaved, toggleSaved } = useSavedUniversities();
+  const { isSaved, toggleSaved, isLoaded } = useSavedUniversities();
 
   const getStatusConfig = () => {
     switch (admissionStatus) {
@@ -140,10 +140,12 @@ function UniversityCard({
         <div className="flex gap-2">
           <button 
             onClick={() => toggleSaved(id)}
+            disabled={!isLoaded}
             className={`flex-1 flex items-center justify-center px-4 py-2 border rounded-lg transition-all duration-300 ${
               isSaved(id)
                 ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'
-                : 'text-red-700 border-red-200 hover:bg-red-50'
+                : 'text-maroon-700 border-maroon-200 hover:bg-maroon-50'
+            } ${!isLoaded ? 'opacity-50 cursor-not-allowed' : ''}`}
             }`}
           >
             <Heart className={`h-4 w-4 mr-1 ${isSaved(id) ? 'fill-current' : ''}`} />

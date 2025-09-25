@@ -98,7 +98,7 @@ function AdmissionStatusBadge({ status, deadline }: { status: 'open' | 'not-yet-
   );
 }
 export default function UniversityCard({ viewMode, ...university }: UniversityCardProps) {
-  const { isSaved, toggleSaved } = useSavedUniversities();
+  const { isSaved, toggleSaved, isLoaded } = useSavedUniversities();
 
   if (viewMode === 'list') {
     return (
@@ -151,11 +151,12 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
             <div className="flex gap-2">
               <button 
                 onClick={() => toggleSaved(university.id)}
+                disabled={!isLoaded}
                 className={`p-2 border rounded-lg transition-colors ${
                   isSaved(university.id)
                     ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'
                     : 'text-maroon-700 border-maroon-200 hover:bg-maroon-50'
-                }`}
+                } ${!isLoaded ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 <Heart className={`h-4 w-4 ${isSaved(university.id) ? 'fill-current' : ''}`} />
               </button>
@@ -251,11 +252,12 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
         <div className="flex gap-2">
           <button 
             onClick={() => toggleSaved(university.id)}
+            disabled={!isLoaded}
             className={`flex-1 flex items-center justify-center px-4 py-2 border rounded-lg transition-all duration-300 ${
               isSaved(university.id)
                 ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'
                 : 'text-maroon-700 border-maroon-200 hover:bg-maroon-50'
-            }`}
+            } ${!isLoaded ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             <Heart className={`h-4 w-4 mr-1 ${isSaved(university.id) ? 'fill-current' : ''}`} />
             {isSaved(university.id) ? 'Saved' : 'Save'}
