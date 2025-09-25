@@ -146,8 +146,6 @@ function UniversityCard({
                 ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'
                 : 'text-maroon-700 border-maroon-200 hover:bg-maroon-50'
             } ${!isLoaded ? 'opacity-50 cursor-not-allowed' : ''}`}
-            }`}
-          >
             <Heart className={`h-4 w-4 mr-1 ${isSaved(id) ? 'fill-current' : ''}`} />
             {isSaved(id) ? 'Saved' : 'Save'}
           </button>
