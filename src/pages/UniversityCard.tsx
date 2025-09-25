@@ -1,4 +1,3 @@
-// src/components/UniversityCard.tsx
 import React from 'react';
 import { MapPin, Star, Users, BookOpen, Heart, BarChart3, ExternalLink } from 'lucide-react';
 import { Link } from "react-router-dom";
