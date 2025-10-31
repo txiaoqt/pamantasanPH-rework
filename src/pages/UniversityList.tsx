@@ -1,5 +1,5 @@
 import React from 'react';
-import { universities } from '../components/data/universities'; // Adjust path as needed
+import { universities } from '../components/data/universities'; 
 import { Heart } from 'lucide-react';
 
 const UniversityList = () => {
