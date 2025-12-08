@@ -1,5 +1,5 @@
 import React from 'react';
-import { TrendingUp, MapPin, Star, BookOpen, Users, Eye } from 'lucide-react';
+import { MapPin, BookOpen } from 'lucide-react';
 
 interface StatCardProps {
   title: string;

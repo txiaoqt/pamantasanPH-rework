@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { SavedUniversitiesService } from '../services/savedUniversitiesService';
 
 interface SavedUniversity {
   id: number;
@@ -10,37 +11,35 @@ export function useSavedUniversities() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem('savedUniversities');
-      if (saved) {
-        const parsedSaved = JSON.parse(saved);
-        setSavedUniversities(parsedSaved);
-      }
-    } catch (error) {
-      console.error('Error loading saved universities:', error);
-      setSavedUniversities([]);
-    }
-    setIsLoaded(true);
-  }, []);
-
-  // Save to localStorage whenever savedUniversities changes
-  useEffect(() => {
-    if (isLoaded) {
+    const loadSavedUniversities = async () => {
       try {
-        localStorage.setItem('savedUniversities', JSON.stringify(savedUniversities));
+        const savedIds = await SavedUniversitiesService.getSavedUniversities();
+        // Convert to the expected format for backward compatibility
+        const savedUniversitiesData: SavedUniversity[] = savedIds.map(id => ({
+          id,
+          savedAt: new Date().toISOString() // Default timestamp, could be enhanced to store actual timestamps
+        }));
+        setSavedUniversities(savedUniversitiesData);
       } catch (error) {
-        console.error('Error saving universities:', error);
+        console.error('Error loading saved universities:', error);
+        setSavedUniversities([]);
       }
-    }
-  }, [savedUniversities, isLoaded]);
+      setIsLoaded(true);
+    };
+
+    loadSavedUniversities();
+  }, []);
 
   const isSaved = (id: number) => {
     return savedUniversities.some(saved => saved.id === id);
   };
 
-  const toggleSaved = (id: number) => {
+  const toggleSaved = async (id: number) => {
+    const isCurrentlySaved = isSaved(id);
+
+    // Optimistically update the state first
     setSavedUniversities(prev => {
-      if (prev.some(saved => saved.id === id)) {
+      if (isCurrentlySaved) {
         // Remove from saved
         return prev.filter(saved => saved.id !== id);
       } else {
@@ -48,10 +47,44 @@ export function useSavedUniversities() {
         return [...prev, { id, savedAt: new Date().toISOString() }];
       }
     });
+
+    try {
+      if (isCurrentlySaved) {
+        await SavedUniversitiesService.unsaveUniversity(id);
+      } else {
+        await SavedUniversitiesService.saveUniversity(id);
+      }
+    } catch (error) {
+      console.error('Error toggling saved university:', error);
+      // Revert the optimistic update on error
+      setSavedUniversities(prev => {
+        if (isCurrentlySaved) {
+          // Re-add to saved
+          return [...prev, { id, savedAt: new Date().toISOString() }];
+        } else {
+          // Re-remove from saved
+          return prev.filter(saved => saved.id !== id);
+        }
+      });
+    }
   };
 
-  const clearAll = () => {
+  const clearAll = async () => {
+    // Optimistically clear the state first
     setSavedUniversities([]);
+
+    try {
+      await SavedUniversitiesService.clearAllSavedUniversities();
+    } catch (error) {
+      console.error('Error clearing saved universities:', error);
+      // Revert the optimistic update on error
+      const savedIds = await SavedUniversitiesService.getSavedUniversities();
+      const savedUniversitiesData: SavedUniversity[] = savedIds.map(id => ({
+        id,
+        savedAt: new Date().toISOString()
+      }));
+      setSavedUniversities(savedUniversitiesData);
+    }
   };
 
   return {

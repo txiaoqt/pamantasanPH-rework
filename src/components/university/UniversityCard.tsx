@@ -1,7 +1,7 @@
 import React from 'react';
 import { MapPin, Star, Users, BookOpen, Heart, BarChart3, ExternalLink } from 'lucide-react';
 import { Link } from "react-router-dom";
-import { useSavedUniversities } from '../hooks/useSavedUniversities';
+import { useSavedUniversities } from '../../hooks/useSavedUniversities';
 
 export interface University {
   id: number;
@@ -63,7 +63,7 @@ export interface UniversityCardProps extends University {
 }
 
 
-function AdmissionStatusBadge({ status, deadline }: { status: 'open' | 'not-yet-open' | 'closed', deadline: string }) {
+function AdmissionStatusBadge({ status }: { status: 'open' | 'not-yet-open' | 'closed' }) {
   const getStatusConfig = () => {
     switch (status) {
       case 'open':
@@ -126,7 +126,7 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
                 }`}>
                 {university.type}
               </span>
-              <AdmissionStatusBadge status={university.admissionStatus} deadline={university.admissionDeadline} />
+              <AdmissionStatusBadge status={university.admissionStatus} />
               <div className="flex items-center bg-yellow-50 px-2 py-1 rounded-full">
                 <Star className="h-4 w-4 text-yellow-500 fill-current mr-1" />
                 <span className="text-sm font-medium text-gray-900">{university.rating}</span>
@@ -198,7 +198,7 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
           <span className="text-sm font-medium text-gray-900">{university.rating}</span>
         </div>
         <div className="absolute bottom-4 left-4">
-          <AdmissionStatusBadge status={university.admissionStatus} deadline={university.admissionDeadline} />
+          <AdmissionStatusBadge status={university.admissionStatus} />
         </div>
       </div>
 

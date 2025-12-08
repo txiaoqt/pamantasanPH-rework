@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Search, BookOpen, Clock, Users, Award, TrendingUp, Filter, Star } from 'lucide-react';
+import { Search, BookOpen, Clock, Users, Award, TrendingUp } from 'lucide-react';
 
 interface Program {
   id: number;
@@ -131,9 +131,7 @@ const programs: Program[] = [
   }
 ];
 
-interface ProgramCardProps extends Program {}
-
-function ProgramCard(program: ProgramCardProps) {
+function ProgramCard(program: Program) {
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case 'Easy': return 'bg-green-100 text-green-800';
@@ -258,7 +256,7 @@ export default function Programs() {
   const levels = [...new Set(programs.map(p => p.level))];
 
   const filteredPrograms = useMemo(() => {
-    let filtered = programs.filter(program => {
+    const filtered = programs.filter(program => {
       const matchesSearch = program.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           program.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           program.careerProspects.some(career => career.toLowerCase().includes(searchQuery.toLowerCase()));

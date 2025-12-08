@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Plus,
   X,
@@ -9,7 +9,7 @@ import {
   DollarSign,
   TrendingUp,
 } from 'lucide-react';
-import { universities } from '../components/data/universities';
+import { UniversityService } from '../services/universityService';
 
 interface University {
   id: number;
@@ -211,6 +211,21 @@ function ComparisonTable({ selectedUniversities, onRemove }: ComparisonTableProp
 
 export default function Compare() {
   const [selectedUniversities, setSelectedUniversities] = useState<University[]>([]);
+  const [universities, setUniversities] = useState<University[]>([]);
+
+  useEffect(() => {
+    const fetchUniversities = async () => {
+      try {
+        const data = await UniversityService.getAllUniversities();
+        setUniversities(data);
+      } catch (error) {
+        console.error('Failed to fetch universities:', error);
+        setUniversities([]);
+      }
+    };
+
+    fetchUniversities();
+  }, []);
 
   const addUniversity = (university: University) => {
     if (

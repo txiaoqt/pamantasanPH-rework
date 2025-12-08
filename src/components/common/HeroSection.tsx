@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, MapPin, Building, Users, Award } from 'lucide-react';
+import { Search, MapPin, Building, Users } from 'lucide-react';
 
 export default function HeroSection() {
   const [searchQuery, setSearchQuery] = useState('');

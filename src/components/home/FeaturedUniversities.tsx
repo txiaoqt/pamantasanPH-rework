@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Star, Users, BookOpen, MapPin, Heart, BarChart3, ExternalLink } from 'lucide-react';
 import { Link } from "react-router-dom";
-import { universities } from "../components/data/universities"; // ✅ import shared data
-import { useSavedUniversities } from '../hooks/useSavedUniversities';
+import { UniversityService } from '../../services/universityService';
+import { University } from '../university/UniversityCard';
+import { useSavedUniversities } from '../../hooks/useSavedUniversities';
 
 interface UniversityCardProps {
     id: number;
@@ -36,11 +37,9 @@ function UniversityCard({
     description,
     subjects,
     imageUrl,
-    tuitionRange,
-    accreditation,
     admissionStatus,
     admissionDeadline
-}: UniversityCardProps) {
+}: Omit<UniversityCardProps, 'tuitionRange' | 'accreditation'>) {
     const { isSaved, toggleSaved, isLoaded } = useSavedUniversities();
 
     const getStatusConfig = () => {
@@ -169,8 +168,73 @@ function UniversityCard({
     );
 }
 
-// ... The FeaturedUniversities component remains the same
 export default function FeaturedUniversities() {
+    const [featuredUniversities, setFeaturedUniversities] = useState<University[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchFeaturedUniversities = async () => {
+            try {
+                setIsLoading(true);
+                const universities = await UniversityService.getFeaturedUniversities(3);
+                setFeaturedUniversities(universities);
+            } catch (err) {
+                console.error('Failed to fetch featured universities:', err);
+                setError('Failed to load featured universities');
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchFeaturedUniversities();
+    }, []);
+
+    if (isLoading) {
+        return (
+            <section className="py-20 bg-white">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-12">
+                        <div>
+                            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                                Featured Universities
+                            </h2>
+                            <p className="text-xl text-gray-600">
+                                Top-rated institutions across the Philippines
+                            </p>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {[...Array(3)].map((_, index) => (
+                            <div key={index} className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 animate-pulse">
+                                <div className="h-48 bg-gray-200"></div>
+                                <div className="p-6">
+                                    <div className="h-6 bg-gray-200 rounded mb-4"></div>
+                                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                                    <div className="h-4 bg-gray-200 rounded mb-4"></div>
+                                    <div className="h-16 bg-gray-200 rounded mb-4"></div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+        );
+    }
+
+    if (error) {
+        return (
+            <section className="py-20 bg-white">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                        Featured Universities
+                    </h2>
+                    <p className="text-xl text-red-600">{error}</p>
+                </div>
+            </section>
+        );
+    }
+
     return (
         <section className="py-20 bg-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -194,7 +258,7 @@ export default function FeaturedUniversities() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {universities.slice(0, 3).map((university) => (
+                    {featuredUniversities.map((university) => (
                         <UniversityCard key={university.id} {...university} />
                     ))}
                 </div>

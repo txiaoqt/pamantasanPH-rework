@@ -1,5 +1,5 @@
 import React from 'react';
-import { Users, Target, Award, Heart, Globe, BookOpen, TrendingUp, Shield } from 'lucide-react';
+import { Users, Target, Heart, Globe, BookOpen, TrendingUp, Shield } from 'lucide-react';
 
 interface TeamMemberProps {
   name: string;

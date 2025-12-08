@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -6,7 +6,8 @@ import L from 'leaflet';
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
-import { universities } from '../components/data/universities';
+import { UniversityService } from '../services/universityService';
+import { University } from '../components/university/UniversityCard';
 
 import {
   ArrowLeft,
@@ -16,7 +17,6 @@ import {
   BookOpen,
   Calendar,
   Award,
-  DollarSign,
   Phone,
   Mail,
   Globe,
@@ -26,9 +26,7 @@ import {
   CheckCircle,
   Clock,
   TrendingUp,
-  Building,
-  GraduationCap,
-  Camera
+  Building
 } from 'lucide-react';
 
 const DefaultIcon = L.icon({
@@ -71,8 +69,38 @@ export default function UniversityDetails() {
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedImage, setSelectedImage] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [university, setUniversity] = useState<University | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const university = universities.find(u => u.id === parseInt(id || '1'));
+  useEffect(() => {
+    const fetchUniversity = async () => {
+      if (!id) return;
+
+      try {
+        setIsLoading(true);
+        const data = await UniversityService.getUniversityById(parseInt(id));
+        setUniversity(data);
+      } catch (error) {
+        console.error('Failed to fetch university:', error);
+        setUniversity(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUniversity();
+  }, [id]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-maroon-800"></div>
+          <p className="text-gray-600">Loading university details...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!university) {
     return (
@@ -96,9 +124,6 @@ export default function UniversityDetails() {
   ];
 
   const hasContactInfo = university.website || university.phone || university.email || university.address;
-  const hasAdmissionData = university.admissionRequirements && university.admissionRequirements.length > 0 && university.tuitionRange;
-  const hasAcademicData = university.subjects.length > 0 || university.academicCalendar?.semesterStart;
-  const hasCampusData = university.studentLife || (university.facilities && university.facilities.length > 0);
   const mapLocation = university.mapLocation;
   const hasGalleryImages = university.galleryImages && university.galleryImages.length > 0;
 

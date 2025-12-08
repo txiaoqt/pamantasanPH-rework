@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './components/Header';
-import HeroSection from './components/HeroSection';
-import PlatformOverview from './components/PlatformOverview';
-import FeaturedUniversities from './components/FeaturedUniversities';
-import ExploreTools from './components/ExploreTools';
-import Newsletter from './components/Newsletter';
-import Footer from './components/Footer';
+import Header from './components/common/Header';
+import HeroSection from './components/common/HeroSection';
+import PlatformOverview from './components/home/PlatformOverview';
+import FeaturedUniversities from './components/home/FeaturedUniversities';
+import ExploreTools from './components/home/ExploreTools';
+import Newsletter from './components/common/Newsletter';
+import Footer from './components/common/Footer';
 import Universities from './pages/Universities';
 import Programs from './pages/Programs';
 import Compare from './pages/Compare';
@@ -14,7 +14,6 @@ import About from './pages/About';
 import Saved from './pages/Saved';
 import ScrollToTop from './ScrollToTop';
 import UniversityDetails from './pages/UniversityDetails';
-import UniversityList from './pages/UniversityList';
 
 function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -41,7 +40,6 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/saved" element={<Saved />} />
             <Route path="/universities/:id" element={<UniversityDetails />} />
-            <Route path="/universities" element={<UniversityList />} />
           </Routes>
         </ScrollToTop>
 

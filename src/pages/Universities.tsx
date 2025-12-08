@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Search, MapPin, Grid, List } from 'lucide-react';
-import UniversityCard, { University } from './UniversityCard'; 
-import { universities } from '../components/data/universities';
+import UniversityCard, { University } from '../components/university/UniversityCard';
+import { UniversityService } from '../services/universityService';
 
 export default function Universities() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -9,12 +9,30 @@ export default function Universities() {
   const [typeFilter, setTypeFilter] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [sortBy, setSortBy] = useState('id');
+  const [universities, setUniversities] = useState<University[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUniversities = async () => {
+      try {
+        setIsLoading(true);
+        const data = await UniversityService.getAllUniversities();
+        setUniversities(data);
+      } catch (error) {
+        console.error('Failed to fetch universities:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUniversities();
+  }, []);
 
   const filteredUniversities = useMemo(() => {
-    let filtered = universities.filter(university => {
+    const filtered = universities.filter(university => {
       const matchesSearch =
         university.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        university.subjects.some(subject =>
+        university.subjects.some((subject: string) =>
           subject.toLowerCase().includes(searchQuery.toLowerCase())
         );
 
@@ -28,7 +46,7 @@ export default function Universities() {
       return matchesSearch && matchesLocation && matchesType;
     });
 
-    filtered.sort((a, b) => {
+    filtered.sort((a: University, b: University) => {
       switch (sortBy) {
         case 'rating':
           return b.rating - a.rating;
@@ -48,7 +66,7 @@ export default function Universities() {
     });
 
     return filtered;
-  }, [searchQuery, locationFilter, typeFilter, sortBy]);
+  }, [universities, searchQuery, locationFilter, typeFilter, sortBy]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -146,22 +164,31 @@ export default function Universities() {
 
       {/* Results */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div
-          className={
-            viewMode === 'grid'
-              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
-              : 'space-y-6'
-          }
-        >
-          {filteredUniversities.map((university) => (
-            <UniversityCard
-              key={university.id}
-              viewMode={viewMode}
-              {...university}
-              admissionStatus={university.admissionStatus}
-            />
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="flex flex-col items-center space-y-4">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-maroon-800"></div>
+              <p className="text-gray-600">Loading universities...</p>
+            </div>
+          </div>
+        ) : (
+          <div
+            className={
+              viewMode === 'grid'
+                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
+                : 'space-y-6'
+            }
+          >
+            {filteredUniversities.map((university) => (
+              <UniversityCard
+                key={university.id}
+                viewMode={viewMode}
+                {...university}
+                admissionStatus={university.admissionStatus}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

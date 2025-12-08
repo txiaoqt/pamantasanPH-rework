@@ -1,11 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { Heart, Trash2, ExternalLink, BarChart3, AlertCircle, CheckCircle, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { universities } from '../components/data/universities';
+import { UniversityService } from '../services/universityService';
+import { University } from '../components/university/UniversityCard';
 import { useSavedUniversities } from '../hooks/useSavedUniversities';
 
 export default function Saved() {
-  const { savedUniversities, toggleSaved, clearAll, isLoaded } = useSavedUniversities();
+  const { savedUniversities, toggleSaved, clearAll } = useSavedUniversities();
+  const [universities, setUniversities] = useState<University[]>([]);
+
+  useEffect(() => {
+    const fetchUniversities = async () => {
+      try {
+        const data = await UniversityService.getAllUniversities();
+        setUniversities(data);
+      } catch (error) {
+        console.error('Failed to fetch universities:', error);
+        setUniversities([]);
+      }
+    };
+
+    fetchUniversities();
+  }, []);
 
   const getStatusConfig = (status: string, deadline: string | undefined) => {
     switch (status) {
