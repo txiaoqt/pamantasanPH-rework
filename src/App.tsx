@@ -12,6 +12,7 @@ import Programs from './pages/Programs';
 import Compare from './pages/Compare';
 import About from './pages/About';
 import Saved from './pages/Saved';
+import MapView from './pages/MapView';
 import ScrollToTop from './ScrollToTop';
 import UniversityDetails from './pages/UniversityDetails';
 
@@ -37,6 +38,7 @@ function App() {
             <Route path="/universities" element={<Universities />} />
             <Route path="/programs" element={<Programs />} />
             <Route path="/compare" element={<Compare />} />
+            <Route path="/map" element={<MapView />} />
             <Route path="/about" element={<About />} />
             <Route path="/saved" element={<Saved />} />
             <Route path="/universities/:id" element={<UniversityDetails />} />

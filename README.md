@@ -1,4 +1,4 @@
-# PamantasanPH - Philippine Universities Platform
+# UniCentral - Philippine Universities Platform
 
 A comprehensive platform for exploring and discovering universities across the Philippines. Find detailed information about institutions, programs, admissions, rankings, and more.
 

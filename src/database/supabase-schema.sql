@@ -1,4 +1,4 @@
--- Supabase Schema for PamantasanPH University Platform
+-- Supabase Schema for UniCentral University Platform
 -- Create the universities table with all required information
 
 -- Create the universities table

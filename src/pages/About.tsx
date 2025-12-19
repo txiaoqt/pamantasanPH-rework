@@ -102,7 +102,7 @@ export default function About() {
       <div className="bg-gradient-to-br from-maroon-900 via-maroon-800 to-red-900 text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">About PamantasanPH</h1>
+            <h1 className="text-4xl md:text-6xl font-bold mb-6">About UniCentral</h1>
             <p className="text-xl md:text-2xl text-maroon-100 max-w-4xl mx-auto leading-relaxed">
               Empowering Filipino students to find their perfect university match through
               comprehensive data, authentic reviews, and innovative tools.
@@ -155,7 +155,7 @@ export default function About() {
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Our Values</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              The principles that guide everything we do at PamantasanPH
+              The principles that guide everything we do at UniCentral
             </p>
           </div>
 
@@ -241,7 +241,7 @@ export default function About() {
 
           <div className="prose prose-lg mx-auto text-gray-600">
             <p className="text-xl leading-relaxed mb-6">
-              PamantasanPH was born from a simple observation: choosing the right university in the Philippines
+              UniCentral was born from a simple observation: choosing the right university in the Philippines
               was unnecessarily difficult and often unfair. Students from remote provinces had limited access
               to information, while those in Metro Manila had overwhelming choices but little guidance.
             </p>
@@ -253,7 +253,7 @@ export default function About() {
             </p>
 
             <p className="text-lg leading-relaxed mb-6">
-              In 2024, we launched PamantasanPH with a vision: every Filipino student, regardless of their
+              In 2024, we launched UniCentral with a vision: every Filipino student, regardless of their
               location or background, should have access to the same quality of information when making one
               of the most important decisions of their lives.
             </p>

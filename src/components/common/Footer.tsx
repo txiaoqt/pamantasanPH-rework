@@ -13,7 +13,7 @@ export default function Footer() {
                 <GraduationCap className="h-6 w-6 text-yellow-400" />
               </div>
               <div>
-                <h3 className="text-xl font-bold">PamantasanPH</h3>
+                <h3 className="text-xl font-bold">UniCentral</h3>
                 <p className="text-sm text-gray-400">Excellence in Education</p>
               </div>
             </div>
@@ -58,7 +58,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-center space-x-2">
                 <Mail className="h-4 w-4 text-red-400" />
-                <span className="text-gray-400">info@PamantasanPH.com</span>
+                <span className="text-gray-400">info@UniCentral.com</span>
               </li>
               <li className="flex items-center space-x-2">
                 <Phone className="h-4 w-4 text-red-400" />
@@ -75,7 +75,7 @@ export default function Footer() {
         <div className="border-t border-gray-800 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              © 2025 PamantasanPH Philippines. All rights reserved.
+              © 2025 UniCentral Philippines. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">Privacy Policy</a>

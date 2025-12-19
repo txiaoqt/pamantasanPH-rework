@@ -1,11 +1,13 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Search, MapPin, Grid, List } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 import UniversityCard, { University } from '../components/university/UniversityCard';
 import { UniversityService } from '../services/universityService';
 
 export default function Universities() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [locationFilter, setLocationFilter] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
+  const [locationFilter, setLocationFilter] = useState(searchParams.get('location') || '');
   const [typeFilter, setTypeFilter] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [sortBy, setSortBy] = useState('id');
