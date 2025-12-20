@@ -2,6 +2,7 @@ import React from 'react';
 import { MapPin, Star, Users, BookOpen, Heart, BarChart3, ExternalLink } from 'lucide-react';
 import { Link } from "react-router-dom";
 import { useSavedUniversities } from '../../hooks/useSavedUniversities';
+import { AcademicProgram } from '../../lib/supabase';
 
 export interface University {
   id: number;
@@ -18,11 +19,8 @@ export interface University {
   subjects: string[];
   imageUrl: string;
   galleryImages?: string[];
-  tuitionRange: string;
+
   accreditation: string[];
-  admissionRate?: string;
-  graduationRate?: string;
-  employmentRate?: string;
   campusSize?: string;
   founded?: string;
   website?: string;
@@ -30,26 +28,22 @@ export interface University {
   email?: string;
   address?: string;
   facilities?: string[];
+  amenities?: string[];
   achievements?: string[];
   admissionRequirements?: string[];
+  applicationProcess?: string[];
   admissionStatus: 'open' | 'not-yet-open' | 'closed';
   admissionDeadline: string;
   scholarships?: string[];
-  studentLife?: {
-    clubs: number;
-    sports: number;
-    dormitories: boolean;
-    library: boolean;
-  };
+
   academicCalendar?: {
     semesterStart: string;
     semesterEnd: string;
     applicationDeadline: string;
   };
   rankings?: {
-    national: number;
-    regional: number;
-    category: string;
+    source: string;
+    details: string;
   };
   mapLocation?: {
     lat: number;
