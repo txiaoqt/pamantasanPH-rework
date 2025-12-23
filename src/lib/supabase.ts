@@ -42,11 +42,11 @@ export interface DatabaseUniversity {
   facilities: string[] | null
   amenities: string[] | null
   achievements: string[] | null
+  quickfacts: string[] | null
   admission_requirements: string[] | null
   application_process: string[] | null
   admission_status: string
   admission_deadline: string | null
-  scholarships: string[] | null
   academic_semester_start: string | null
   academic_semester_end: string | null
   academic_application_deadline: string | null
@@ -109,11 +109,11 @@ export const transformDbUniversityToUniversity = (dbUni: DatabaseUniversity): Un
     facilities: dbUni.facilities || [],
     amenities: dbUni.amenities || [],
     achievements: dbUni.achievements || [],
+    quickfacts: dbUni.quickfacts || [],
     admissionRequirements: dbUni.admission_requirements || [],
     applicationProcess: dbUni.application_process || [],
     admissionStatus: dbUni.admission_status as 'open' | 'not-yet-open' | 'closed',
     admissionDeadline: dbUni.admission_deadline || '',
-    scholarships: dbUni.scholarships || [],
     academicCalendar: dbUni.academic_semester_start && dbUni.academic_semester_end && dbUni.academic_application_deadline ? {
       semesterStart: dbUni.academic_semester_start,
       semesterEnd: dbUni.academic_semester_end,

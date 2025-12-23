@@ -1,147 +1,14 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Search, BookOpen, Clock, Users, Award, TrendingUp } from 'lucide-react';
+import { AcademicProgramService, AggregatedProgram } from '../services/academicProgramService';
+import { UniversityService } from '../services/universityService';
 
-interface Program {
-  id: number;
-  name: string;
-  category: string;
-  level: 'Bachelor' | 'Master' | 'Doctorate' | 'Certificate';
-  duration: string;
-  universities: string[];
-  description: string;
-  careerProspects: string[];
-  averageSalary: string;
-  popularity: number;
-  difficulty: 'Easy' | 'Moderate' | 'Challenging' | 'Very Challenging';
-  requirements: string[];
-}
-
-const programs: Program[] = [
-  {
-    id: 1,
-    name: 'Computer Science',
-    category: 'Technology',
-    level: 'Bachelor',
-    duration: '4 years',
-    universities: ['UP Diliman', 'PUP', 'DLSU', 'Ateneo'],
-    description: 'Study algorithms, programming, software development, and computer systems.',
-    careerProspects: ['Software Developer', 'Data Scientist', 'Systems Analyst', 'IT Consultant'],
-    averageSalary: '₱35,000 - ₱80,000',
-    popularity: 95,
-    difficulty: 'Challenging',
-    requirements: ['Mathematics', 'Physics', 'English Proficiency']
-  },
-  {
-    id: 2,
-    name: 'Business Administration',
-    category: 'Business',
-    level: 'Bachelor',
-    duration: '4 years',
-    universities: ['Ateneo', 'DLSU', 'UST', 'PUP'],
-    description: 'Learn management principles, finance, marketing, and organizational behavior.',
-    careerProspects: ['Business Manager', 'Marketing Specialist', 'Financial Analyst', 'Entrepreneur'],
-    averageSalary: '₱25,000 - ₱60,000',
-    popularity: 88,
-    difficulty: 'Moderate',
-    requirements: ['Mathematics', 'English Proficiency', 'Communication Skills']
-  },
-  {
-    id: 3,
-    name: 'Civil Engineering',
-    category: 'Engineering',
-    level: 'Bachelor',
-    duration: '5 years',
-    universities: ['UP Diliman', 'PUP', 'DLSU', 'UST'],
-    description: 'Design and construct infrastructure projects like buildings, roads, and bridges.',
-    careerProspects: ['Civil Engineer', 'Project Manager', 'Construction Manager', 'Structural Engineer'],
-    averageSalary: '₱30,000 - ₱70,000',
-    popularity: 82,
-    difficulty: 'Very Challenging',
-    requirements: ['Mathematics', 'Physics', 'Chemistry', 'Technical Drawing']
-  },
-  {
-    id: 4,
-    name: 'Nursing',
-    category: 'Healthcare',
-    level: 'Bachelor',
-    duration: '4 years',
-    universities: ['UST', 'PUP', 'FEU', 'San Beda'],
-    description: 'Provide healthcare services and patient care in various medical settings.',
-    careerProspects: ['Registered Nurse', 'Nurse Practitioner', 'Healthcare Administrator', 'Clinical Specialist'],
-    averageSalary: '₱20,000 - ₱50,000',
-    popularity: 90,
-    difficulty: 'Challenging',
-    requirements: ['Biology', 'Chemistry', 'Mathematics', 'English Proficiency']
-  },
-  {
-    id: 5,
-    name: 'Education',
-    category: 'Education',
-    level: 'Bachelor',
-    duration: '4 years',
-    universities: ['PUP', 'UP Diliman', 'DLSU', 'UST'],
-    description: 'Prepare to become a professional educator and shape future generations.',
-    careerProspects: ['Teacher', 'School Administrator', 'Curriculum Developer', 'Educational Consultant'],
-    averageSalary: '₱18,000 - ₱40,000',
-    popularity: 75,
-    difficulty: 'Moderate',
-    requirements: ['English Proficiency', 'Communication Skills', 'Psychology']
-  },
-  {
-    id: 6,
-    name: 'Psychology',
-    category: 'Social Sciences',
-    level: 'Bachelor',
-    duration: '4 years',
-    universities: ['Ateneo', 'UP Diliman', 'DLSU', 'UST'],
-    description: 'Study human behavior, mental processes, and psychological principles.',
-    careerProspects: ['Clinical Psychologist', 'Counselor', 'HR Specialist', 'Research Psychologist'],
-    averageSalary: '₱22,000 - ₱55,000',
-    popularity: 78,
-    difficulty: 'Moderate',
-    requirements: ['English Proficiency', 'Mathematics', 'Social Studies']
-  },
-  {
-    id: 7,
-    name: 'Accountancy',
-    category: 'Business',
-    level: 'Bachelor',
-    duration: '4 years',
-    universities: ['DLSU', 'UST', 'PUP', 'San Beda'],
-    description: 'Learn financial reporting, auditing, taxation, and business analysis.',
-    careerProspects: ['Certified Public Accountant', 'Financial Analyst', 'Auditor', 'Tax Consultant'],
-    averageSalary: '₱25,000 - ₱65,000',
-    popularity: 85,
-    difficulty: 'Challenging',
-    requirements: ['Mathematics', 'English Proficiency', 'Analytical Skills']
-  },
-  {
-    id: 8,
-    name: 'Architecture',
-    category: 'Design',
-    level: 'Bachelor',
-    duration: '5 years',
-    universities: ['UP Diliman', 'UST', 'DLSU', 'Mapua'],
-    description: 'Design buildings and spaces that are functional, safe, and aesthetically pleasing.',
-    careerProspects: ['Licensed Architect', 'Urban Planner', 'Interior Designer', 'Construction Manager'],
-    averageSalary: '₱28,000 - ₱75,000',
-    popularity: 70,
-    difficulty: 'Very Challenging',
-    requirements: ['Mathematics', 'Physics', 'Art', 'Technical Drawing']
-  }
-];
-
-function ProgramCard(program: Program) {
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'Easy': return 'bg-green-100 text-green-800';
-      case 'Moderate': return 'bg-yellow-100 text-yellow-800';
-      case 'Challenging': return 'bg-orange-100 text-orange-800';
-      case 'Very Challenging': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
+function ProgramCard({ program, onViewDetails, onFindUniversities }: {
+  program: AggregatedProgram;
+  onViewDetails: (program: AggregatedProgram) => void;
+  onFindUniversities: (program: AggregatedProgram) => void;
+}) {
   const getLevelColor = (level: string) => {
     switch (level) {
       case 'Bachelor': return 'bg-blue-100 text-blue-800';
@@ -153,19 +20,21 @@ function ProgramCard(program: Program) {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group">
-      <div className="p-6">
+    <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group h-full flex flex-col">
+      <div className="p-6 flex-1 flex flex-col">
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
-            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-maroon-800 transition-colors">
-              {program.name}
-            </h3>
+            <div className="flex items-center gap-2 mb-2">
+              <h3 className="text-xl font-bold text-gray-900 group-hover:text-maroon-800 transition-colors">
+                {program.name}
+              </h3>
+              <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded font-medium">
+                {program.acronym}
+              </span>
+            </div>
             <div className="flex items-center gap-2 mb-2">
               <span className={`px-3 py-1 rounded-full text-sm font-medium ${getLevelColor(program.level)}`}>
                 {program.level}
-              </span>
-              <span className={`px-3 py-1 rounded-full text-sm font-medium ${getDifficultyColor(program.difficulty)}`}>
-                {program.difficulty}
               </span>
             </div>
             <div className="flex items-center text-gray-600 text-sm">
@@ -174,47 +43,20 @@ function ProgramCard(program: Program) {
             </div>
           </div>
           <div className="text-right">
-            <div className="flex items-center mb-2">
-              <TrendingUp className="h-4 w-4 text-green-600 mr-1" />
-              <span className="text-sm font-medium text-gray-900">{program.popularity}% popularity</span>
-            </div>
             <div className="text-sm text-gray-600">{program.category}</div>
           </div>
         </div>
 
-        <p className="text-gray-600 text-sm mb-4 leading-relaxed">{program.description}</p>
-
-        <div className="mb-4">
-          <h4 className="text-sm font-semibold text-gray-900 mb-2">Career Prospects:</h4>
-          <div className="flex flex-wrap gap-2">
-            {program.careerProspects.slice(0, 3).map((career, index) => (
-              <span
-                key={index}
-                className="px-3 py-1 bg-maroon-50 text-maroon-700 text-xs rounded-full font-medium"
-              >
-                {career}
-              </span>
-            ))}
-            {program.careerProspects.length > 3 && (
-              <span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full font-medium">
-                +{program.careerProspects.length - 3} more
-              </span>
-            )}
-          </div>
-        </div>
+        <p className="text-gray-600 text-sm mb-4 leading-relaxed flex-1">{program.description}</p>
 
         <div className="flex items-center justify-between mb-4 text-sm">
-          <div className="flex items-center text-gray-600">
-            <Award className="h-4 w-4 mr-1" />
-            <span className="font-medium">{program.averageSalary}</span>
-          </div>
           <div className="flex items-center text-gray-600">
             <Users className="h-4 w-4 mr-1" />
             <span className="font-medium">{program.universities.length}</span> universities
           </div>
         </div>
 
-        <div className="mb-6">
+        <div className="mb-6 flex-1">
           <h4 className="text-sm font-semibold text-gray-900 mb-2">Available at:</h4>
           <div className="flex flex-wrap gap-2">
             {program.universities.slice(0, 3).map((university, index) => (
@@ -233,11 +75,17 @@ function ProgramCard(program: Program) {
           </div>
         </div>
 
-        <div className="flex gap-2">
-          <button className="flex-1 px-4 py-2 text-maroon-700 border border-maroon-200 rounded-lg hover:bg-maroon-50 transition-all duration-300">
+        <div className="flex gap-2 mt-auto">
+          <button
+            onClick={() => onViewDetails(program)}
+            className="flex-1 px-4 py-2 text-maroon-700 border border-maroon-200 rounded-lg hover:bg-maroon-50 transition-all duration-300"
+          >
             View Details
           </button>
-          <button className="flex-1 px-4 py-2 bg-maroon-800 text-white rounded-lg hover:bg-maroon-700 transition-all duration-300">
+          <button
+            onClick={() => onFindUniversities(program)}
+            className="flex-1 px-4 py-2 bg-maroon-800 text-white rounded-lg hover:bg-maroon-700 transition-all duration-300"
+          >
             Find Universities
           </button>
         </div>
@@ -247,41 +95,74 @@ function ProgramCard(program: Program) {
 }
 
 export default function Programs() {
+  const navigate = useNavigate();
+  const [programs, setPrograms] = useState<AggregatedProgram[]>([]);
+  const [totalProgramsCount, setTotalProgramsCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [levelFilter, setLevelFilter] = useState('');
-  const [sortBy, setSortBy] = useState('popularity');
+  const [sortBy] = useState('popularity');
+
+  // Fetch programs data
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      try {
+        setIsLoading(true);
+        const [aggregatedData, allPrograms] = await Promise.all([
+          AcademicProgramService.getAggregatedPrograms(),
+          AcademicProgramService.getAllPrograms()
+        ]);
+        setPrograms(aggregatedData);
+        setTotalProgramsCount(allPrograms.length);
+      } catch (error) {
+        console.error('Failed to fetch programs:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPrograms();
+  }, []);
 
   const categories = [...new Set(programs.map(p => p.category))];
   const levels = [...new Set(programs.map(p => p.level))];
 
   const filteredPrograms = useMemo(() => {
     const filtered = programs.filter(program => {
-      const matchesSearch = program.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          program.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          program.careerProspects.some(career => career.toLowerCase().includes(searchQuery.toLowerCase()));
+      // Enhanced search using searchKeywords array for better matching
+      const matchesSearch = searchQuery === '' ||
+        program.searchKeywords.some(keyword =>
+          keyword.toLowerCase().includes(searchQuery.toLowerCase())
+        ) ||
+        program.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        program.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        program.acronym.toLowerCase().includes(searchQuery.toLowerCase());
+
       const matchesCategory = !categoryFilter || program.category === categoryFilter;
       const matchesLevel = !levelFilter || program.level === levelFilter;
-      
+
       return matchesSearch && matchesCategory && matchesLevel;
     });
 
-    // Sort programs
-    filtered.sort((a, b) => {
-      switch (sortBy) {
-        case 'popularity':
-          return b.popularity - a.popularity;
-        case 'name':
-          return a.name.localeCompare(b.name);
-        case 'duration':
-          return parseInt(a.duration) - parseInt(b.duration);
-        default:
-          return b.popularity - a.popularity;
-      }
-    });
+    // Sort programs by popularity (default sort)
+    filtered.sort((a, b) => b.popularity - a.popularity);
 
     return filtered;
-  }, [searchQuery, categoryFilter, levelFilter, sortBy]);
+  }, [searchQuery, categoryFilter, levelFilter, programs]);
+
+  const handleViewDetails = (program: AggregatedProgram) => {
+    // For now, show program details. Could be enhanced to navigate to a dedicated program details page
+    const details = `Program: ${program.name} (${program.acronym})\n\nDescription: ${program.description}\n\nRequirements: ${program.requirements.join(', ')}\n\nDuration: ${program.duration}\n\nCategory: ${program.category}\n\nAvailable at: ${program.universities.join(', ')}`;
+    alert(details);
+  };
+
+  const handleFindUniversities = (program: AggregatedProgram) => {
+    // Navigate to universities page with program filter
+    // Use the original program name for display, but the system will normalize it
+    const programName = encodeURIComponent(program.name.toLowerCase());
+    navigate(`/universities?program=${programName}`);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -298,9 +179,9 @@ export default function Programs() {
       {/* Stats */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="text-3xl font-bold text-maroon-800 mb-2">{programs.length}+</div>
+              <div className="text-3xl font-bold text-maroon-800 mb-2">{totalProgramsCount}</div>
               <div className="text-gray-600">Programs Available</div>
             </div>
             <div className="text-center">
@@ -308,12 +189,8 @@ export default function Programs() {
               <div className="text-gray-600">Categories</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-maroon-800 mb-2">120+</div>
+              <div className="text-3xl font-bold text-maroon-800 mb-2">{[...new Set(programs.flatMap(p => p.universities))].length}</div>
               <div className="text-gray-600">Universities</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-maroon-800 mb-2">85%</div>
-              <div className="text-gray-600">Employment Rate</div>
             </div>
           </div>
         </div>
@@ -355,16 +232,6 @@ export default function Programs() {
                 <option key={level} value={level}>{level}</option>
               ))}
             </select>
-
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-maroon-500 focus:border-transparent"
-            >
-              <option value="popularity">Sort by Popularity</option>
-              <option value="name">Sort by Name</option>
-              <option value="duration">Sort by Duration</option>
-            </select>
           </div>
         </div>
       </div>
@@ -379,7 +246,12 @@ export default function Programs() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredPrograms.map((program) => (
-            <ProgramCard key={program.id} {...program} />
+            <ProgramCard
+              key={program.id}
+              program={program}
+              onViewDetails={handleViewDetails}
+              onFindUniversities={handleFindUniversities}
+            />
           ))}
         </div>
 

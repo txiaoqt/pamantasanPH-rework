@@ -1,3 +1,53 @@
+-- PUP University Data and Academic Programs
+-- Insert PUP university information
+
+INSERT INTO universities (
+  id, name, location, province, established, type, rating, students, programs,
+  description, long_description, subjects, image_url, gallery_images,
+  accreditation, campus_size, founded, website, phone, email, address,
+  facilities, amenities, achievements, quickfacts, admission_requirements, application_process, admission_status, admission_deadline,
+  academic_semester_start, academic_semester_end, academic_application_deadline,
+  ranking_source, ranking_details, map_location_lat, map_location_lng
+) VALUES
+(
+  1,
+  'Polytechnic University of the Philippines',
+  'Manila',
+  'Metro Manila',
+  '1904',
+  'State',
+  4.4,
+  '65,000',
+  94,
+  'The premier state university known for affordable and quality higher education in the Philippines.',
+  'Established in 1904, the Polytechnic University of the Philippines (PUP) has grown to become the largest state university in terms of enrollment in the Philippines. PUP offers various degree programs in technology, education, business, and other fields through its main campus in Sta. Mesa, Manila and its four satellite campuses.',
+  ARRAY['Engineering', 'Computer Science', 'Business Administration', 'Education', 'Information Technology', 'Architecture', 'Psychology', 'Tourism Management'],
+  '/Images/School Images/pup.jpg',
+  ARRAY['https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/pup1.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/pup2.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/pup3.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/pup4.jpg'],
+  ARRAY['CHED Recognition – PUP is a state university recognized by the Commission on Higher Education (CHED).', 'AACCUP Accreditation – Many academic programs are accredited by the Accrediting Agency of Chartered Colleges and Universities in the Philippines (Levels I–IV).', 'ISO 9001:2015 Certified – PUP holds ISO certification for its Quality Management System, ensuring standardized academic and administrative processes.'],
+  '15 hectares',
+  '1904',
+  'https://www.pup.edu.ph',
+  '+63 2 5335-1787',
+  'inquire@pup.edu.ph',
+  'A. Mabini Campus, Anonas St., Sta. Mesa, Manila 1016, Metro Manila, Philippines',
+  ARRAY['Ninoy Aquino Library and Learning Resources Center', 'Academic Classrooms and Lecture Rooms', 'Science Laboratories', 'Computer Laboratories', 'Engineering Laboratories', 'Multimedia and Audio-Visual Rooms', 'Research and Development Centers', 'Conference Rooms (e.g., Mateo, Olonan, Carague Rooms)', 'Co-working and Study Spaces', 'Graduate School Facilities', 'Laboratory High School Building', 'Office of the University President', 'Registrar''s Office', 'Admissions Office', 'Accounting and Finance Offices', 'Human Resources Office', 'Student Services Offices', 'Alumni Relations Office (Tahanan ng Alumni)', 'Faculty and Staff Offices', 'University Medical Clinic', 'Dental Clinic', 'Guidance and Counseling Office', 'Charlie del Rosario Student Development Center', 'Student Lounges and Social Rooms', 'Interfaith Chapel', 'Security and Safety Offices', 'PUP Gymnasium / Multi-Purpose Sports Complex', 'Indoor Sports Courts (basketball, volleyball, badminton)', 'Outdoor Basketball Courts', 'Tennis Courts', 'Football Field', 'Track and Oval', 'Grandstand', 'Olympic-Sized Swimming Pool'],
+  ARRAY['University Canteens', 'Food Stalls and Kiosks', 'Coffee Shops', 'Bookstore', 'Printing and Photocopying Services', 'Souvenir and Merchandise Shops', 'Small Retail and Commercial Spaces', 'Walkways and Covered Paths', 'Seating and Rest Areas', 'Parking Areas', 'Restrooms', 'Internet-enabled Areas (Wi-Fi zones)', 'Campus Transportation Access Points'],
+  ARRAY['QS Asia University Rankings – Included in QS Asia rankings and awarded QS Stars for employability and online learning.', 'WURI World Rankings – Ranked among the Top 300 Innovative Universities worldwide.', 'Philippine Quality Award (PQA) – Awarded Level II for excellence in management and performance.', 'High Employability – Recognized by employers for producing industry-ready graduates.', 'Strong Licensure Exam Performance – Consistent top-performing results in various board examinations.'],
+  ARRAY['One of the largest state universities in the Philippines by student population.', 'Known as "The Country''s First Polytechnic" (founded in 1904).', 'Offers undergraduate and graduate programs across business, engineering, education, and sciences.', 'Widely recognized for affordable, quality public education.'],
+  ARRAY['Passed PUP College Entrance Exam Test (PUPCET)', 'Confirmation Requirements', 'High School Graduate', 'High School Card (Form 138)', 'Form 137-A', 'Medical Clearance from PUP Medical Clinic', 'Certification of Good Moral Character duly signed by the high school principal/guidance counselor of the school last attended.', 'NSO authenticated copy of Birth Certificate/ Certificate of Live Birth'],
+  ARRAY['Visit the Official Page: Go to the PUP iApply for PUPCET page and read all the provided information.', 'Start Application: Click Apply Now to be redirected to the PUP iApply portal.', 'Account Creation: Click Register Here to create your new account.', 'Select Examination: Read the service agreement, click the I have read... button, and select PUPCET on the following page to begin.', 'Prequalification: Answer the prequalification questions to confirm your eligibility, then click Next.', 'Fill Registration Form: Enter the required information carefully.', 'Ensure your name and birth date match your PSA birth certificate exactly.', 'Provide a valid, active email address (this will be used for all transactions).', 'If you previously applied but did not enroll, you must use a new email address for this application.', 'Create and remember a strong password using a mix of letters, numbers, and special characters.', 'Verify Information: Ensure all details are accurate; any misrepresentation or false information will automatically invalidate your admission.', 'Submit and Sign In: Click Submit to create the account, then sign in using your credentials.', 'Complete Application Form: On the Applicant''s page, select Application Form to provide your full details.', 'Type in the Digital Security Code.', 'Type your complete name as your Digital Signature.', 'Check the box confirming you have read and understood the terms.', 'Finalize Application: Click Finalize to lock your form and submit it for evaluation by the University Admission and Registration Services.', 'Upload Requirements (If Prompted): If your photo or document is disapproved, follow the link provided to upload a clear, correctly formatted replacement. Note that validation can take 6–20 working days.', 'Print ePermit: Once your application is finalized and approved (usually after 6–20 working days), click Print ePermit to download and print your permit in color. You must bring this on your examination date.', 'Check Results: When results are officially released, log back in to click the Check PUPCET Results link.', 'Sign Out: Always sign out of the portal after your session for security.'],
+  'open',
+  '2024-05-31',
+  '2024-08-01',
+  '2025-05-31',
+  '2024-04-15',
+  'Edurank 2025',
+  'Edurank 2025: 4th among SUCs in the Philippines, 14th among all universities in the Philippines, 2nd among SUCs in Metro Manila. QS Asia University Rankings 2026: #2 SUC in the Philippines, #8 overall Philippine university.',
+  14.5981270,
+  121.0115000
+);
+
 -- Migration script to populate PUP academic programs
 -- Run this after creating the academic_programs table
 

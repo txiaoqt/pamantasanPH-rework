@@ -30,11 +30,11 @@ export interface University {
   facilities?: string[];
   amenities?: string[];
   achievements?: string[];
+  quickfacts?: string[];
   admissionRequirements?: string[];
   applicationProcess?: string[];
   admissionStatus: 'open' | 'not-yet-open' | 'closed';
   admissionDeadline: string;
-  scholarships?: string[];
 
   academicCalendar?: {
     semesterStart: string;

@@ -3,15 +3,18 @@ import { Search, MapPin, Grid, List } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import UniversityCard, { University } from '../components/university/UniversityCard';
 import { UniversityService } from '../services/universityService';
+import { AcademicProgramService } from '../services/academicProgramService';
 
 export default function Universities() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
   const [locationFilter, setLocationFilter] = useState(searchParams.get('location') || '');
+  const [programFilter, setProgramFilter] = useState(searchParams.get('program') || '');
   const [typeFilter, setTypeFilter] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [sortBy, setSortBy] = useState('id');
   const [universities, setUniversities] = useState<University[]>([]);
+  const [programUniversities, setProgramUniversities] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -30,8 +33,48 @@ export default function Universities() {
     fetchUniversities();
   }, []);
 
+  // Fetch universities that offer the specific program
+  useEffect(() => {
+    const fetchProgramUniversities = async () => {
+      if (!programFilter) {
+        setProgramUniversities([]);
+        return;
+      }
+
+      try {
+        const decodedProgram = decodeURIComponent(programFilter);
+        console.log('Fetching universities for program:', decodedProgram);
+
+        const allPrograms = await AcademicProgramService.getAllPrograms();
+        console.log('All programs fetched:', allPrograms.length);
+
+        // Find programs that match the search
+        const matchingPrograms = allPrograms.filter(program =>
+          program.programName.toLowerCase().includes(decodedProgram.toLowerCase())
+        );
+        console.log('Matching programs:', matchingPrograms.length, matchingPrograms);
+
+        // Get unique university IDs that offer these programs
+        const universityIds = [...new Set(matchingPrograms.map(p => p.universityId))];
+        console.log('University IDs offering program:', universityIds);
+
+        setProgramUniversities(universityIds);
+      } catch (error) {
+        console.error('Failed to fetch program universities:', error);
+        setProgramUniversities([]);
+      }
+    };
+
+    fetchProgramUniversities();
+  }, [programFilter]);
+
   const filteredUniversities = useMemo(() => {
-    const filtered = universities.filter(university => {
+    let filtered = universities.filter(university => {
+      // If program filter is active, only show universities that offer the program
+      if (programFilter) {
+        return programUniversities.includes(university.id);
+      }
+
       const matchesSearch =
         university.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         university.subjects.some((subject: string) =>
@@ -68,18 +111,27 @@ export default function Universities() {
     });
 
     return filtered;
-  }, [universities, searchQuery, locationFilter, typeFilter, sortBy]);
+  }, [universities, searchQuery, locationFilter, typeFilter, sortBy, programFilter, programUniversities]);
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-gradient-to-br from-maroon-900 via-maroon-800 to-red-900 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Universities</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            {programFilter ? `Universities offering ${decodeURIComponent(programFilter)}` : 'Universities'}
+          </h1>
           <p className="text-xl text-maroon-100 max-w-3xl">
-            Discover and explore universities across the Philippines. Find the
-            perfect institution for your educational journey.
+            {programFilter
+              ? `Find universities that offer ${decodeURIComponent(programFilter)} and explore your options.`
+              : 'Discover and explore universities across the Philippines. Find the perfect institution for your educational journey.'
+            }
           </p>
+          {programFilter && (
+            <div className="mt-4 inline-flex items-center px-4 py-2 bg-maroon-800/50 rounded-lg border border-maroon-700">
+              <span className="text-sm font-medium">Filtering by program: {decodeURIComponent(programFilter)}</span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -173,7 +225,7 @@ export default function Universities() {
               <p className="text-gray-600">Loading universities...</p>
             </div>
           </div>
-        ) : (
+        ) : filteredUniversities.length > 0 ? (
           <div
             className={
               viewMode === 'grid'
@@ -189,6 +241,30 @@ export default function Universities() {
                 admissionStatus={university.admissionStatus}
               />
             ))}
+          </div>
+        ) : programFilter ? (
+          <div className="text-center py-20">
+            <div className="text-gray-400 mb-4">
+              <MapPin className="h-16 w-16 mx-auto" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">No universities found</h3>
+            <p className="text-gray-600 mb-4">
+              No universities currently offer "{decodeURIComponent(programFilter)}" program.
+            </p>
+            <button
+              onClick={() => window.history.back()}
+              className="px-6 py-3 bg-maroon-600 text-white rounded-lg hover:bg-maroon-700 transition-colors"
+            >
+              ← Go Back to Programs
+            </button>
+          </div>
+        ) : (
+          <div className="text-center py-20">
+            <div className="text-gray-400 mb-4">
+              <MapPin className="h-16 w-16 mx-auto" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">No universities found</h3>
+            <p className="text-gray-600">Try adjusting your search criteria or filters.</p>
           </div>
         )}
       </div>

@@ -29,7 +29,8 @@ import {
   CheckCircle,
   Clock,
   TrendingUp,
-  Building
+  Building,
+  ChevronDown
 } from 'lucide-react';
 
 const DefaultIcon = L.icon({
@@ -74,11 +75,15 @@ export default function UniversityDetails() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [university, setUniversity] = useState<University | null>(null);
   const [academicPrograms, setAcademicPrograms] = useState<Record<string, AcademicProgram[]>>({});
+  const [allPrograms, setAllPrograms] = useState<AcademicProgram[]>([]);
   const [overviewPrograms, setOverviewPrograms] = useState<AcademicProgram[]>([]);
   const [dynamicProgramCount, setDynamicProgramCount] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isProgramsLoading, setIsProgramsLoading] = useState(false);
   const [showShareToast, setShowShareToast] = useState(false);
+
+  const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
+  const [expandedColleges, setExpandedColleges] = useState<Record<string, boolean>>({});
 
   const { isSaved, toggleSaved, isLoaded } = useSavedUniversities();
 
@@ -200,12 +205,22 @@ export default function UniversityDetails() {
 
   useEffect(() => {
     const fetchAcademicPrograms = async () => {
-      if (!university || activeTab !== 'academic-programs' || Object.keys(academicPrograms).length > 0) return;
+      if (!university || activeTab !== 'academic-programs' || allPrograms.length > 0) return;
 
       try {
         setIsProgramsLoading(true);
-        const programs = await AcademicProgramService.getProgramsGroupedByCollege(university.id);
-        setAcademicPrograms(programs);
+        const programs = await AcademicProgramService.getProgramsByUniversityId(university.id);
+        setAllPrograms(programs);
+
+        // Group programs by college for initial display
+        const grouped: Record<string, AcademicProgram[]> = {};
+        programs.forEach(program => {
+          if (!grouped[program.collegeName]) {
+            grouped[program.collegeName] = [];
+          }
+          grouped[program.collegeName].push(program);
+        });
+        setAcademicPrograms(grouped);
       } catch (error) {
         console.error('Failed to fetch academic programs:', error);
       } finally {
@@ -214,7 +229,21 @@ export default function UniversityDetails() {
     };
 
     fetchAcademicPrograms();
-  }, [university, activeTab, academicPrograms]);
+  }, [university, activeTab, allPrograms]);
+
+  // Group programs by college
+  useEffect(() => {
+    if (allPrograms.length === 0) return;
+
+    const grouped: Record<string, AcademicProgram[]> = {};
+    allPrograms.forEach(program => {
+      if (!grouped[program.collegeName]) {
+        grouped[program.collegeName] = [];
+      }
+      grouped[program.collegeName].push(program);
+    });
+    setAcademicPrograms(grouped);
+  }, [allPrograms]);
 
   if (isLoading) {
     return (
@@ -253,6 +282,50 @@ export default function UniversityDetails() {
   const hasGalleryImages = university.galleryImages && university.galleryImages.length > 0;
 
   const mapClass = isExpanded ? 'h-[500px]' : 'h-64';
+
+  // Function to group admission requirements by categories
+  const groupAdmissionRequirements = (requirements: string[]) => {
+    const grouped: Record<string, string[]> = {};
+    let currentCategory = 'General';
+
+    requirements.forEach((requirement) => {
+      // Check if this is a main category header
+      if (requirement === 'GENERAL REQUIREMENTS' || requirement === 'SPECIAL CATEGORIES') {
+        currentCategory = requirement;
+        grouped[currentCategory] = [];
+      }
+      // Check if this is a subcategory header
+      else if (requirement.startsWith('For ') || requirement.startsWith('Bachelor in ') || requirement.startsWith('Bachelor of ')) {
+        if (!grouped[currentCategory]) {
+          grouped[currentCategory] = [];
+        }
+        grouped[currentCategory].push(requirement);
+      }
+      // Otherwise it's a requirement item
+      else {
+        if (!grouped[currentCategory]) {
+          grouped[currentCategory] = [];
+        }
+        grouped[currentCategory].push(requirement);
+      }
+    });
+
+    return grouped;
+  };
+
+  const toggleCategory = (category: string) => {
+    setExpandedCategories(prev => ({
+      ...prev,
+      [category]: !prev[category]
+    }));
+  };
+
+  const toggleCollege = (collegeName: string) => {
+    setExpandedColleges(prev => ({
+      ...prev,
+      [collegeName]: !prev[collegeName]
+    }));
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -441,36 +514,16 @@ export default function UniversityDetails() {
               )}
             </div>
             <div className="space-y-6">
-              {(university.founded || university.campusSize) && (
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">Quick Facts</h3>
-                  <div className="bg-white p-6 rounded-lg border border-gray-200">
-                    <div className="space-y-3">
-                      {university.founded && (
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Founded</span>
-                          <span className="font-medium">{university.founded}</span>
-                        </div>
-                      )}
-                      {university.campusSize && (
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Campus Size</span>
-                          <span className="font-medium">{university.campusSize}</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )}
+
               {university.accreditation && university.accreditation.length > 0 && (
                 <div>
                   <h3 className="text-xl font-bold text-gray-900 mb-4">Accreditation</h3>
                   <div className="bg-white p-6 rounded-lg border border-gray-200">
                     <div className="space-y-2">
                       {university.accreditation.map((acc, index) => (
-                        <div key={index} className="flex items-center">
-                          <CheckCircle className="h-4 w-4 text-green-600 mr-2" />
-                          <span className="text-gray-700">{acc}</span>
+                        <div key={index} className="flex items-start">
+                          <span className="text-maroon-600 mr-3 mt-0.5">•</span>
+                          <span className="text-gray-700 leading-relaxed">{acc}</span>
                         </div>
                       ))}
                     </div>
@@ -483,9 +536,24 @@ export default function UniversityDetails() {
                   <div className="bg-white p-6 rounded-lg border border-gray-200">
                     <div className="space-y-3">
                       {university.achievements.map((achievement, index) => (
-                        <div key={index} className="flex items-center">
-                          <Award className="h-4 w-4 text-maroon-600 mr-3" />
-                          <span className="text-gray-700">{achievement}</span>
+                        <div key={index} className="flex items-start">
+                          <span className="text-maroon-600 mr-3 mt-0.5">•</span>
+                          <span className="text-gray-700 leading-relaxed">{achievement}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+              {university.quickfacts && university.quickfacts.length > 0 && (
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-4">Quick Facts</h3>
+                  <div className="bg-white p-6 rounded-lg border border-gray-200">
+                    <div className="space-y-3">
+                      {university.quickfacts.map((fact, index) => (
+                        <div key={index} className="flex items-start">
+                          <span className="text-maroon-600 mr-3 mt-0.5">•</span>
+                          <span className="text-gray-700 leading-relaxed">{fact}</span>
                         </div>
                       ))}
                     </div>
@@ -504,16 +572,8 @@ export default function UniversityDetails() {
                 <span className="ml-4 text-gray-600 text-lg">Loading academic programs...</span>
               </div>
             ) : Object.keys(academicPrograms).length > 0 ? (
-              <div className="space-y-12">
-                <div className="text-center bg-gradient-to-r from-indigo-50 to-violet-50 rounded-2xl p-12 border border-indigo-100">
-                  <h2 className="text-4xl font-light text-gray-900 mb-4">Academic Programs</h2>
-                  <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                    Discover the complete range of programs at {university.name}
-                  </p>
-                </div>
-
-                <div className="space-y-16">
-                  {Object.entries(academicPrograms).map(([collegeName, programs], index) => {
+              <div className="space-y-8">
+                {Object.entries(academicPrograms).map(([collegeName, programs], index) => {
                     const colors = [
                       'from-blue-50 to-indigo-50 border-blue-200',
                       'from-emerald-50 to-teal-50 border-emerald-200',
@@ -525,58 +585,70 @@ export default function UniversityDetails() {
                     const colorClass = colors[index % colors.length];
 
                     return (
-                      <div key={collegeName} className="space-y-6">
-                        <div className={`bg-gradient-to-r ${colorClass} rounded-xl p-6 border-l-4`}>
-                          <h3 className="text-2xl font-semibold text-gray-900">{collegeName}</h3>
-                          <p className="text-gray-600 mt-1">{programs.length} program{programs.length !== 1 ? 's' : ''}</p>
-                        </div>
+                      <div key={collegeName} className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                        <button
+                          onClick={() => toggleCollege(collegeName)}
+                          className={`w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors ${colorClass.replace('border-', 'border-l-4 ')}`}
+                        >
+                          <div>
+                            <h3 className="text-2xl font-semibold text-gray-900">{collegeName}</h3>
+                            <p className="text-gray-600 mt-1">{programs.length} program{programs.length !== 1 ? 's' : ''}</p>
+                          </div>
+                          <ChevronDown
+                            className={`h-6 w-6 text-gray-500 transition-transform ${
+                              expandedColleges[collegeName] ? 'rotate-180' : ''
+                            }`}
+                          />
+                        </button>
+                        {expandedColleges[collegeName] && (
+                          <div className="px-6 pb-6 border-t border-gray-100">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
+                              {programs.map((program) => (
+                                <div key={program.id} className="bg-white p-6 rounded-xl border border-gray-200 hover:border-indigo-300 hover:shadow-lg transition-all duration-300 group">
+                                  <div className="space-y-4">
+                                    <div className="flex items-start justify-between">
+                                      <div className="flex-1">
+                                        <h4 className="text-lg font-semibold text-gray-900 leading-tight mb-2 group-hover:text-indigo-700 transition-colors">
+                                          {program.programName}
+                                        </h4>
+                                        {program.degreeLevel && (
+                                          <p className="text-sm text-gray-600 mb-3">{program.degreeLevel}</p>
+                                        )}
+                                      </div>
+                                      {program.programType && (
+                                        <span className={`px-3 py-1 rounded-full text-xs font-medium border ${
+                                          program.programType === 'undergraduate' ? 'bg-emerald-100 text-emerald-800 border-emerald-300' :
+                                          program.programType === 'graduate' ? 'bg-violet-100 text-violet-800 border-violet-300' :
+                                          program.programType === 'diploma' ? 'bg-amber-100 text-amber-800 border-amber-300' :
+                                          'bg-gray-100 text-gray-800 border-gray-300'
+                                        }`}>
+                                          {program.programType}
+                                        </span>
+                                      )}
+                                    </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          {programs.map((program) => (
-                            <div key={program.id} className="bg-white p-6 rounded-xl border border-gray-200 hover:border-indigo-300 hover:shadow-lg transition-all duration-300 group">
-                              <div className="space-y-4">
-                                <div className="flex items-start justify-between">
-                                  <div className="flex-1">
-                                    <h4 className="text-lg font-semibold text-gray-900 leading-tight mb-2 group-hover:text-indigo-700 transition-colors">
-                                      {program.programName}
-                                    </h4>
-                                    {program.degreeLevel && (
-                                      <p className="text-sm text-gray-600 mb-3">{program.degreeLevel}</p>
+                                    {program.specializations && program.specializations.length > 0 && (
+                                      <div className="space-y-2">
+                                        <p className="text-sm font-medium text-gray-700">Specializations</p>
+                                        <div className="flex flex-wrap gap-2">
+                                          {program.specializations.map((spec, index) => (
+                                            <span key={index} className="px-3 py-1 bg-slate-100 text-slate-700 text-sm rounded-lg border border-slate-300 hover:bg-slate-200 transition-colors">
+                                              {spec}
+                                            </span>
+                                          ))}
+                                        </div>
+                                      </div>
                                     )}
                                   </div>
-                                  {program.programType && (
-                                    <span className={`px-3 py-1 rounded-full text-xs font-medium border ${
-                                      program.programType === 'undergraduate' ? 'bg-emerald-100 text-emerald-800 border-emerald-300' :
-                                      program.programType === 'graduate' ? 'bg-violet-100 text-violet-800 border-violet-300' :
-                                      program.programType === 'diploma' ? 'bg-amber-100 text-amber-800 border-amber-300' :
-                                      'bg-gray-100 text-gray-800 border-gray-300'
-                                    }`}>
-                                      {program.programType}
-                                    </span>
-                                  )}
                                 </div>
-
-                                {program.specializations && program.specializations.length > 0 && (
-                                  <div className="space-y-2">
-                                    <p className="text-sm font-medium text-gray-700">Specializations</p>
-                                    <div className="flex flex-wrap gap-2">
-                                      {program.specializations.map((spec, index) => (
-                                        <span key={index} className="px-3 py-1 bg-slate-100 text-slate-700 text-sm rounded-lg border border-slate-300 hover:bg-slate-200 transition-colors">
-                                          {spec}
-                                        </span>
-                                      ))}
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
+                              ))}
                             </div>
-                          ))}
-                        </div>
+                          </div>
+                        )}
                       </div>
                     );
                   })}
                 </div>
-              </div>
             ) : (
               <div className="text-center py-20">
                 <div className="text-indigo-100 mb-6 rounded-full w-20 h-20 mx-auto flex items-center justify-center">
@@ -688,45 +760,88 @@ export default function UniversityDetails() {
               {university.admissionRequirements && university.admissionRequirements.length > 0 && (
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900 mb-6">Admission Requirements</h2>
-                  <div className="space-y-3">
-                    {university.admissionRequirements.map((requirement, index) => (
-                      <div key={index} className="flex items-center bg-white p-4 rounded-lg border border-gray-200">
-                        <CheckCircle className="h-5 w-5 text-green-600 mr-3" />
-                        <span className="text-gray-700">{requirement}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {university.scholarships && university.scholarships.length > 0 && (
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Scholarships & Financial Aid</h2>
-                  <div className="space-y-3">
-                    {university.scholarships.map((scholarship, index) => (
-                      <div key={index} className="bg-white p-4 rounded-lg border border-gray-200">
-                        <div className="flex items-center">
-                          <Award className="h-5 w-5 text-maroon-600 mr-3" />
-                          <span className="font-medium text-gray-900">{scholarship}</span>
+                  <div className="space-y-4">
+                    {(() => {
+                      const groupedRequirements = groupAdmissionRequirements(university.admissionRequirements);
+                      return Object.entries(groupedRequirements).map(([category, requirements]) => (
+                        <div key={category} className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                          <button
+                            onClick={() => toggleCategory(category)}
+                            className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
+                          >
+                            <span className="text-lg font-semibold text-gray-900">{category}</span>
+                            <ChevronDown
+                              className={`h-5 w-5 text-gray-500 transition-transform ${
+                                expandedCategories[category] ? 'rotate-180' : ''
+                              }`}
+                            />
+                          </button>
+                          {expandedCategories[category] && (
+                            <div className="px-6 pb-4 border-t border-gray-100">
+                              <div className="space-y-3 pt-4">
+                                {requirements.map((requirement, index) => {
+                                  // Check if this is a subcategory header
+                                  const isSubHeader = requirement.startsWith('For ') ||
+                                                    requirement.startsWith('Bachelor in ') ||
+                                                    requirement.startsWith('Bachelor of ') ||
+                                                    requirement === '(Allowed only for TUP graduates of specific programs if slots are available.)';
+
+                                  if (isSubHeader) {
+                                    return (
+                                      <div key={index} className="font-medium text-maroon-700 text-sm border-l-2 border-maroon-200 pl-3 py-1">
+                                        {requirement}
+                                      </div>
+                                    );
+                                  }
+
+                                  return (
+                                    <div key={index} className="flex items-start">
+                                      <CheckCircle className="h-4 w-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                                      <span className="text-gray-700 text-sm leading-relaxed">{requirement}</span>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
                         </div>
-                      </div>
-                    ))}
+                      ));
+                    })()}
                   </div>
                 </div>
               )}
+
             </div>
             <div className="space-y-8">
               {university.applicationProcess && university.applicationProcess.length > 0 && (
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900 mb-6">Application Process</h2>
                   <div className="space-y-4">
-                    {university.applicationProcess.map((step, index) => (
-                      <div key={index} className="bg-white p-4 rounded-lg border border-gray-200">
-                        <div className="flex items-start">
-                          <CheckCircle className="h-5 w-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
-                          <span className="text-gray-700 leading-relaxed whitespace-pre-line flex-1">{step}</span>
+                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                      <button
+                        onClick={() => toggleCategory('application-process')}
+                        className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
+                      >
+                        <span className="text-lg font-semibold text-gray-900">Complete Application Process</span>
+                        <ChevronDown
+                          className={`h-5 w-5 text-gray-500 transition-transform ${
+                            expandedCategories['application-process'] ? 'rotate-180' : ''
+                          }`}
+                        />
+                      </button>
+                      {expandedCategories['application-process'] && (
+                        <div className="px-6 pb-4 border-t border-gray-100">
+                          <div className="space-y-4 pt-4">
+                            {university.applicationProcess.map((step, index) => (
+                              <div key={index} className="flex items-start">
+                                <CheckCircle className="h-4 w-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                                <span className="text-gray-700 text-sm leading-relaxed whitespace-pre-line flex-1">{step}</span>
+                              </div>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      )}
+                    </div>
                   </div>
                 </div>
               )}
