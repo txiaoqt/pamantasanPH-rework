@@ -24,13 +24,10 @@ function ProgramCard({ program, onViewDetails, onFindUniversities }: {
       <div className="p-6 flex-1 flex flex-col">
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="mb-2">
               <h3 className="text-xl font-bold text-gray-900 group-hover:text-maroon-800 transition-colors">
                 {program.name}
               </h3>
-              <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded font-medium">
-                {program.acronym}
-              </span>
             </div>
             <div className="flex items-center gap-2 mb-2">
               <span className={`px-3 py-1 rounded-full text-sm font-medium ${getLevelColor(program.level)}`}>
@@ -43,7 +40,8 @@ function ProgramCard({ program, onViewDetails, onFindUniversities }: {
             </div>
           </div>
           <div className="text-right">
-            <div className="text-sm text-gray-600">{program.category}</div>
+            <div className="text-sm text-gray-600 mb-1">{program.category}</div>
+            <div className="text-sm font-medium text-gray-800">{program.acronym}</div>
           </div>
         </div>
 

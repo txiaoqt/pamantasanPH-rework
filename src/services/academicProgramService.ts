@@ -461,8 +461,9 @@ export class AcademicProgramService {
   }
 
   private static generateAcronym(programName: string): string {
-    // Generate acronyms for program names
-    const name = programName.toLowerCase();
+    // Clean the program name by removing parentheses and their contents
+    const cleanedName = programName.replace(/\s*\([^)]*\)/g, '').trim();
+    const name = cleanedName.toLowerCase();
 
     // Common acronyms
     const acronyms: Record<string, string> = {
@@ -505,20 +506,21 @@ export class AcademicProgramService {
       return acronyms[name];
     }
 
-    // Generate acronym from program name
-    const words = programName.split(' ');
+    // Generate acronym from cleaned program name
+    const words = cleanedName.split(' ');
     let acronym = '';
 
     // Skip common words and take first letter of important words
     const skipWords = ['of', 'in', 'the', 'and', 'for', 'with', 'major', 'specialization', 'specializing', 'development', 'delays'];
 
     for (const word of words) {
-      if (!skipWords.includes(word.toLowerCase()) && word.length > 1) {
-        acronym += word.charAt(0).toUpperCase();
+      const cleanWord = word.replace(/[^a-zA-Z]/g, ''); // Remove non-alphabetic characters
+      if (!skipWords.includes(cleanWord.toLowerCase()) && cleanWord.length > 1) {
+        acronym += cleanWord.charAt(0).toUpperCase();
       }
     }
 
-    return acronym || programName.substring(0, 4).toUpperCase();
+    return acronym || cleanedName.substring(0, 4).toUpperCase();
   }
 
   private static generateSearchKeywords(programName: string, acronym: string): string[] {
