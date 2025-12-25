@@ -128,7 +128,6 @@ export default function UniversityDetails() {
       imageUrl: university.imageUrl,
       type: university.type,
       location: university.location,
-      rating: university.rating,
       programs: dynamicProgramCount || university.programs
     };
 
@@ -358,11 +357,6 @@ export default function UniversityDetails() {
               </div>
 
               <div className="flex items-center space-x-6">
-                <div className="flex items-center">
-                  <Star className="h-5 w-5 text-yellow-500 fill-current mr-1" />
-                  <span className="font-medium text-gray-900">{university.rating}</span>
-                  <span className="text-gray-500 ml-1">rating</span>
-                </div>
                 <div className="flex items-center text-gray-600">
                   <Users className="h-4 w-4 mr-1" />
                   <span>{university.students} students</span>

@@ -165,7 +165,6 @@ export default function Saved() {
                       <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
                         <span>{university.students} students</span>
                         <span>{university.programs} programs</span>
-                        <span>★ {university.rating}</span>
                       </div>
 
                       <div className="text-xs text-gray-500 mb-4">

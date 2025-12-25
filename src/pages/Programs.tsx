@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Search, BookOpen, Clock, Users, Award, TrendingUp } from 'lucide-react';
 import { AcademicProgramService, AggregatedProgram } from '../services/academicProgramService';
 import { UniversityService } from '../services/universityService';
@@ -94,11 +94,12 @@ function ProgramCard({ program, onViewDetails, onFindUniversities }: {
 
 export default function Programs() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [programs, setPrograms] = useState<AggregatedProgram[]>([]);
   const [totalProgramsCount, setTotalProgramsCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState(searchParams.get('category') || '');
   const [levelFilter, setLevelFilter] = useState('');
   const [sortBy] = useState('popularity');
 

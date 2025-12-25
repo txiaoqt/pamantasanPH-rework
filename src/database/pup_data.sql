@@ -1,8 +1,9 @@
 -- PUP University Data and Academic Programs
 -- Insert PUP university information
+DELETE FROM universities WHERE id = 1;
 
 INSERT INTO universities (
-  id, name, location, province, established, type, rating, students, programs,
+  id, name, location, province, established, type, students, programs,
   description, long_description, subjects, image_url, gallery_images,
   accreditation, campus_size, founded, website, phone, email, address,
   facilities, amenities, achievements, quickfacts, admission_requirements, application_process, admission_status, admission_deadline,
@@ -16,7 +17,6 @@ INSERT INTO universities (
   'Metro Manila',
   '1904',
   'State',
-  4.4,
   '65,000',
   94,
   'The premier state university known for affordable and quality higher education in the Philippines.',

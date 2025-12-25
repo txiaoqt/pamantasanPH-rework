@@ -54,7 +54,6 @@ export class UniversityService {
   static async filterUniversities(filters: {
     location?: string
     type?: string
-    minRating?: number
     maxTuition?: number
     subjects?: string[]
   }): Promise<University[]> {
@@ -69,14 +68,10 @@ export class UniversityService {
         query = query.eq('type', filters.type)
       }
 
-      if (filters.minRating) {
-        query = query.gte('rating', filters.minRating)
-      }
-
       // For tuition filtering, this would require parsing the tuition_range string
       // For now, we'll skip this advanced filtering and handle it in the frontend
 
-      const { data, error } = await query.order('rating', { ascending: false })
+      const { data, error } = await query.order('name', { ascending: true })
 
       if (error) {
         console.error('Error filtering universities:', error)
@@ -126,14 +121,14 @@ export class UniversityService {
   }
 
   /**
-   * Get featured universities (top rated)
+   * Get featured universities (first N by name)
    */
   static async getFeaturedUniversities(limit: number = 6): Promise<University[]> {
     try {
       const { data, error } = await supabase
         .from('universities')
         .select('*')
-        .order('rating', { ascending: false })
+        .order('name', { ascending: true })
         .limit(limit)
 
       if (error) {

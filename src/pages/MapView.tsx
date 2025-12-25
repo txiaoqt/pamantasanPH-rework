@@ -57,7 +57,7 @@ export default function MapView() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-gradient-to-br from-maroon-900 via-maroon-800 to-red-900 text-white py-16">
+      <div className="bg-gradient-to-br from-maroon-900 via-maroon-800 to-red-900 text-white py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div>
@@ -140,10 +140,7 @@ export default function MapView() {
                               {university.type}
                             </span>
                           </div>
-                          <div className="flex items-center text-xs text-gray-600 mb-2">
-                            <span className="font-medium">Rating:</span>
-                            <span className="ml-1">⭐ {university.rating}/5</span>
-                          </div>
+
                           <div className="flex items-center text-xs text-gray-600 mb-3">
                             <span className="font-medium">Programs:</span>
                             <span className="ml-1">{university.programs} programs</span>

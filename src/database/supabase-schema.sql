@@ -9,7 +9,6 @@ CREATE TABLE universities (
   province VARCHAR(100),
   established VARCHAR(10),
   type VARCHAR(50),
-  rating DECIMAL(3,1),
   students VARCHAR(50),
   programs INTEGER,
   description TEXT,
@@ -61,7 +60,6 @@ CREATE TABLE academic_programs (
 CREATE INDEX idx_universities_location ON universities(location);
 CREATE INDEX idx_universities_province ON universities(province);
 CREATE INDEX idx_universities_type ON universities(type);
-CREATE INDEX idx_universities_rating ON universities(rating);
 CREATE INDEX idx_universities_admission_status ON universities(admission_status);
 CREATE INDEX idx_academic_programs_university_id ON academic_programs(university_id);
 CREATE INDEX idx_academic_programs_college_name ON academic_programs(college_name);

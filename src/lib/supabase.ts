@@ -24,7 +24,6 @@ export interface DatabaseUniversity {
   province: string | null
   established: string | null
   type: string | null
-  rating: number | null
   students: string | null
   programs: number | null
   description: string | null
@@ -91,7 +90,7 @@ export const transformDbUniversityToUniversity = (dbUni: DatabaseUniversity): Un
     province: dbUni.province || '',
     established: dbUni.established || '',
     type: dbUni.type || '',
-    rating: dbUni.rating || 0,
+
     students: dbUni.students || '',
     programs: dbUni.programs || 0,
     description: dbUni.description || '',

@@ -11,6 +11,8 @@ import Universities from './pages/Universities';
 import Programs from './pages/Programs';
 import Compare from './pages/Compare';
 import About from './pages/About';
+import Privacy from './pages/Privacy';
+import Terms from './pages/Terms';
 import Saved from './pages/Saved';
 import MapView from './pages/MapView';
 import ScrollToTop from './ScrollToTop';
@@ -40,6 +42,8 @@ function App() {
             <Route path="/compare" element={<Compare />} />
             <Route path="/map" element={<MapView />} />
             <Route path="/about" element={<About />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
             <Route path="/saved" element={<Saved />} />
             <Route path="/universities/:id" element={<UniversityDetails />} />
           </Routes>

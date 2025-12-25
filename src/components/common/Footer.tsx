@@ -1,7 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { GraduationCap, Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin } from 'lucide-react';
+import { AcademicProgramService } from '../../services/academicProgramService';
 
 export default function Footer() {
+  const navigate = useNavigate();
+  const [programCategories, setProgramCategories] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const programs = await AcademicProgramService.getAggregatedPrograms();
+        const categories = [...new Set(programs.map(p => p.category))];
+        // Take only first 4 categories
+        setProgramCategories(categories.slice(0, 4));
+      } catch (error) {
+        console.error('Failed to fetch program categories:', error);
+        // Fallback to some default categories
+        setProgramCategories(['Technology', 'Business', 'Engineering', 'Healthcare']);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  const handleCategoryClick = (category: string) => {
+    navigate(`/programs?category=${encodeURIComponent(category)}`);
+  };
   return (
     <footer className="bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -21,10 +46,10 @@ export default function Footer() {
               Empowering students to make smarter college choices — find, compare, and enroll with confidence.
             </p>
             <div className="flex space-x-4">
-              <Facebook className="h-5 w-5 text-gray-400 hover:text-white cursor-pointer transition-colors" />
-              <Twitter className="h-5 w-5 text-gray-400 hover:text-white cursor-pointer transition-colors" />
-              <Instagram className="h-5 w-5 text-gray-400 hover:text-white cursor-pointer transition-colors" />
-              <Youtube className="h-5 w-5 text-gray-400 hover:text-white cursor-pointer transition-colors" />
+              <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"><Facebook className="h-5 w-5 text-gray-400 hover:text-white cursor-pointer transition-colors" /></a>
+              <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"><Twitter className="h-5 w-5 text-gray-400 hover:text-white cursor-pointer transition-colors" /></a>
+              <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"><Instagram className="h-5 w-5 text-gray-400 hover:text-white cursor-pointer transition-colors" /></a>
+              <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"><Youtube className="h-5 w-5 text-gray-400 hover:text-white cursor-pointer transition-colors" /></a>
             </div>
           </div>
 
@@ -32,23 +57,27 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4 text-yellow-400">Quick Links</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Find Universities</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Compare Programs</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Student Reviews</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Admission Guide</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Scholarship Info</a></li>
+              <li><Link to="/universities" className="text-gray-400 hover:text-white transition-colors">Find Universities</Link></li>
+              <li><Link to="/compare" className="text-gray-400 hover:text-white transition-colors">Compare Programs</Link></li>
+              <li><Link to="/about" className="text-gray-400 hover:text-white transition-colors">About Us</Link></li>
+              <li><Link to="/map" className="text-gray-400 hover:text-white transition-colors">Universities Map</Link></li>
             </ul>
           </div>
 
-          {/* Categories */}
+          {/* Program Categories */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-yellow-400">Categories</h3>
+            <h3 className="text-lg font-semibold mb-4 text-yellow-400">Program Categories</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Public Universities</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Private Universities</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">State Universities</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Colleges</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Technical Schools</a></li>
+              {programCategories.map((category) => (
+                <li key={category}>
+                  <button
+                    onClick={() => handleCategoryClick(category)}
+                    className="text-gray-400 hover:text-white transition-colors text-left"
+                  >
+                    {category}
+                  </button>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -78,9 +107,9 @@ export default function Footer() {
               © 2025 UniCentral Philippines. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">Privacy Policy</a>
-              <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">Terms of Service</a>
-              <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">About Us</a>
+              <Link to="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors">Privacy Policy</Link>
+              <Link to="/terms" className="text-gray-400 hover:text-white text-sm transition-colors">Terms of Service</Link>
+              <Link to="/about" className="text-gray-400 hover:text-white text-sm transition-colors">About Us</Link>
             </div>
           </div>
         </div>

@@ -12,7 +12,6 @@ interface UniversityCardProps {
     province: string;
     established: string;
     type: string;
-    rating: number;
     students: string;
     programs: number;
     description: string;
@@ -31,7 +30,6 @@ function UniversityCard({
     location,
     established,
     type,
-    rating,
     students,
     programs,
     description,
@@ -83,11 +81,7 @@ function UniversityCard({
                         {type}
                     </span>
                 </div>
-                <div className="absolute top-4 right-4 flex items-center bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full">
-                    <Star className="h-4 w-4 text-yellow-500 fill-current mr-1" />
-                    <span className="text-sm font-medium text-gray-900">{rating}</span>
-                </div>
-                <div className="absolute bottom-4 left-4">
+                <div className="absolute top-4 right-4">
                     <div className={`flex items-center px-2 py-1 rounded-full text-xs font-medium border ${statusConfig.color}`}>
                         <div className={`w-2 h-2 rounded-full mr-1 ${statusConfig.dot}`}></div>
                         {statusConfig.label}
@@ -112,11 +106,11 @@ function UniversityCard({
                 <div className="flex items-center justify-between mb-4 text-sm">
                     <div className="flex items-center text-gray-600">
                         <Users className="h-4 w-4 mr-1" />
-                        <span className="font-medium">{students}</span> students
+                        <span className="font-medium">{students} students</span>
                     </div>
                     <div className="flex items-center text-gray-600">
                         <BookOpen className="h-4 w-4 mr-1" />
-                        <span className="font-medium">{programs}</span> programs
+                        <span className="font-medium">{programs} programs</span>
                     </div>
                 </div>
 
@@ -199,9 +193,7 @@ export default function FeaturedUniversities() {
                             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
                                 Featured Universities
                             </h2>
-                            <p className="text-xl text-gray-600">
-                                Top-rated institutions across the Philippines
-                            </p>
+
                         </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -243,9 +235,7 @@ export default function FeaturedUniversities() {
                         <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
                             Featured Universities
                         </h2>
-                        <p className="text-xl text-gray-600">
-                            Top-rated institutions across the Philippines
-                        </p>
+
                     </div>
 
                     <div className="mt-6 md:mt-0">

@@ -93,8 +93,6 @@ export default function Universities() {
 
     filtered.sort((a: University, b: University) => {
       switch (sortBy) {
-        case 'rating':
-          return b.rating - a.rating;
         case 'students':
           return (
             parseInt(b.students.replace(/,/g, '')) -
@@ -183,7 +181,6 @@ export default function Universities() {
                 className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-maroon-500 focus:border-transparent"
               >
                 <option value="name">Sort by Name</option>
-                <option value="rating">Sort by Rating</option>
                 <option value="students">Sort by Students</option>
                 <option value="established">Sort by Year</option>
               </select>

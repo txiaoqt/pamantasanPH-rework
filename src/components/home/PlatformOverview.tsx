@@ -71,7 +71,6 @@ export default function PlatformOverview() {
         const locations = new Set(data.map(uni => uni.location));
         const totalPrograms = data.reduce((sum, uni) => sum + uni.programs, 0);
         const allSubjects = new Set(data.flatMap(uni => uni.subjects));
-        const avgRating = data.reduce((sum, uni) => sum + uni.rating, 0) / data.length;
 
         setStats([
           {

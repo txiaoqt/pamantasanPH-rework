@@ -17,10 +17,8 @@ interface University {
   location: string;
   type: string;
   established: string;
-  rating: number;
   students: string;
   programs: number;
-  tuitionRange: string;
   accreditation: string[];
   imageUrl: string;
   strengths?: string[];
@@ -133,19 +131,7 @@ function ComparisonTable({ selectedUniversities, onRemove }: ComparisonTableProp
                 </td>
               ))}
             </tr>
-            <tr>
-              <td className="px-6 py-4 font-medium text-gray-900 bg-gray-50">
-                Rating
-              </td>
-              {selectedUniversities.map((university) => (
-                <td key={university.id} className="px-6 py-4 text-center">
-                  <div className="flex items-center justify-center">
-                    <Star className="h-4 w-4 text-yellow-500 fill-current mr-1" />
-                    <span className="font-medium">{university.rating}</span>
-                  </div>
-                </td>
-              ))}
-            </tr>
+
             <tr>
               <td className="px-6 py-4 font-medium text-gray-900 bg-gray-50">
                 Students
@@ -172,19 +158,7 @@ function ComparisonTable({ selectedUniversities, onRemove }: ComparisonTableProp
                 </td>
               ))}
             </tr>
-            <tr>
-              <td className="px-6 py-4 font-medium text-gray-900 bg-gray-50">
-                Tuition Range
-              </td>
-              {selectedUniversities.map((university) => (
-                <td key={university.id} className="px-6 py-4 text-center">
-                  <div className="flex items-center justify-center text-gray-600">
-                    <DollarSign className="h-4 w-4 mr-1" />
-                    <span className="text-sm">{university.tuitionRange}</span>
-                  </div>
-                </td>
-              ))}
-            </tr>
+
 
             {/* Optional fields – only render if present in universities.ts */}
             {['admissionRate', 'graduationRate', 'employmentRate'].map((field) => (
@@ -332,12 +306,6 @@ export default function Compare() {
                       >
                         {university.type}
                       </span>
-                      <div className="flex items-center">
-                        <Star className="h-4 w-4 text-yellow-500 fill-current mr-1" />
-                        <span className="text-sm font-medium">
-                          {university.rating}
-                        </span>
-                      </div>
                     </div>
                     <button
                       onClick={() => addUniversity(university)}

@@ -11,7 +11,6 @@ export interface University {
   province: string;
   established: string;
   type: string;
-  rating: number;
   students: string;
   programs: number;
   description: string;
@@ -121,10 +120,6 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
                 {university.type}
               </span>
               <AdmissionStatusBadge status={university.admissionStatus} />
-              <div className="flex items-center bg-yellow-50 px-2 py-1 rounded-full">
-                <Star className="h-4 w-4 text-yellow-500 fill-current mr-1" />
-                <span className="text-sm font-medium text-gray-900">{university.rating}</span>
-              </div>
             </div>
           </div>
 
@@ -187,11 +182,7 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
             {university.type}
           </span>
         </div>
-        <div className="absolute top-4 right-4 flex items-center bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full">
-          <Star className="h-4 w-4 text-yellow-500 fill-current mr-1" />
-          <span className="text-sm font-medium text-gray-900">{university.rating}</span>
-        </div>
-        <div className="absolute bottom-4 left-4">
+        <div className="absolute top-4 right-4">
           <AdmissionStatusBadge status={university.admissionStatus} />
         </div>
       </div>
@@ -213,11 +204,11 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
         <div className="flex items-center justify-between mb-4 text-sm">
           <div className="flex items-center text-gray-600">
             <Users className="h-4 w-4 mr-1" />
-            <span className="font-medium">{university.students}</span> students
+            <span className="font-medium">{university.students} students</span>
           </div>
           <div className="flex items-center text-gray-600">
             <BookOpen className="h-4 w-4 mr-1" />
-            <span className="font-medium">{university.programs}</span> programs
+            <span className="font-medium">{university.programs} programs</span>
           </div>
         </div>
 
@@ -226,7 +217,7 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
         </div>
         <div className="mb-6">
           <div className="flex flex-wrap gap-2">
-            {university.subjects.slice(0, 3).map((subject, index) => (
+            {university.subjects.slice(0, 4).map((subject, index) => (
               <span
                 key={index}
                 className="px-3 py-1 bg-maroon-50 text-maroon-700 text-xs rounded-full font-medium hover:bg-maroon-100 transition-colors"
@@ -234,9 +225,9 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
                 {subject}
               </span>
             ))}
-            {university.subjects.length > 3 && (
+            {university.subjects.length > 4 && (
               <span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full font-medium">
-                +{university.subjects.length - 3} more
+                +{university.subjects.length - 4} more
               </span>
             )}
           </div>

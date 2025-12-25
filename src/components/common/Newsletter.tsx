@@ -24,8 +24,7 @@ export default function Newsletter() {
           </h2>
           
           <p className="text-xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
-            Get the latest updates on new universities, admission deadlines, and
-            educational opportunities across the Philippines.
+            Get the latest updates on new universities, admission deadlines, admission requirements, and application process.
           </p>
         </div>
 
@@ -55,21 +54,21 @@ export default function Newsletter() {
           <div className="text-center">
             <h3 className="text-xl font-semibold text-white mb-3">New Universities</h3>
             <p className="text-gray-300">
-              Be first to know about newly added institutions
+              Be informed about newly added university application opportunities.
             </p>
           </div>
           
           <div className="text-center">
             <h3 className="text-xl font-semibold text-white mb-3">Admission Alerts</h3>
             <p className="text-gray-300">
-              Get notified about application deadlines
+              Get notified about university application deadline updates.
             </p>
           </div>
           
           <div className="text-center">
-            <h3 className="text-xl font-semibold text-white mb-3">Educational News</h3>
+            <h3 className="text-xl font-semibold text-white mb-3">Application Alerts</h3>
             <p className="text-gray-300">
-              Stay updated with Philippine education trends
+              Stay updated on university application process changes.
             </p>
           </div>
         </div>
