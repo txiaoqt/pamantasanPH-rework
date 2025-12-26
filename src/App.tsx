@@ -7,6 +7,7 @@ import FeaturedUniversities from './components/home/FeaturedUniversities';
 import ExploreTools from './components/home/ExploreTools';
 import Newsletter from './components/common/Newsletter';
 import Footer from './components/common/Footer';
+import Chatbot from './components/common/Chatbot';
 import Universities from './pages/Universities';
 import Programs from './pages/Programs';
 import Compare from './pages/Compare';
@@ -51,6 +52,7 @@ function App() {
 
 
         <Footer />
+        <Chatbot />
       </div>
     </Router>
   );
