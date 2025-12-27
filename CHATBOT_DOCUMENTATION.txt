@@ -1,0 +1,441 @@
+# UniBot Chatbot Documentation
+## Complete Query and Response Reference
+
+### 📅 Last Updated: December 27, 2025
+### 🤖 Chatbot Version: Enhanced Conversational University Assistant v2.0
+
+---
+
+## 🎯 OVERVIEW
+UniBot is an advanced conversational AI chatbot designed to assist students with university information for Philippine state universities (PUP, TUP, PLM). It features human-like personality, progressive disclosure, contextual awareness, comprehensive comparison tools, and dynamic suggestion handling. The chatbot uses regex pattern matching, conversation context tracking, varied response generation, interactive suggestion processing, and real-time database integration.
+
+### Key Features:
+- **🤖 Human-like Personality**: Casual language, varied responses, friendly tone with emojis
+- **🔄 Conversational Flow**: Progressive disclosure, contextual follow-ups, natural dialogue
+- **📊 Dynamic Comparisons**: PUP vs TUP, PUP vs PLM, TUP vs PLM with real data and recommendations
+- **🎯 Smart Context Tracking**: Remembers explored universities and conversation state
+- **⚡ Interactive Suggestions**: Dynamic processing with instant responses (no delays)
+- **📱 Real-time Database**: Live university data integration (no tuition references)
+- **🎨 Small Talk & Empathy**: Friendly commentary, engagement cues, varied thank you/goodbye
+- **🧠 Intelligent Query Handling**: 50+ query patterns with contextual responses
+- **🔗 Seamless Navigation**: Clickable links with proper React Router integration
+
+---
+
+## 💬 GREETING & BASIC INTERACTIONS
+
+### Initial Welcome Message
+**Query:** (Automatic on chat open)
+**Response:** "Hi! I'm UniBot, your friendly university guide! 🌟 What are you curious about today—finding the perfect university, exploring programs, or learning about admissions?"
+**Suggestions:**
+- Explore state universities
+- Find programs for me
+- Tell me about admissions
+- Compare universities
+
+### Greetings (8 variations)
+**Patterns:** hi, hello, hey, good morning/afternoon/evening, howdy, sup, yo, heyy, hellooo
+**Responses:**
+1. "Hey there! 😄 I'm UniBot, your friendly university guide! What are you curious about today—programs, admission rules, or just browsing options?"
+2. "Hi! 👋 Great to see you! I'm UniBot, here to help you navigate university choices. What would you like to explore?"
+3. "Hello! 🎓 I'm UniBot, your go-to buddy for all things university. Ready to dive into some school info?"
+4. "Hey! 🌟 UniBot here, your university information sidekick! What are we looking at today?"
+5. "Good morning! ☀️ Hope you're having an awesome day! I'm UniBot, ready to help you find the perfect university fit."
+6. "Good afternoon! 😊 UniBot checking in! Let's talk universities—what interests you most?"
+7. "Good evening! 🌙 Perfect timing for some university planning! I'm UniBot, your evening study buddy. What can I help with?"
+8. "Hey! 🤗 Love that you're exploring universities! I'm UniBot, and I'm excited to guide you through your options."
+
+**Suggestions:** Tell me about state universities, What programs are available?, How do I apply?, Compare universities for me
+
+### Thank You Messages (7 variations)
+**Patterns:** thanks, thank you, thx, ty, appreciate it, thanks a lot, thank you so much, thanks for the help
+**Responses:**
+1. "You're so welcome! 😊 I'm thrilled I could help with your university search. Don't hesitate to ask if you need anything else!"
+2. "My absolute pleasure! 🎉 I love helping students like you find their perfect university match. What else can I assist with?"
+3. "Glad I could help! 🤗 Is there anything else about universities or programs you'd like to know? I'm all ears!"
+4. "No problem at all! 🌟 I'm here whenever you need university guidance. Feel free to ask away!"
+5. "You're welcome! 💫 I hope you find the perfect university for your journey. Come back anytime!"
+6. "Happy to help! 😄 Remember, I'm always here for all your university questions and guidance."
+7. "My pleasure helping you! 🎓 I hope this information helps you make the right choice for your future."
+
+### Goodbye Messages (7 variations)
+**Patterns:** bye, goodbye, see you, see ya, later, farewell, cya, take care
+**Responses:**
+1. "Goodbye! 👋 Thanks for chatting about universities. I hope you find the perfect school for your journey!"
+2. "See you later! 🌟 Don't hesitate to come back if you need more university information or guidance."
+3. "Take care! 😊 I'm always here when you need help with university choices. Happy exploring!"
+4. "Farewell! 🎓 Remember, I'm just a click away whenever you need university assistance."
+5. "Until next time! 💫 Thanks for letting me help with your university search. Good luck!"
+6. "Bye for now! 👋 I hope our conversation helped you discover great university options."
+7. "See you soon! 🌈 Keep me in mind for all your future university questions and decisions."
+
+---
+
+## 🏫 UNIVERSITY DISCOVERY & SEARCH
+
+### Find Universities
+**Patterns:** find, search, look for, discover + universities/schools/colleges
+**Response:** "Awesome! I'd love to help you find the perfect university! 🌟 We have amazing state universities across Metro Manila. What type of programs or location are you interested in?"
+**Suggestions:** Tell me about state universities, Technology programs, Business degrees, Engineering schools
+
+### State Universities Information
+**Patterns:** state, suc, public + universities/schools/colleges
+**Response:** "Absolutely! State universities are fantastic choices for quality education at affordable prices! 💰 We feature three amazing ones in Metro Manila: PUP (the largest!), TUP (engineering powerhouse), and PLM (medicine and law excellence). Which one sparks your interest? 🤔"
+**Suggestions:** PUP details, TUP information, PLM programs
+
+### Metro Manila Universities
+**Patterns:** universities/schools/colleges + manila/metro/city
+**Response:** "Metro Manila has some seriously impressive universities! 🏙️ We cover amazing institutions in Sta. Mesa (PUP), Ermita (TUP), and Intramuros (PLM). Each location has its own vibe—historic Intramuros, bustling Ermita, or vibrant Sta. Mesa. Which area calls to you?"
+**Suggestions:** PUP in Sta. Mesa, TUP in Ermita, PLM in Intramuros, Show me the map
+
+### Best Universities
+**Patterns:** best, top, highest, highly + universities/schools/rated
+**Response:** "Our top state universities in Metro Manila are consistently ranked highly! 🏆 PUP leads as the largest with excellent programs, TUP excels in engineering and technology, and PLM shines in medicine and law. Rankings vary by source, but all three perform exceptionally well."
+**Suggestions:** PUP rankings, TUP rankings, PLM rankings, Compare universities
+
+### Universities with Specific Programs
+**Patterns:** universities/schools + engineering/technology/business/medicine/law/education/arts/sciences
+**Response:** "All our universities offer excellent programs in various fields! 🎓 PUP has the most comprehensive selection, TUP specializes in engineering and technology, and PLM excels in medicine, law, and professional programs. What specific field interests you?"
+**Suggestions:** Technology programs, Engineering programs, Business programs, Healthcare programs
+
+### Small Talk
+**Patterns:** how are you, how's it going, what's up, are you there, can you help me, are you online, you there
+**Response:** [Random from 4 variations] "I'm doing great, thanks for asking! 😊 Always ready to help with university information. What can I assist you with today?"
+**Suggestions:** State universities, Program information, Admission help, Compare universities
+
+---
+
+## 📚 PROGRAM INFORMATION
+
+### General Programs Query
+**Patterns:** programs, courses, degrees, majors
+**Response:** "We have over 200 amazing programs across ALL these categories: Technology 💻, Business 💼, Engineering 🔧, Healthcare ⚕️, Education 📚, Arts 🎨, Sciences 🔬, and more! What field gets you excited? Tell me what you love and I'll guide you! 🌟"
+**Suggestions:** Technology & IT, Business & Finance, Engineering fields, Healthcare programs
+
+### Technology Programs
+**Patterns:** technology, computer, it, programming, software + programs/courses
+**Response:** "Technology programs include Computer Science, Information Technology, Computer Engineering, Electronics Engineering, and more. All our universities (PUP, TUP, PLM) offer excellent technology programs."
+**Suggestions:** Computer Science, IT programs, Engineering tech, Programming courses
+
+### Business Programs
+**Patterns:** business, commerce, management, finance, accounting + programs/courses
+**Response:** "Business programs cover Accountancy, Business Administration, Entrepreneurship, Marketing, Finance, and more. Available at all our universities."
+**Suggestions:** Accountancy, Business Admin, Entrepreneurship, Tourism Management
+
+### Engineering Programs
+**Patterns:** engineering, engineer + programs/courses
+**Response:** "Engineering programs include Civil, Mechanical, Electrical, Electronics, Computer, Chemical, and Industrial Engineering. Strong programs at PUP, TUP, and PLM."
+**Suggestions:** Civil Engineering, Computer Engineering, Mechanical Engineering, Electrical Engineering
+
+### Healthcare Programs
+**Patterns:** healthcare, medical, medicine, nursing, public health, pharmacy + programs/courses
+**Response:** "Healthcare programs are excellent at PLM! 🏥 They offer Doctor of Medicine, Bachelor of Science in Nursing, and various allied health programs. PUP also has strong nursing and health sciences programs. Interested in medical careers?"
+**Suggestions:** PLM programs, PUP programs, Admission requirements, Nursing programs
+
+### Arts and Sciences Programs
+**Patterns:** arts, sciences, education, humanities, social sciences, liberal arts + programs/courses
+**Response:** "Arts, sciences, and education programs are well-represented across our universities! 📖 PUP offers the most comprehensive selection including education, psychology, communication, and various sciences. PLM also has strong education and social science programs."
+**Suggestions:** Education programs, Psychology programs, Communication programs, PUP programs
+
+### Campus Life & Facilities
+**Patterns:** dorms, housing, accommodations, cafeteria, food, clubs, organizations, sports, transportation, commute, parking, campus life
+**Response:** "Campus life varies by university! 🏫 PUP offers extensive facilities including multiple cafeterias, sports complexes, dormitories, and student organizations. TUP has modern engineering labs and sports facilities. PLM provides historic Intramuros campus with modern amenities."
+**Suggestions:** PUP facilities, TUP facilities, PLM facilities, University map
+
+### Decision Support
+**Patterns:** which better, pros cons, should choose, recommend, decide between, confused, help choose
+**Response:** "Choosing the right university depends on your goals! 🎯 If you want the most program options, go with PUP. For engineering excellence, TUP is outstanding. If you're interested in medicine or law, PLM is exceptional. What\'s your main interest?"
+**Suggestions:** Compare universities, PUP vs TUP, PUP vs PLM, TUP vs PLM
+
+### Informal & Casual Queries
+**Patterns:** lol, hehe, thanks, ty, thx, idk, i don't know, can't decide, what should i study, suggest university, recommend course
+**Response:** [Random from 4 variations] "No worries at all! 😄 I'm here to help you figure things out. What subjects or careers interest you? I can suggest programs that match your passions."
+**Suggestions:** Take a quiz, Explore programs, Talk to counselor, Compare options
+
+### Specific University Details
+**Patterns:** student population, faculty, class sizes, location, map, address, nearby, landmarks
+**Response:** "Let me give you the details you need! 📊 PUP serves over 65,000 students with modern facilities. TUP has around 12,000 students in a tech-focused campus. PLM serves about 8,000 students in historic Intramuros. Which university interests you?"
+**Suggestions:** PUP details, TUP information, PLM programs, Campus map
+
+---
+
+## 🎓 SPECIFIC UNIVERSITY QUERIES
+
+### PUP (Polytechnic University of the Philippines)
+**Patterns:** pup, poly, polytechnic
+**Response:** [Dynamic from database] "PUP is the largest state university with over [X] students. Known for technology, business, and education programs in [location]. They offer [X] programs across multiple disciplines."
+**Suggestions:** Want to learn more about PUP?
+
+#### PUP Programs Overview
+**Query:** pup programs
+**Response:** [Dynamic] "PUP offers [total] programs total: • [undergraduate] undergraduate programs • [graduate] graduate programs • [diploma] diploma programs Popular programs include Computer Science, Information Technology, Business Administration, Civil Engineering, and Education programs."
+**Suggestions:** List undergraduate programs, Show graduate programs, What can I help you more with today?
+
+#### PUP Undergraduate Programs
+**Query:** pup list undergraduate programs / pup what are those undergraduate programs
+**Response:** [Dynamic] Lists actual program names from database
+
+#### PUP Graduate Programs
+**Query:** pup show graduate programs
+**Response:** [Dynamic] Lists actual graduate program names from database
+
+#### PUP Diploma Programs
+**Query:** pup list diploma programs
+**Response:** [Dynamic] Lists actual diploma program names from database
+
+#### PUP Admission
+**Query:** pup admission / pup requirements / pup apply
+**Response:** [Dynamic] "🎓 Ready to join PUP? Here's what you need to know... 📋 Admission Requirements: • [requirements] 🚀 Application Process: • Head over to the PUP iApply portal... PUP is committed to making education accessible—good luck!"
+
+#### PUP Facilities
+**Query:** pup facilities / pup campus
+**Response:** [Dynamic] "🏛️ PUP has an amazing [size] campus... 🏢 Facilities: • [facilities] 🍽️ Plus awesome amenities..."
+
+#### PUP Rankings
+**Query:** pup rankings / pup ranking
+**Response:** [Dynamic] "🏆 PUP Rankings - They're doing AMAZING! 📈 [rankings] PUP consistently ranks among the top state universities..."
+
+### TUP (Technological University of the Philippines)
+**Patterns:** tup, technological
+**Response:** [Dynamic] "TUP is a leading engineering and technology university with over [X] students. [description] They offer [X] programs focused on technology and innovation."
+**Suggestions:** Want to learn more about TUP?
+
+#### TUP Programs Overview & Specific Queries
+**Similar structure to PUP with:**
+- Program listings (undergraduate, graduate)
+- Admission requirements
+- Facilities information
+- Rankings data
+
+### PLM (Pamantasan ng Lungsod ng Maynila)
+**Patterns:** plm, lungsod, maynila
+**Response:** [Dynamic] "PLM is the premier city-funded university with over [X] students. [description] They offer [X] programs in medicine, law, engineering, and other fields."
+**Suggestions:** Want to learn more about PLM?
+
+#### PLM Programs Overview & Specific Queries
+**Similar structure to PUP/TUP with:**
+- Program listings (undergraduate, graduate)
+- Admission requirements
+- Facilities information
+- Rankings data
+
+---
+
+## 🎯 UNIVERSITY DETAILS NAVIGATION
+
+### Learn More About University
+**Query:** learn more about pup/tup/plm
+**Response:** "Perfect! 📖 Let's explore [UNI] in detail. Click the link below to view their complete profile, programs, admission requirements, facilities, and more:
+
+🔗 **[View [UNI] Details](/universities/[ID])**
+
+You'll find everything you need to know about [UNI]! 🏛️"
+**Suggestions:** What can I help you more with today?
+
+---
+
+## 🔄 COMPARISON FEATURES
+
+### Compare Universities
+**Patterns:** compare, comparison, versus, vs
+**Response:** "Perfect! 🎯 Let's head to our comparison tool where you can compare up to 3 universities side-by-side. Click the link below to get started:
+
+🔗 **[Go to Compare Page](/compare)**
+
+You'll be able to select universities and see tuition, programs, location, facilities, and admission requirements all in one view! 📊"
+**Suggestions:** What can I help you more with today?
+
+---
+
+## 🎓 ADMISSION & APPLICATION
+
+### Admission Information
+**Patterns:** admission, admit, apply, application
+**Response:** "Admission varies by university. Most require high school diploma, entrance exams, and interviews. State universities often have lower tuition but competitive admission."
+**Suggestions:** Entrance exams, Application process, Admission requirements, Deadlines
+
+### Entrance Exams
+**Patterns:** entrance, entry, admission + exam/test/assessment
+**Response:** "Common entrance exams: PUPCET (PUP), TUP Scholastic Aptitude Test (TUP), and PLM admission requirements. Each university has its own exam format and schedule."
+**Suggestions:** PUPCET details, TUP admission, PLM requirements, Application process
+
+---
+
+## 💰 TUITION & FINANCIAL AID
+
+### Tuition Information
+**Patterns:** tuition, fees, cost, price, expensive, cheap, afford
+**Response:** "State universities offer affordable education with tuition ranging from P5,000-15,000 per semester depending on the program and university."
+**Suggestions:** State university tuition, Scholarships, Financial aid, Affordable education
+
+### Scholarships
+**Patterns:** scholarships, financial aid, grants, funding
+**Response:** "Scholarships available: Academic scholarships, athletic scholarships, financial assistance, and government programs. Check each university's scholarship office."
+**Suggestions:** Academic scholarships, Government scholarships, University scholarships, Scholarship applications
+
+---
+
+## 🗺️ PLATFORM FEATURES
+
+### University Map
+**Patterns:** map, location, where, address, campus
+**Response:** "Our interactive map shows all universities geographically. Click markers for details, zoom in/out, and explore locations."
+**Suggestions:** View university map, Find nearby universities, Campus locations, Map features
+
+### Rankings Information
+**Patterns:** rankings, ranked, top, best
+**Response:** "Our universities are well-ranked: PUP ranks high among SUCs, TUP excels in engineering and technology, and PLM is known for medicine and law. Rankings vary by source and criteria."
+**Suggestions:** PUP rankings, TUP rankings, PLM rankings, Local rankings
+
+### Save/Bookmark Feature
+**Patterns:** save, bookmark, favorite, star, wishlist
+**Response:** "Save universities to your bookmarks for easy access later. Create your personalized list of favorite institutions."
+**Suggestions:** Bookmark universities, Saved universities, My favorites, University lists
+
+---
+
+## ℹ️ ABOUT & SUPPORT
+
+### About UniCentral
+**Patterns:** about, what is, unicentral, platform
+**Response:** "UniCentral is your comprehensive guide to Philippine state universities. We provide detailed information about PUP, TUP, and PLM, with comparison tools and admission guidance."
+**Suggestions:** Platform features, Our mission, Contact us, Help center
+
+### Creator/Developer Information
+**Patterns:** who created, who made, who owns, who is behind, developed, coded, creator, owner, developer, who is + toff/tadz/tadzpuge/genius
+**Responses:** [4 variations - All using third-person language to distinguish chatbot from creator]
+1. "Hey! 👋 I was created by Toff (also known as Tadz or Tadzpuge)! 😊 He loves making friends and connecting with awesome people. Want to connect with him?"
+2. "Oh, you're asking about my creator! 😄 That's Toff (Tadz/Tadzpuge)! He's all about making new friends and having great conversations. Super friendly guy!"
+3. "The person behind UniCentral is Toff! 🌟 (You might know him as Tadz or Tadzpuge) He built this platform and loves connecting with students like you!"
+4. "Curious about who made this? It's Toff! 💫 (AKA Tadz or Tadzpuge) He's passionate about meeting new people and making friends. Want to say hi to him?"
+**Suggestions:** Connect with Toff, View social media, GitHub profile, Follow on Instagram
+
+#### Connect with Toff Suggestion
+**Response:** "Awesome! 😄 Here's how to connect with Toff: \n\n🌟 **Social Media Links:**\n\n🔗 **[Facebook](https://www.facebook.com/pogikotalaga.hahaangalpatay)**\n\n🔗 **[GitHub](https://github.com/txiaoqt)**\n\n🔗 **[Instagram](https://www.instagram.com/ctadzz/)**\n\nHe would love to make new friends and connect! Don't forget to say hi to him when you connect! 👋"
+
+#### View Social Media Suggestion
+**Response:** "Sure thing! 🎉 Check out Toff's social media:\n\n📘 **[Facebook](https://www.facebook.com/pogikotalaga.hahaangalpatay)**\n\n💻 **[GitHub](https://github.com/txiaoqt)**\n\n📷 **[Instagram](https://www.instagram.com/ctadzz/)**\n\nHe loves making new friends—connect with him! 🌟"
+
+#### GitHub Profile Suggestion
+**Response:** "Tech enthusiasts unite! 💻 Check out Toff's GitHub profile:\n\n🔗 **[GitHub](https://github.com/txiaoqt)**\n\nHe would love to make new friends and connect! Don't forget to say hi! 👋"
+
+#### Follow on Instagram Suggestion
+**Response:** "Love visual content? 📸 Follow Toff on Instagram:\n\n🔗 **[Instagram](https://www.instagram.com/ctadzz/)**\n\nHe would love to make new friends—DM him to say hello! 👋"
+
+### Contact Information
+**Patterns:** contact, support, help, phone, email, reach
+**Response:** "Contact us: Email info@unicentral.com, Phone +63 945 552 3661, Address: Metro Manila, Philippines. We're here to help!"
+**Suggestions:** Email support, Phone support, Visit us, Support hours
+
+---
+
+## ❓ FALLBACK & UNKNOWN QUERIES
+
+### Fallback Responses (3 variations)
+**Patterns:** Any unmatched query
+**Responses:**
+1. "I'm here to help with university and program information about PUP, TUP, and PLM! Try asking about specific universities, programs, admission requirements, or use our comparison tools."
+2. "Hmm, I'm not sure about that specific question. I can help with information about PUP, TUP, and PLM, including programs, admission processes, tuition, rankings, and comparisons. What would you like to know?"
+3. "I specialize in university information for Philippine state universities. I can tell you about programs, admission processes, tuition, rankings, and help you compare PUP, TUP, and PLM. How can I assist you today?"
+**Suggestions:** Find universities, Browse programs, Admission guidance, Compare universities
+
+---
+
+## 🔧 TECHNICAL FEATURES
+
+### Dynamic Database Integration
+- Real-time fetching from Supabase database
+- Accurate program counts, admission requirements, facilities, rankings
+- Live data for PUP, TUP, and PLM
+
+### Context-Aware Conversations
+- Maintains university context in follow-up questions
+- Suggestion clicks automatically prepend university names
+- Smart conversation flow management
+
+### Interactive Elements
+- Clickable suggestion buttons with instant processing
+- Direct navigation links to compare page and university details
+- Markdown link rendering with proper React Router navigation
+
+### Response Variation System
+- Randomized responses for greetings, thanks, and goodbyes
+- Multiple response options to avoid repetition
+- Contextual response selection based on query type
+
+### Error Handling
+- Graceful fallbacks for database failures
+- Loading states with typing indicators
+- Comprehensive error logging
+
+---
+
+## 📊 STATISTICS & METRICS
+
+### Supported Universities: 3
+- PUP (Polytechnic University of the Philippines)
+- TUP (Technological University of the Philippines)
+- PLM (Pamantasan ng Lungsod ng Maynila)
+
+### Response Categories: 15+
+- Greetings & Basic Interactions
+- University Discovery & Search
+- Program Information
+- Specific University Queries
+- Admission & Application
+- Tuition & Financial Aid
+- Platform Features
+- About & Support
+- Fallback Responses
+
+### Total Response Variations: 50+
+- 8 greeting variations
+- 7 thank you variations
+- 7 goodbye variations
+- Multiple responses per category
+
+### Dynamic Features:
+- Real-time database queries
+- Context-aware suggestions
+- Interactive navigation links
+- Program listing generation
+- University-specific information
+
+---
+
+## 🚀 USAGE EXAMPLES
+
+### Complete Conversation Flow:
+1. **User:** "hi" → Greeting response with suggestions
+2. **User clicks:** "State universities" → Overview with university suggestions
+3. **User clicks:** "PUP details" → Detailed PUP information + "Want to learn more about PUP?"
+4. **User clicks:** "Want to learn more about PUP?" → Direct link to PUP details page
+5. **User:** "compare universities" → Direct link to compare page
+6. **User:** "thanks" → Varied thank you response
+
+### Key Interaction Patterns:
+- **Discovery → Details → Navigation** flow
+- **Context maintenance** across conversations
+- **Direct action** through suggestion clicks
+- **Natural conversation** endings
+
+---
+
+## 🔄 MAINTENANCE & UPDATES
+
+### Regular Updates Needed:
+- Database schema changes
+- New university information
+- Additional response variations
+- New feature integrations
+
+### Testing Requirements:
+- All query patterns
+- Database connectivity
+- Link navigation
+- Context switching
+- Error scenarios
+
+---
+
+*This documentation is automatically generated and should be updated whenever new features or responses are added to the chatbot system.*
