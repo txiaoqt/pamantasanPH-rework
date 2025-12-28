@@ -9,6 +9,7 @@ function ProgramCard({ program, onViewDetails, onFindUniversities }: {
   onViewDetails: (program: AggregatedProgram) => void;
   onFindUniversities: (program: AggregatedProgram) => void;
 }) {
+  const [isExpanded, setIsExpanded] = useState(false);
   const getLevelColor = (level: string) => {
     switch (level) {
       case 'Bachelor': return 'bg-blue-100 text-blue-800';
@@ -21,11 +22,11 @@ function ProgramCard({ program, onViewDetails, onFindUniversities }: {
 
   return (
     <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group h-full flex flex-col">
-      <div className="p-6 flex-1 flex flex-col">
+      <div className="p-4 md:p-6 flex-1 flex flex-col">
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
             <div className="mb-2">
-              <h3 className="text-xl font-bold text-gray-900 group-hover:text-maroon-800 transition-colors">
+              <h3 className="text-lg md:text-xl font-bold text-gray-900 group-hover:text-maroon-800 transition-colors">
                 {program.name}
               </h3>
             </div>
@@ -45,8 +46,6 @@ function ProgramCard({ program, onViewDetails, onFindUniversities }: {
           </div>
         </div>
 
-        <p className="text-gray-600 text-sm mb-4 leading-relaxed flex-1">{program.description}</p>
-
         <div className="flex items-center justify-between mb-4 text-sm">
           <div className="flex items-center text-gray-600">
             <Users className="h-4 w-4 mr-1" />
@@ -54,23 +53,38 @@ function ProgramCard({ program, onViewDetails, onFindUniversities }: {
           </div>
         </div>
 
-        <div className="mb-6 flex-1">
-          <h4 className="text-sm font-semibold text-gray-900 mb-2">Available at:</h4>
-          <div className="flex flex-wrap gap-2">
-            {program.universities.slice(0, 3).map((university, index) => (
-              <span
-                key={index}
-                className="px-3 py-1 bg-blue-50 text-blue-700 text-xs rounded-full font-medium"
-              >
-                {university}
-              </span>
-            ))}
-            {program.universities.length > 3 && (
-              <span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full font-medium">
-                +{program.universities.length - 3} more
-              </span>
-            )}
+        {/* Hidden on small and medium screens unless expanded */}
+        <div className={`lg:block ${isExpanded ? 'block' : 'hidden'}`}>
+          <p className="text-gray-600 text-sm mb-4 leading-relaxed">{program.description}</p>
+
+          <div className="mb-6 flex-1">
+            <h4 className="text-sm font-semibold text-gray-900 mb-2">Available at:</h4>
+            <div className="flex flex-wrap gap-2">
+              {program.universities.slice(0, 3).map((university, index) => (
+                <span
+                  key={index}
+                  className="px-3 py-1 bg-blue-50 text-blue-700 text-xs rounded-full font-medium"
+                >
+                  {university}
+                </span>
+              ))}
+              {program.universities.length > 3 && (
+                <span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full font-medium">
+                  +{program.universities.length - 3} more
+                </span>
+              )}
+            </div>
           </div>
+        </div>
+
+        {/* See More/Less button - only show on small and medium screens */}
+        <div className="lg:hidden mb-4">
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="text-maroon-600 hover:text-maroon-800 font-medium text-sm transition-colors"
+          >
+            {isExpanded ? 'See Less' : 'See More'}
+          </button>
         </div>
 
         <div className="flex gap-2 mt-auto">
@@ -166,7 +180,7 @@ export default function Programs() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-gradient-to-br from-maroon-900 via-maroon-800 to-red-900 text-white py-16">
+      <div className="bg-gradient-to-br from-maroon-900 via-maroon-800 to-red-900 text-white py-8 md:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Academic Programs</h1>
           <p className="text-xl text-maroon-100 max-w-3xl">
@@ -178,7 +192,7 @@ export default function Programs() {
       {/* Stats */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-3 gap-4 md:gap-8">
             <div className="text-center">
               <div className="text-3xl font-bold text-maroon-800 mb-2">{totalProgramsCount}</div>
               <div className="text-gray-600">Programs Available</div>
@@ -198,7 +212,7 @@ export default function Programs() {
       {/* Filters */}
       <div className="bg-white border-b border-gray-200 sticky top-16 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex flex-col lg:flex-row gap-4 items-center">
+          <div className="flex flex-row gap-2 md:gap-4 items-center">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <input

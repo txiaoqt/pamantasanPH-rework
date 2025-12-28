@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { MapPin, Star, Users, BookOpen, Heart, BarChart3, ExternalLink } from 'lucide-react';
 import { Link } from "react-router-dom";
 import { useSavedUniversities } from '../../hooks/useSavedUniversities';
@@ -91,53 +91,89 @@ function AdmissionStatusBadge({ status }: { status: 'open' | 'not-yet-open' | 'c
 }
 export default function UniversityCard({ viewMode, ...university }: UniversityCardProps) {
   const { isSaved, toggleSaved, isLoaded } = useSavedUniversities();
+  const [isExpanded, setIsExpanded] = useState(false);
 
   if (viewMode === 'list') {
     return (
-      <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex">
-        <div className="w-48 h-32 flex-shrink-0">
-          <img
-            src={university.imageUrl}
-            alt={university.name}
-            className="w-full h-full object-cover"
-          />
-        </div>
-        <div className="flex-1 p-6">
-          <div className="flex justify-between items-start mb-4">
-            <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{university.name}</h3>
-              <div className="flex items-center text-gray-600 text-sm mb-1">
-                <MapPin className="h-4 w-4 mr-1" />
-                {university.location}, {university.province}
-              </div>
-              <div className="text-gray-500 text-sm">Est. {university.established}</div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className={`px-3 py-1 rounded-full text-sm font-medium ${university.type === 'Public' ? 'bg-blue-100 text-blue-800' :
-                university.type === 'State' ? 'bg-green-100 text-green-800' :
-                  'bg-purple-100 text-purple-800'
-                }`}>
-                {university.type}
-              </span>
-              <AdmissionStatusBadge status={university.admissionStatus} />
-            </div>
+      <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
+        <div className="flex flex-col md:flex-row">
+          <div className="w-full md:w-48 h-32 md:h-32 flex-shrink-0">
+            <img
+              src={university.imageUrl}
+              alt={university.name}
+              className="w-full h-full object-cover"
+            />
           </div>
-
-          <p className="text-gray-600 text-sm mb-4 line-clamp-2">{university.description}</p>
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4 text-sm text-gray-600">
-              <div className="flex items-center">
-                <Users className="h-4 w-4 mr-1" />
-                {university.students} students
+          <div className="flex-1 p-4 md:p-6">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
+              <div className="mb-2 md:mb-0">
+                <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">{university.name}</h3>
+                <div className="flex items-center text-gray-600 text-sm mb-1">
+                  <MapPin className="h-4 w-4 mr-1" />
+                  {university.location}, {university.province}
+                </div>
+                <div className="text-gray-500 text-sm">Est. {university.established}</div>
               </div>
-              <div className="flex items-center">
-                <BookOpen className="h-4 w-4 mr-1" />
-                {university.programs} programs
+              <div className="flex items-center space-x-2 md:space-x-4">
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${university.type === 'Public' ? 'bg-blue-100 text-blue-800' :
+                  university.type === 'State' ? 'bg-green-100 text-green-800' :
+                    'bg-purple-100 text-purple-800'
+                  }`}>
+                  {university.type}
+                </span>
+                <AdmissionStatusBadge status={university.admissionStatus} />
               </div>
             </div>
+
+            <div className="flex items-center justify-between mb-4 text-sm">
+              <div className="flex items-center text-gray-600">
+                <Users className="h-4 w-4 mr-1" />
+                <span className="font-medium">{university.students} students</span>
+              </div>
+              <div className="flex items-center text-gray-600">
+                <BookOpen className="h-4 w-4 mr-1" />
+                <span className="font-medium">{university.programs} programs</span>
+              </div>
+            </div>
+
+        {/* Hidden on small and medium screens unless expanded */}
+        <div className={`lg:block ${isExpanded ? 'block' : 'hidden'}`}>
+              <p className="text-gray-600 text-sm mb-4 line-clamp-2">{university.description}</p>
+
+              <div className="mb-4 text-xs text-gray-600">
+                📅 {university.admissionDeadline}
+              </div>
+              <div className="mb-6">
+                <div className="flex flex-wrap gap-2">
+                  {university.subjects.slice(0, 4).map((subject, index) => (
+                    <span
+                      key={index}
+                      className="px-3 py-1 bg-maroon-50 text-maroon-700 text-xs rounded-full font-medium hover:bg-maroon-100 transition-colors"
+                    >
+                      {subject}
+                    </span>
+                  ))}
+                  {university.subjects.length > 4 && (
+                    <span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full font-medium">
+                      +{university.subjects.length - 4} more
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* See More/Less button - only show on small and medium screens */}
+            <div className="lg:hidden mb-4">
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="text-maroon-600 hover:text-maroon-800 font-medium text-sm transition-colors"
+              >
+                {isExpanded ? 'See Less' : 'See More'}
+              </button>
+            </div>
+
             <div className="flex gap-2">
-              <button 
+              <button
                 onClick={() => toggleSaved(university.id)}
                 disabled={!isLoaded}
                 className={`p-2 border rounded-lg transition-colors ${
@@ -187,9 +223,9 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
         </div>
       </div>
 
-      <div className="p-6">
+      <div className="p-4 md:p-6">
         <div className="mb-4">
-          <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-maroon-800 transition-colors">
+          <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2 group-hover:text-maroon-800 transition-colors">
             {university.name}
           </h3>
           <div className="flex items-center text-gray-600 text-sm mb-1">
@@ -198,8 +234,6 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
           </div>
           <div className="text-gray-500 text-sm">Est. {university.established}</div>
         </div>
-
-        <p className="text-gray-600 text-sm mb-4 leading-relaxed line-clamp-3">{university.description}</p>
 
         <div className="flex items-center justify-between mb-4 text-sm">
           <div className="flex items-center text-gray-600">
@@ -212,25 +246,40 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
           </div>
         </div>
 
-        <div className="mb-4 text-xs text-gray-600">
-          📅 {university.admissionDeadline}
-        </div>
-        <div className="mb-6">
-          <div className="flex flex-wrap gap-2">
-            {university.subjects.slice(0, 4).map((subject, index) => (
-              <span
-                key={index}
-                className="px-3 py-1 bg-maroon-50 text-maroon-700 text-xs rounded-full font-medium hover:bg-maroon-100 transition-colors"
-              >
-                {subject}
-              </span>
-            ))}
-            {university.subjects.length > 4 && (
-              <span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full font-medium">
-                +{university.subjects.length - 4} more
-              </span>
-            )}
+        {/* Hidden on small and medium screens unless expanded */}
+        <div className={`lg:block ${isExpanded ? 'block' : 'hidden'}`}>
+          <p className="text-gray-600 text-sm mb-4 leading-relaxed line-clamp-3">{university.description}</p>
+
+          <div className="mb-4 text-xs text-gray-600">
+            📅 {university.admissionDeadline}
           </div>
+          <div className="mb-6">
+            <div className="flex flex-wrap gap-2">
+              {university.subjects.slice(0, 4).map((subject, index) => (
+                <span
+                  key={index}
+                  className="px-3 py-1 bg-maroon-50 text-maroon-700 text-xs rounded-full font-medium hover:bg-maroon-100 transition-colors"
+                >
+                  {subject}
+                </span>
+              ))}
+              {university.subjects.length > 4 && (
+                <span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full font-medium">
+                  +{university.subjects.length - 4} more
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* See More/Less button - only show on small and medium screens */}
+        <div className="lg:hidden mb-4">
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="text-maroon-600 hover:text-maroon-800 font-medium text-sm transition-colors"
+          >
+            {isExpanded ? 'See Less' : 'See More'}
+          </button>
         </div>
 
         <div className="flex gap-2">

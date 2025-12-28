@@ -3,6 +3,7 @@ import { Search, MapPin, Building, Users, BookOpen, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { University } from '../university/UniversityCard';
 import { UniversityService } from '../../services/universityService';
+import trollfaceImage from '../../assets/Images/Trollface.png';
 
 export default function HeroSection() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -125,7 +126,7 @@ export default function HeroSection() {
       {/* Background with overlay */}
       <div className="absolute inset-0">
         <img
-          src="/Images/pup.jpg"
+          src={trollfaceImage}
           alt="University campus"
           className="w-full h-full object-cover"
         />
@@ -144,8 +145,8 @@ export default function HeroSection() {
           
           <p className="text-xl md:text-2xl text-gray-100 mb-12 leading-relaxed">
             Discover, compare, and choose from over {stats.universities > 0 ? stats.universities : '200'} State Universities
-            <br className="hidden sm:block" />
-            across Metro Manila.
+            <br className="hidden md:block" />
+            {' '}across Metro Manila.
           </p>
 
           {/* Search Form */}
@@ -236,35 +237,35 @@ export default function HeroSection() {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-3 gap-4 md:gap-8 max-w-4xl mx-auto mb-8">
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-yellow-400 rounded-full mb-4">
-                <Building className="h-8 w-8 text-red-900" />
+              <div className="inline-flex items-center justify-center w-12 h-12 md:w-16 md:h-16 bg-yellow-400 rounded-full mb-2 md:mb-4">
+                <Building className="h-6 w-6 md:h-8 md:w-8 text-red-900" />
               </div>
-              <div className="text-4xl md:text-5xl font-bold text-white mb-2">
+              <div className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-1 md:mb-2">
                 {stats.universities > 0 ? stats.universities : '200+'}
               </div>
-              <div className="text-gray-200 text-lg">Universities</div>
+              <div className="text-gray-200 text-sm md:text-lg">Universities</div>
             </div>
 
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-yellow-400 rounded-full mb-4">
-                <MapPin className="h-8 w-8 text-red-900" />
+              <div className="inline-flex items-center justify-center w-12 h-12 md:w-16 md:h-16 bg-yellow-400 rounded-full mb-2 md:mb-4">
+                <MapPin className="h-6 w-6 md:h-8 md:w-8 text-red-900" />
               </div>
-              <div className="text-4xl md:text-5xl font-bold text-white mb-2">
+              <div className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-1 md:mb-2">
                 {stats.locations > 0 ? stats.locations : '17'}
               </div>
-              <div className="text-gray-200 text-lg">Locations</div>
+              <div className="text-gray-200 text-sm md:text-lg">Locations</div>
             </div>
 
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-yellow-400 rounded-full mb-4">
-                <BookOpen className="h-8 w-8 text-red-900" />
+              <div className="inline-flex items-center justify-center w-12 h-12 md:w-16 md:h-16 bg-yellow-400 rounded-full mb-2 md:mb-4">
+                <BookOpen className="h-6 w-6 md:h-8 md:w-8 text-red-900" />
               </div>
-              <div className="text-4xl md:text-5xl font-bold text-white mb-2">
+              <div className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-1 md:mb-2">
                 {stats.programs > 0 ? stats.programs : '1,500+'}
               </div>
-              <div className="text-gray-200 text-lg">Programs</div>
+              <div className="text-gray-200 text-sm md:text-lg">Programs</div>
             </div>
           </div>
         </div>

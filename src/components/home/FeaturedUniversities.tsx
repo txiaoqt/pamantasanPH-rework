@@ -39,6 +39,7 @@ function UniversityCard({
     admissionDeadline
 }: Omit<UniversityCardProps, 'tuitionRange' | 'accreditation'>) {
     const { isSaved, toggleSaved, isLoaded } = useSavedUniversities();
+    const [isExpanded, setIsExpanded] = useState(false);
 
     const getStatusConfig = () => {
         switch (admissionStatus) {
@@ -89,9 +90,9 @@ function UniversityCard({
                 </div>
             </div>
 
-            <div className="p-6">
+            <div className="p-4 md:p-6">
                 <div className="mb-4">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-red-900 transition-colors">
+                    <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2 group-hover:text-red-900 transition-colors">
                         {name}
                     </h3>
                     <div className="flex items-center text-gray-600 text-sm mb-1">
@@ -100,8 +101,6 @@ function UniversityCard({
                     </div>
                     <div className="text-gray-500 text-sm">Est. {established}</div>
                 </div>
-
-                <p className="text-gray-600 text-sm mb-4 leading-relaxed">{description}</p>
 
                 <div className="flex items-center justify-between mb-4 text-sm">
                     <div className="flex items-center text-gray-600">
@@ -114,20 +113,35 @@ function UniversityCard({
                     </div>
                 </div>
 
-                <div className="mb-4 text-xs text-gray-600">
-                    📅 {admissionDeadline}
-                </div>
-                <div className="mb-6">
-                    <div className="flex flex-wrap gap-2">
-                        {subjects.map((subject, index) => (
-                            <span
-                                key={index}
-                                className="px-3 py-1 bg-red-50 text-red-700 text-xs rounded-full font-medium hover:bg-red-100 transition-colors"
-                            >
-                                {subject}
-                            </span>
-                        ))}
+                {/* Hidden on small and medium screens unless expanded */}
+                <div className={`lg:block ${isExpanded ? 'block' : 'hidden'}`}>
+                    <p className="text-gray-600 text-sm mb-4 leading-relaxed">{description}</p>
+
+                    <div className="mb-4 text-xs text-gray-600">
+                        📅 {admissionDeadline}
                     </div>
+                    <div className="mb-6">
+                        <div className="flex flex-wrap gap-2">
+                            {subjects.map((subject, index) => (
+                                <span
+                                    key={index}
+                                    className="px-3 py-1 bg-red-50 text-red-700 text-xs rounded-full font-medium hover:bg-red-100 transition-colors"
+                                >
+                                    {subject}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* See More/Less button - only show on small and medium screens */}
+                <div className="lg:hidden mb-4">
+                    <button
+                        onClick={() => setIsExpanded(!isExpanded)}
+                        className="text-maroon-600 hover:text-maroon-800 font-medium text-sm transition-colors"
+                    >
+                        {isExpanded ? 'See Less' : 'See More'}
+                    </button>
                 </div>
 
                 <div className="flex gap-2">
@@ -185,8 +199,8 @@ export default function FeaturedUniversities() {
     }, []);
 
     if (isLoading) {
-        return (
-            <section className="py-20 bg-white">
+    return (
+        <section className="py-10 md:py-20 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-12">
                         <div>
@@ -216,7 +230,7 @@ export default function FeaturedUniversities() {
 
     if (error) {
         return (
-            <section className="py-20 bg-white">
+            <section className="py-10 md:py-20 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
                         Featured Universities
@@ -228,7 +242,7 @@ export default function FeaturedUniversities() {
     }
 
     return (
-        <section className="py-20 bg-white">
+        <section className="py-10 md:py-20 bg-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-12">
                     <div>

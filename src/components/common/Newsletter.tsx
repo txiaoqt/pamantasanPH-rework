@@ -12,7 +12,7 @@ export default function Newsletter() {
   };
 
   return (
-    <section className="py-20 bg-gradient-to-br from-red-900 via-red-800 to-amber-900">
+    <section className="py-10 md:py-20 bg-gradient-to-br from-red-900 via-red-800 to-amber-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full mb-6">
