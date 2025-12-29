@@ -384,7 +384,7 @@ export default function UniversityDetails() {
               </div>
             </div>
 
-            <div className="flex items-center space-x-3 mt-6 lg:mt-0">
+            <div className="flex items-center justify-center sm:justify-start space-x-3 mt-6 lg:mt-0">
               <button
                 onClick={() => toggleSaved(university.id)}
                 disabled={!isLoaded}

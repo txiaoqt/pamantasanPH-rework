@@ -324,7 +324,7 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
           </button>
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
           <button
             onClick={() => toggleSaved(university.id)}
             disabled={!isLoaded}

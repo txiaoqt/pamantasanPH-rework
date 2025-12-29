@@ -164,16 +164,7 @@ export default function Universities() {
               </div>
 
               {/* Type filter */}
-              <select
-                value={typeFilter}
-                onChange={(e) => setTypeFilter(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-maroon-500 focus:border-transparent text-sm"
-              >
-                <option value="">All Types</option>
-                <option value="Public">Public</option>
-                <option value="Private">Private</option>
-                <option value="State">State</option>
-              </select>
+
 
               {/* Sort */}
               <select
@@ -187,7 +178,7 @@ export default function Universities() {
               </select>
 
               {/* View mode - Takes full width on mobile, positioned last */}
-              <div className="flex items-center justify-center gap-2 sm:col-span-1">
+              <div className="flex items-center justify-center gap-2 sm:col-span-1 col-span-2 sm:col-span-1">
                 <button
                   onClick={() => setViewMode('grid')}
                   className={`p-2 rounded-lg transition-colors ${
