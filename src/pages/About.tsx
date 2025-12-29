@@ -1,5 +1,6 @@
 import React from 'react';
 import { Users, Target, Heart, Globe, BookOpen, TrendingUp, Shield } from 'lucide-react';
+import memeImage from '../assets/Images/meme.png';
 
 interface TeamMemberProps {
   name: string;
@@ -48,27 +49,9 @@ function ValueCard({ icon, title, description }: ValueCardProps) {
 export default function About() {
   const teamMembers = [
     {
-      name: 'Alyssa Marie Dela Cruz',
-      role: 'Project Manager, Frontend Developer',
-      image: 'Images/alyssa.jpg',
-      description: 'lorem ipsum dolor'
-    },
-    {
-      name: 'Christopher Natada',
+      name: 'The FullStack VibeCoder',
       role: 'Full stack Vibecoder',
-      image: 'Images/toff.jpg',
-      description: 'lorem ipsum'
-    },
-    {
-      name: 'Naomi Erika Angel De Guzman',
-      role: 'UI/UX Designer',
-      image: 'Images/nami.jpg',
-      description: 'lorem ipsum'
-    },
-    {
-      name: 'Daniella Simara',
-      role: 'Full stack Developer',
-      image: 'Images/dani.png',
+      image: memeImage,
       description: 'lorem ipsum'
     }
   ];

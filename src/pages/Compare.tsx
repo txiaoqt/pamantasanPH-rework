@@ -160,22 +160,7 @@ function ComparisonTable({ selectedUniversities, onRemove }: ComparisonTableProp
             </tr>
 
 
-            {/* Optional fields – only render if present in universities.ts */}
-            {['admissionRate', 'graduationRate', 'employmentRate'].map((field) => (
-              <tr key={field}>
-                <td className="px-6 py-4 font-medium text-gray-900 bg-gray-50">
-                  {field.replace(/([A-Z])/g, ' $1').trim()}
-                </td>
-                {selectedUniversities.map((university) => (
-                  <td
-                    key={university.id}
-                    className="px-6 py-4 text-center text-gray-600"
-                  >
-                    {university[field as keyof University] || '—'}
-                  </td>
-                ))}
-              </tr>
-            ))}
+
           </tbody>
         </table>
       </div>

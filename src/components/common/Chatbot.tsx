@@ -1582,10 +1582,10 @@ Want me to dive deeper into their programs, admission processes, or campus facil
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 bg-maroon-800 hover:bg-maroon-700 text-white p-4 rounded-full shadow-lg transition-all duration-300 z-50 group"
+          className="fixed bottom-4 right-4 md:bottom-6 md:right-6 bg-maroon-800 hover:bg-maroon-700 text-white p-3 md:p-4 rounded-full shadow-lg transition-all duration-300 z-50 group"
           aria-label="Open chat"
         >
-          <MessageCircle className="h-6 w-6" />
+          <MessageCircle className="h-5 w-5 md:h-6 md:w-6" />
           <div className="absolute -top-2 -left-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
             Ask me!
           </div>
