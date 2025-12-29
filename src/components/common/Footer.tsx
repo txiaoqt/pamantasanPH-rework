@@ -86,15 +86,15 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4 text-yellow-400">Contact Us</h3>
             <ul className="space-y-3">
               <li className="flex items-center space-x-2">
-                <Mail className="h-4 w-4 text-red-400" />
+                <Mail className="h-4 w-4 text-red-400 shrink-0" />
                 <span className="text-gray-400">info@UniCentral.com</span>
               </li>
               <li className="flex items-center space-x-2">
-                <Phone className="h-4 w-4 text-red-400" />
+                <Phone className="h-4 w-4 text-red-400 shrink-0" />
                 <span className="text-gray-400">+63 945 552 3661</span>
               </li>
               <li className="flex items-center space-x-2">
-                <MapPin className="h-4 w-4 text-red-400" />
+                <MapPin className="h-4 w-4 text-red-400 shrink-0" />
                 <span className="text-gray-400">Metro Manila, Philippines</span>
               </li>
             </ul>

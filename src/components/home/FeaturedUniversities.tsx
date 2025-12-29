@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Star, Users, BookOpen, MapPin, Heart, BarChart3, ExternalLink } from 'lucide-react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { UniversityService } from '../../services/universityService';
 import { University } from '../university/UniversityCard';
 import { useSavedUniversities } from '../../hooks/useSavedUniversities';
@@ -36,8 +36,9 @@ function UniversityCard({
     subjects,
     imageUrl,
     admissionStatus,
-    admissionDeadline
-}: Omit<UniversityCardProps, 'tuitionRange' | 'accreditation'>) {
+    admissionDeadline,
+    onCompare
+}: Omit<UniversityCardProps, 'tuitionRange' | 'accreditation'> & { onCompare?: (university: University) => void }) {
     const { isSaved, toggleSaved, isLoaded } = useSavedUniversities();
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -144,31 +145,38 @@ function UniversityCard({
                     </button>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                     <button
                         onClick={() => toggleSaved(id)}
                         disabled={!isLoaded}
-                        className={`flex-1 flex items-center justify-center px-4 py-2 border rounded-lg transition-all duration-300 
+                        className={`flex-1 min-w-0 px-3 py-2 border rounded-lg transition-all duration-300 text-xs sm:text-sm flex items-center
                             ${isSaved(id)
                                 ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'
                                 : 'text-maroon-700 border-maroon-200 hover:bg-maroon-50'
-                            } 
+                            }
                             ${!isLoaded ? 'opacity-50 cursor-not-allowed' : ''}
                         `}
                     >
-                        <Heart className={`h-4 w-4 mr-1 ${isSaved(id) ? 'fill-current' : ''}`} />
-                        {isSaved(id) ? 'Saved' : 'Save'}
+                        <Heart className={`h-3 w-3 sm:h-4 sm:w-4 mr-1 ${isSaved(id) ? 'fill-current' : ''}`} />
+                        <span className="text-xs sm:text-sm">{isSaved(id) ? 'Saved' : 'Save'}</span>
                     </button>
-                    <button className="flex-1 flex items-center justify-center px-4 py-2 text-red-700 border border-red-200 rounded-lg hover:bg-red-50 transition-all duration-300">
-                        <BarChart3 className="h-4 w-4 mr-1" />
-                        Compare
+                    <button
+                        onClick={() => onCompare && onCompare({
+                            id, name, location, province: '', established, type, students, programs, description, subjects, imageUrl,
+                            longDescription: '', galleryImages: [], accreditation: [], admissionStatus, admissionDeadline,
+                            facilities: [], amenities: [], achievements: [], quickfacts: [], admissionRequirements: [], applicationProcess: []
+                        })}
+                        className="flex-1 min-w-0 px-3 py-2 text-red-700 border border-red-200 rounded-lg hover:bg-red-50 transition-all duration-300 text-xs sm:text-sm flex items-center"
+                    >
+                        <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                        <span className="text-xs sm:text-sm">Compare</span>
                     </button>
                     <Link
                         to={`/universities/${id}`}
-                        className="px-4 py-2 bg-maroon-800 text-white rounded-lg hover:bg-maroon-700 transition-colors flex items-center"
+                        className="flex-1 min-w-0 px-3 py-2 bg-maroon-800 text-white rounded-lg hover:bg-maroon-700 transition-colors flex items-center justify-center text-xs sm:text-sm"
                     >
-                        <ExternalLink className="h-4 w-4 mr-1" />
-                        View
+                        <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                        <span className="text-xs sm:text-sm">View</span>
                     </Link>
                 </div>
             </div>
@@ -177,9 +185,42 @@ function UniversityCard({
 }
 
 export default function FeaturedUniversities() {
+    const navigate = useNavigate();
     const [featuredUniversities, setFeaturedUniversities] = useState<University[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    const handleCompare = (university: University) => {
+        const compareList = JSON.parse(localStorage.getItem('compareUniversities') || '[]');
+        const universityData = {
+            id: university.id,
+            name: university.name,
+            imageUrl: university.imageUrl,
+            type: university.type,
+            location: university.location,
+            programs: university.programs
+        };
+
+        // Check if university is already in compare list
+        const existingIndex = compareList.findIndex((item: any) => item.id === university.id);
+
+        if (existingIndex >= 0) {
+            // Remove from compare list
+            compareList.splice(existingIndex, 1);
+        } else {
+            // Add to compare list (max 3 universities)
+            if (compareList.length >= 3) {
+                alert('You can compare up to 3 universities at a time. Please remove one first.');
+                return;
+            }
+            compareList.push(universityData);
+        }
+
+        localStorage.setItem('compareUniversities', JSON.stringify(compareList));
+
+        // Navigate to compare page
+        navigate('/compare');
+    };
 
     useEffect(() => {
         const fetchFeaturedUniversities = async () => {
@@ -263,7 +304,7 @@ export default function FeaturedUniversities() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {featuredUniversities.map((university) => (
-                        <UniversityCard key={university.id} {...university} />
+                        <UniversityCard key={university.id} {...university} onCompare={handleCompare} />
                     ))}
                 </div>
 

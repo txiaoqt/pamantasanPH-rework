@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { MapPin, Star, Users, BookOpen, Heart, BarChart3, ExternalLink } from 'lucide-react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSavedUniversities } from '../../hooks/useSavedUniversities';
 import { AcademicProgram } from '../../lib/supabase';
 
@@ -92,19 +92,53 @@ function AdmissionStatusBadge({ status }: { status: 'open' | 'not-yet-open' | 'c
 export default function UniversityCard({ viewMode, ...university }: UniversityCardProps) {
   const { isSaved, toggleSaved, isLoaded } = useSavedUniversities();
   const [isExpanded, setIsExpanded] = useState(false);
+  const navigate = useNavigate();
+
+  const handleCompare = () => {
+    const compareList = JSON.parse(localStorage.getItem('compareUniversities') || '[]');
+    const universityData = {
+      id: university.id,
+      name: university.name,
+      imageUrl: university.imageUrl,
+      type: university.type,
+      location: university.location,
+      programs: university.programs
+    };
+
+    // Check if university is already in compare list
+    const existingIndex = compareList.findIndex((item: any) => item.id === university.id);
+
+    if (existingIndex >= 0) {
+      // Remove from compare list
+      compareList.splice(existingIndex, 1);
+    } else {
+      // Add to compare list (max 3 universities)
+      if (compareList.length >= 3) {
+        alert('You can compare up to 3 universities at a time. Please remove one first.');
+        return;
+      }
+      compareList.push(universityData);
+    }
+
+    localStorage.setItem('compareUniversities', JSON.stringify(compareList));
+
+    // Navigate to compare page
+    navigate('/compare');
+  };
 
   if (viewMode === 'list') {
     return (
       <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
-        <div className="flex flex-col md:flex-row">
-          <div className="w-full md:w-48 h-32 md:h-32 flex-shrink-0">
+        {/* Stacked layout on extra small screens, horizontal on larger screens */}
+        <div className="flex flex-col">
+          <div className="w-full h-20 sm:h-24 md:h-32 flex-shrink-0">
             <img
               src={university.imageUrl}
               alt={university.name}
               className="w-full h-full object-cover"
             />
           </div>
-          <div className="flex-1 p-4 md:p-6">
+          <div className="p-3 sm:p-4 md:p-6">
             {/* Always visible: Name and Location */}
             <div className="mb-4">
               <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">{university.name}</h3>
@@ -189,7 +223,10 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
               >
                 <Heart className={`h-4 w-4 ${isSaved(university.id) ? 'fill-current' : ''}`} />
               </button>
-              <button className="p-2 text-maroon-700 border border-maroon-200 rounded-lg hover:bg-maroon-50 transition-colors">
+              <button
+                onClick={handleCompare}
+                className="p-2 text-maroon-700 border border-maroon-200 rounded-lg hover:bg-maroon-50 transition-colors"
+              >
                 <BarChart3 className="h-4 w-4" />
               </button>
               <Link
@@ -209,7 +246,7 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
   // Grid View
   return (
     <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group">
-      <div className="relative h-48">
+      <div className="relative h-40 sm:h-44 md:h-48">
         <img
           src={university.imageUrl}
           alt={university.name}
@@ -287,30 +324,32 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
           </button>
         </div>
 
-        <div className="flex gap-2">
-          <button 
+        <div className="flex flex-wrap gap-2">
+          <button
             onClick={() => toggleSaved(university.id)}
             disabled={!isLoaded}
-            className={`flex-1 flex items-center justify-center px-4 py-2 border rounded-lg transition-all duration-300 ${
+            className={`flex-1 min-w-0 px-3 py-2 border rounded-lg transition-colors text-xs sm:text-sm flex items-center ${
               isSaved(university.id)
                 ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'
                 : 'text-maroon-700 border-maroon-200 hover:bg-maroon-50'
             } ${!isLoaded ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            <Heart className={`h-4 w-4 mr-1 ${isSaved(university.id) ? 'fill-current' : ''}`} />
-            {isSaved(university.id) ? 'Saved' : 'Save'}
+            <Heart className={`h-3 w-3 sm:h-4 sm:w-4 mr-1 ${isSaved(university.id) ? 'fill-current' : ''}`} />
+            <span className="text-xs sm:text-sm">{isSaved(university.id) ? 'Saved' : 'Save'}</span>
           </button>
-          <button className="flex-1 flex items-center justify-center px-4 py-2 text-maroon-700 border border-maroon-200 rounded-lg hover:bg-maroon-50 transition-all duration-300">
-            <BarChart3 className="h-4 w-4 mr-1" />
-            Compare
+          <button
+            onClick={handleCompare}
+            className="flex-1 min-w-0 px-3 py-2 text-maroon-700 border border-maroon-200 rounded-lg hover:bg-maroon-50 transition-colors text-xs sm:text-sm flex items-center"
+          >
+            <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+            <span className="text-xs sm:text-sm">Compare</span>
           </button>
-
           <Link
             to={`/universities/${university.id}`}
-            className="px-4 py-2 bg-maroon-800 text-white rounded-lg hover:bg-maroon-700 transition-colors flex items-center"
+            className="flex-1 min-w-0 px-3 py-2 bg-maroon-800 text-white rounded-lg hover:bg-maroon-700 transition-colors flex items-center justify-center text-xs sm:text-sm"
           >
-            <ExternalLink className="h-4 w-4 mr-1" />
-            View
+            <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+            <span className="text-xs sm:text-sm">View</span>
           </Link>
         </div>
       </div>

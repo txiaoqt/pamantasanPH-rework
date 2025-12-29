@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -76,6 +76,7 @@ function TabNavigation({ activeTab, setActiveTab, tabs }: TabProps) {
 }
 
 export default function UniversityDetails() {
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedImage, setSelectedImage] = useState(0);
@@ -156,12 +157,8 @@ export default function UniversityDetails() {
 
     localStorage.setItem('compareUniversities', JSON.stringify(compareList));
 
-    // Show feedback
-    const message = existingIndex >= 0
-      ? `${university.name} removed from comparison`
-      : `${university.name} added to comparison (${compareList.length}/3)`;
-
-    alert(message);
+    // Navigate to compare page
+    navigate('/compare');
   };
 
   useEffect(() => {

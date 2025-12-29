@@ -4,9 +4,8 @@ import { Search, BookOpen, Clock, Users, Award, TrendingUp } from 'lucide-react'
 import { AcademicProgramService, AggregatedProgram } from '../services/academicProgramService';
 import { UniversityService } from '../services/universityService';
 
-function ProgramCard({ program, onViewDetails, onFindUniversities }: {
+function ProgramCard({ program, onFindUniversities }: {
   program: AggregatedProgram;
-  onViewDetails: (program: AggregatedProgram) => void;
   onFindUniversities: (program: AggregatedProgram) => void;
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -87,16 +86,10 @@ function ProgramCard({ program, onViewDetails, onFindUniversities }: {
           </button>
         </div>
 
-        <div className="flex gap-2 mt-auto">
-          <button
-            onClick={() => onViewDetails(program)}
-            className="flex-1 px-4 py-2 text-maroon-700 border border-maroon-200 rounded-lg hover:bg-maroon-50 transition-all duration-300"
-          >
-            View Details
-          </button>
+        <div className="mt-auto">
           <button
             onClick={() => onFindUniversities(program)}
-            className="flex-1 px-4 py-2 bg-maroon-800 text-white rounded-lg hover:bg-maroon-700 transition-all duration-300"
+            className="w-full px-4 py-2 bg-maroon-800 text-white rounded-lg hover:bg-maroon-700 transition-all duration-300"
           >
             Find Universities
           </button>
@@ -116,6 +109,7 @@ export default function Programs() {
   const [categoryFilter, setCategoryFilter] = useState(searchParams.get('category') || '');
   const [levelFilter, setLevelFilter] = useState('');
   const [sortBy] = useState('popularity');
+
 
   // Fetch programs data
   useEffect(() => {
@@ -164,11 +158,7 @@ export default function Programs() {
     return filtered;
   }, [searchQuery, categoryFilter, levelFilter, programs]);
 
-  const handleViewDetails = (program: AggregatedProgram) => {
-    // For now, show program details. Could be enhanced to navigate to a dedicated program details page
-    const details = `Program: ${program.name} (${program.acronym})\n\nDescription: ${program.description}\n\nRequirements: ${program.requirements.join(', ')}\n\nDuration: ${program.duration}\n\nCategory: ${program.category}\n\nAvailable at: ${program.universities.join(', ')}`;
-    alert(details);
-  };
+
 
   const handleFindUniversities = (program: AggregatedProgram) => {
     // Navigate to universities page with program filter
@@ -262,7 +252,6 @@ export default function Programs() {
             <ProgramCard
               key={program.id}
               program={program}
-              onViewDetails={handleViewDetails}
               onFindUniversities={handleFindUniversities}
             />
           ))}
@@ -278,6 +267,8 @@ export default function Programs() {
           </div>
         )}
       </div>
+
+
     </div>
   );
 }
