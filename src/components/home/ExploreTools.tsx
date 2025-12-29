@@ -13,7 +13,7 @@ interface ToolCardProps {
 function ToolCard({ title, description, icon, color, onClick }: ToolCardProps) {
   return (
     <div
-      className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 group cursor-pointer border border-gray-100"
+      className="bg-white rounded-2xl p-4 sm:p-6 lg:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 group cursor-pointer border border-gray-100"
       onClick={onClick}
     >
       <div className={`w-16 h-16 ${color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
@@ -96,7 +96,7 @@ export default function ExploreTools() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
           {tools.map((tool, index) => (
             <ToolCard key={index} {...tool} />
           ))}
