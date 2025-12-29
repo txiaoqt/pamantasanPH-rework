@@ -1594,7 +1594,7 @@ Want me to dive deeper into their programs, admission processes, or campus facil
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 w-96 h-[500px] bg-white rounded-lg shadow-2xl z-50 flex flex-col">
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 md:left-auto md:right-6 md:bottom-6 md:translate-x-0 w-[calc(100vw-2rem)] max-w-sm md:w-96 h-[500px] bg-white rounded-lg shadow-2xl z-50 flex flex-col">
           {/* Header */}
           <div className="bg-maroon-800 text-white p-4 rounded-t-lg flex items-center justify-between">
             <div className="flex items-center space-x-2">

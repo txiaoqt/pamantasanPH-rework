@@ -105,39 +105,43 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
             />
           </div>
           <div className="flex-1 p-4 md:p-6">
-            <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
-              <div className="mb-2 md:mb-0">
-                <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">{university.name}</h3>
-                <div className="flex items-center text-gray-600 text-sm mb-1">
-                  <MapPin className="h-4 w-4 mr-1" />
-                  {university.location}, {university.province}
+            {/* Always visible: Name and Location */}
+            <div className="mb-4">
+              <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">{university.name}</h3>
+              <div className="flex items-center text-gray-600 text-sm">
+                <MapPin className="h-4 w-4 mr-1" />
+                {university.location}, {university.province}
+              </div>
+            </div>
+
+            {/* Hidden details - only show when expanded */}
+            <div className={isExpanded ? 'block' : 'hidden'}>
+              <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
+                <div className="mb-2 md:mb-0">
+                  <div className="text-gray-500 text-sm">Est. {university.established}</div>
                 </div>
-                <div className="text-gray-500 text-sm">Est. {university.established}</div>
+                <div className="flex items-center space-x-2 md:space-x-4">
+                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${university.type === 'Public' ? 'bg-blue-100 text-blue-800' :
+                    university.type === 'State' ? 'bg-green-100 text-green-800' :
+                      'bg-purple-100 text-purple-800'
+                    }`}>
+                    {university.type}
+                  </span>
+                  <AdmissionStatusBadge status={university.admissionStatus} />
+                </div>
               </div>
-              <div className="flex items-center space-x-2 md:space-x-4">
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${university.type === 'Public' ? 'bg-blue-100 text-blue-800' :
-                  university.type === 'State' ? 'bg-green-100 text-green-800' :
-                    'bg-purple-100 text-purple-800'
-                  }`}>
-                  {university.type}
-                </span>
-                <AdmissionStatusBadge status={university.admissionStatus} />
-              </div>
-            </div>
 
-            <div className="flex items-center justify-between mb-4 text-sm">
-              <div className="flex items-center text-gray-600">
-                <Users className="h-4 w-4 mr-1" />
-                <span className="font-medium">{university.students} students</span>
+              <div className="flex items-center justify-between mb-4 text-sm">
+                <div className="flex items-center text-gray-600">
+                  <Users className="h-4 w-4 mr-1" />
+                  <span className="font-medium">{university.students} students</span>
+                </div>
+                <div className="flex items-center text-gray-600">
+                  <BookOpen className="h-4 w-4 mr-1" />
+                  <span className="font-medium">{university.programs} programs</span>
+                </div>
               </div>
-              <div className="flex items-center text-gray-600">
-                <BookOpen className="h-4 w-4 mr-1" />
-                <span className="font-medium">{university.programs} programs</span>
-              </div>
-            </div>
 
-        {/* Hidden on small and medium screens unless expanded */}
-        <div className={`lg:block ${isExpanded ? 'block' : 'hidden'}`}>
               <p className="text-gray-600 text-sm mb-4 line-clamp-2">{university.description}</p>
 
               <div className="mb-4 text-xs text-gray-600">
@@ -162,8 +166,8 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
               </div>
             </div>
 
-            {/* See More/Less button - only show on small and medium screens */}
-            <div className="lg:hidden mb-4">
+            {/* See More/Less button - always visible */}
+            <div className="mt-4">
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
                 className="text-maroon-600 hover:text-maroon-800 font-medium text-sm transition-colors"
@@ -172,7 +176,8 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
               </button>
             </div>
 
-            <div className="flex gap-2">
+            {/* Action buttons - always visible, below See More */}
+            <div className="flex gap-2 mt-4">
               <button
                 onClick={() => toggleSaved(university.id)}
                 disabled={!isLoaded}

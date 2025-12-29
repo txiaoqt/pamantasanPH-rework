@@ -91,6 +91,7 @@ export default function UniversityDetails() {
 
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
   const [expandedColleges, setExpandedColleges] = useState<Record<string, boolean>>({});
+  const [expandedAmenities, setExpandedAmenities] = useState<Record<string, boolean>>({});
 
   const { isSaved, toggleSaved, isLoaded } = useSavedUniversities();
 
@@ -333,6 +334,13 @@ export default function UniversityDetails() {
     }));
   };
 
+  const toggleAmenity = (sectionName: string) => {
+    setExpandedAmenities(prev => ({
+      ...prev,
+      [sectionName]: !prev[sectionName]
+    }));
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -359,7 +367,7 @@ export default function UniversityDetails() {
               </div>
 
               <div className="flex items-center text-gray-600 mb-4">
-                <MapPin className="h-4 w-4 mr-1" />
+                <MapPin className="h-8 w-8 md:h-4 md:w-4 mr-1" />
                 <span>{university.address || 'Address not available'}</span>
               </div>
 
@@ -589,35 +597,35 @@ export default function UniversityDetails() {
                       <div key={collegeName} className="bg-white border border-gray-200 rounded-lg overflow-hidden">
                         <button
                           onClick={() => toggleCollege(collegeName)}
-                          className={`w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors ${colorClass.replace('border-', 'border-l-4 ')}`}
+                          className={`w-full px-4 sm:px-6 py-3 sm:py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors ${colorClass.replace('border-', 'border-l-4 ')}`}
                         >
                           <div>
-                            <h3 className="text-2xl font-semibold text-gray-900">{collegeName}</h3>
-                            <p className="text-gray-600 mt-1">{programs.length} program{programs.length !== 1 ? 's' : ''}</p>
+                            <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-900">{collegeName}</h3>
+                            <p className="text-gray-600 mt-1 text-sm sm:text-base">{programs.length} program{programs.length !== 1 ? 's' : ''}</p>
                           </div>
                           <ChevronDown
-                            className={`h-6 w-6 text-gray-500 transition-transform ${
+                            className={`h-5 w-5 sm:h-6 sm:w-6 text-gray-500 transition-transform ${
                               expandedColleges[collegeName] ? 'rotate-180' : ''
                             }`}
                           />
                         </button>
                         {expandedColleges[collegeName] && (
-                          <div className="px-6 pb-6 border-t border-gray-100">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
+                          <div className="px-4 sm:px-6 pb-4 sm:pb-6 border-t border-gray-100">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6 pt-4 sm:pt-6">
                               {programs.map((program) => (
-                                <div key={program.id} className="bg-white p-6 rounded-xl border border-gray-200 hover:border-indigo-300 hover:shadow-lg transition-all duration-300 group">
-                                  <div className="space-y-4">
+                                <div key={program.id} className="bg-white p-3 sm:p-6 rounded-xl border border-gray-200 hover:border-indigo-300 hover:shadow-lg transition-all duration-300 group">
+                                  <div className="space-y-2 sm:space-y-4">
                                     <div className="flex items-start justify-between">
                                       <div className="flex-1">
-                                        <h4 className="text-lg font-semibold text-gray-900 leading-tight mb-2 group-hover:text-indigo-700 transition-colors">
+                                        <h4 className="text-sm sm:text-base md:text-lg font-semibold text-gray-900 leading-tight mb-1 sm:mb-2 group-hover:text-indigo-700 transition-colors">
                                           {program.programName}
                                         </h4>
                                         {program.degreeLevel && (
-                                          <p className="text-sm text-gray-600 mb-3">{program.degreeLevel}</p>
+                                          <p className="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3">{program.degreeLevel}</p>
                                         )}
                                       </div>
                                       {program.programType && (
-                                        <span className={`px-3 py-1 rounded-full text-xs font-medium border ${
+                                        <span className={`px-2 py-1 sm:px-3 rounded-full text-xs font-medium border ${
                                           program.programType === 'undergraduate' ? 'bg-emerald-100 text-emerald-800 border-emerald-300' :
                                           program.programType === 'graduate' ? 'bg-violet-100 text-violet-800 border-violet-300' :
                                           program.programType === 'diploma' ? 'bg-amber-100 text-amber-800 border-amber-300' :
@@ -629,11 +637,11 @@ export default function UniversityDetails() {
                                     </div>
 
                                     {program.specializations && program.specializations.length > 0 && (
-                                      <div className="space-y-2">
-                                        <p className="text-sm font-medium text-gray-700">Specializations</p>
-                                        <div className="flex flex-wrap gap-2">
+                                      <div className="space-y-1 sm:space-y-2">
+                                        <p className="text-xs sm:text-sm font-medium text-gray-700">Specializations</p>
+                                        <div className="flex flex-wrap gap-1 sm:gap-2">
                                           {program.specializations.map((spec, index) => (
-                                            <span key={index} className="px-3 py-1 bg-slate-100 text-slate-700 text-sm rounded-lg border border-slate-300 hover:bg-slate-200 transition-colors">
+                                            <span key={index} className="px-2 py-1 sm:px-3 bg-slate-100 text-slate-700 text-xs sm:text-sm rounded-lg border border-slate-300 hover:bg-slate-200 transition-colors">
                                               {spec}
                                             </span>
                                           ))}
@@ -674,8 +682,8 @@ export default function UniversityDetails() {
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">Academic & Campus Life</h2>
-              <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-                Academic calendar, campus facilities, and student life at {university.name}.
+              <p className="text-sm sm:text-base md:text-lg text-gray-600 max-w-3xl mx-auto">
+                Academic calendar, campus amenities, and campus facilities available at {university.name}.
               </p>
             </div>
 
@@ -714,14 +722,46 @@ export default function UniversityDetails() {
 
                 {university.amenities && university.amenities.length > 0 && (
                   <div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-6">Campus Amenities</h3>
-                    <div className="space-y-3">
-                      {university.amenities.map((amenity, index) => (
-                        <div key={index} className="flex items-center bg-white p-4 rounded-lg border border-gray-200">
-                          <CheckCircle className="h-5 w-5 text-green-600 mr-3" />
-                          <span className="text-gray-700">{amenity}</span>
-                        </div>
-                      ))}
+                    {/* Always expanded on desktop, collapsible on mobile */}
+                    <div className="hidden lg:block">
+                      <h3 className="text-2xl font-bold text-gray-900 mb-6">Campus Amenities</h3>
+                      <div className="space-y-3">
+                        {university.amenities.map((amenity, index) => (
+                          <div key={index} className="flex items-center bg-white p-4 rounded-lg border border-gray-200">
+                            <CheckCircle className="h-5 w-5 text-green-600 mr-3" />
+                            <span className="text-gray-700">{amenity}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Collapsible on mobile */}
+                    <div className="lg:hidden">
+                      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                        <button
+                          onClick={() => toggleAmenity('amenities')}
+                          className="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
+                        >
+                          <h3 className="text-lg font-bold text-gray-900">Campus Amenities</h3>
+                          <ChevronDown
+                            className={`h-5 w-5 text-gray-500 transition-transform ${
+                              expandedAmenities['amenities'] ? 'rotate-180' : ''
+                            }`}
+                          />
+                        </button>
+                        {expandedAmenities['amenities'] && (
+                          <div className="px-4 pb-4 border-t border-gray-100">
+                            <div className="space-y-3 pt-4">
+                              {university.amenities.map((amenity, index) => (
+                                <div key={index} className="flex items-center bg-gray-50 p-3 rounded-lg border border-gray-100">
+                                  <CheckCircle className="h-4 w-4 text-green-600 mr-3" />
+                                  <span className="text-gray-700 text-sm">{amenity}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 )}
@@ -730,16 +770,48 @@ export default function UniversityDetails() {
               <div className="space-y-8">
                 {university.facilities && university.facilities.length > 0 && (
                   <div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-6">Campus Facilities</h3>
-                    <div className="grid grid-cols-1 gap-4">
-                      {university.facilities.map((facility, index) => (
-                        <div key={index} className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                          <div className="flex items-center">
-                            <Building className="h-6 w-6 text-maroon-600 mr-4 flex-shrink-0" />
-                            <span className="text-gray-900 font-medium">{facility}</span>
+                    {/* Always expanded on desktop, collapsible on mobile */}
+                    <div className="hidden lg:block">
+                      <h3 className="text-2xl font-bold text-gray-900 mb-6">Campus Facilities</h3>
+                      <div className="grid grid-cols-1 gap-4">
+                        {university.facilities.map((facility, index) => (
+                          <div key={index} className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                            <div className="flex items-center">
+                              <Building className="h-6 w-6 text-maroon-600 mr-4 flex-shrink-0" />
+                              <span className="text-gray-900 font-medium">{facility}</span>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Collapsible on mobile */}
+                    <div className="lg:hidden">
+                      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                        <button
+                          onClick={() => toggleAmenity('facilities')}
+                          className="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
+                        >
+                          <h3 className="text-lg font-bold text-gray-900">Campus Facilities</h3>
+                          <ChevronDown
+                            className={`h-5 w-5 text-gray-500 transition-transform ${
+                              expandedAmenities['facilities'] ? 'rotate-180' : ''
+                            }`}
+                          />
+                        </button>
+                        {expandedAmenities['facilities'] && (
+                          <div className="px-4 pb-4 border-t border-gray-100">
+                            <div className="space-y-3 pt-4">
+                              {university.facilities.map((facility, index) => (
+                                <div key={index} className="flex items-center bg-gray-50 p-3 rounded-lg border border-gray-100">
+                                  <Building className="h-4 w-4 text-maroon-600 mr-3 flex-shrink-0" />
+                                  <span className="text-gray-900 text-sm font-medium">{facility}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 )}
@@ -859,28 +931,28 @@ export default function UniversityDetails() {
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">Contact Information</h2>
                 <div className="bg-white p-6 rounded-xl border border-gray-200 space-y-4">
                   <div className="flex items-center">
-                    <MapPin className="h-5 w-5 text-maroon-600 mr-3" />
+                    <MapPin className="h-5 w-5 text-maroon-600 mr-3 shrink-0" />
                     <div>
                       <div className="font-medium text-gray-900">Address</div>
                       <div className="text-gray-600">{university.address || 'N/A'}</div>
                     </div>
                   </div>
                   <div className="flex items-center">
-                    <Phone className="h-5 w-5 text-maroon-600 mr-3" />
+                    <Phone className="h-5 w-5 text-maroon-600 mr-3 shrink-0" />
                     <div>
                       <div className="font-medium text-gray-900">Phone</div>
                       <div className="text-gray-600">{university.phone || 'N/A'}</div>
                     </div>
                   </div>
                   <div className="flex items-center">
-                    <Mail className="h-5 w-5 text-maroon-600 mr-3" />
+                    <Mail className="h-5 w-5 text-maroon-600 mr-3 shrink-0" />
                     <div>
                       <div className="font-medium text-gray-900">Email</div>
                       <div className="text-gray-600">{university.email || 'N/A'}</div>
                     </div>
                   </div>
                   <div className="flex items-center">
-                    <Globe className="h-5 w-5 text-maroon-600 mr-3" />
+                    <Globe className="h-5 w-5 text-maroon-600 mr-3 shrink-0" />
                     <div>
                       <div className="font-medium text-gray-900">Website</div>
                       <a href={university.website} className="text-maroon-600 hover:text-maroon-700">
