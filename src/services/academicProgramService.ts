@@ -401,7 +401,7 @@ export class AcademicProgramService {
     return 'Moderate';
   }
 
-  private static normalizeProgramName(programName: string): string {
+  public static normalizeProgramName(programName: string): string {
     // Normalize program names to group similar programs together
     let normalized = programName.toLowerCase().trim();
 

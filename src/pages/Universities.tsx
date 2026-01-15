@@ -48,10 +48,15 @@ export default function Universities() {
         const allPrograms = await AcademicProgramService.getAllPrograms();
         console.log('All programs fetched:', allPrograms.length);
 
-        // Find programs that match the search
-        const matchingPrograms = allPrograms.filter(program =>
-          program.programName.toLowerCase().includes(decodedProgram.toLowerCase())
-        );
+        // Normalize the program name from URL for matching
+        const normalizedSearchProgram = AcademicProgramService.normalizeProgramName(decodedProgram);
+        console.log('Normalized search program:', normalizedSearchProgram);
+
+        // Find programs that match by normalizing both sides
+        const matchingPrograms = allPrograms.filter(program => {
+          const normalizedProgramName = AcademicProgramService.normalizeProgramName(program.programName);
+          return normalizedProgramName === normalizedSearchProgram;
+        });
         console.log('Matching programs:', matchingPrograms.length, matchingPrograms);
 
         // Get unique university IDs that offer these programs
