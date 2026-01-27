@@ -85,8 +85,8 @@ export default function About() {
       <div className="bg-gradient-to-br from-maroon-900 via-maroon-800 to-red-900 text-white py-10 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-6">About UniCentral</h1>
-            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-maroon-100 max-w-4xl mx-auto leading-relaxed">
+            <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-6">About UniCentral</h1>
+            <p className="text-xs sm:text-base md:text-lg lg:text-xl text-maroon-100 max-w-4xl mx-auto leading-relaxed">
               lorem ipsum dolor
             </p>
           </div>
@@ -101,8 +101,8 @@ export default function About() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6">Meet Our Team</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <h2 className="text-xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6">Meet Our Team</h2>
+            <p className="text-base text-gray-600 max-w-3xl mx-auto">
               lorem ipsum dolor
             </p>
           </div>
@@ -120,11 +120,11 @@ export default function About() {
       <section className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6">Our Story</h2>
+            <h2 className="text-xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6">Our Story</h2>
           </div>
 
           <div className="prose prose-lg mx-auto text-gray-600">
-            <p className="text-xl leading-relaxed mb-6">
+            <p className="text-base leading-relaxed mb-6">
               lorem ipsum dolor
             </p>
           </div>

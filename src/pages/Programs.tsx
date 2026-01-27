@@ -172,8 +172,8 @@ export default function Programs() {
       {/* Header */}
       <div className="bg-gradient-to-br from-maroon-900 via-maroon-800 to-red-900 text-white py-8 md:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Academic Programs</h1>
-          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-maroon-100 max-w-3xl">
+          <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Academic Programs</h1>
+          <p className="text-xs sm:text-base md:text-lg lg:text-xl text-maroon-100 max-w-3xl">
             Explore diverse academic programs and find the perfect course for your career goals.
           </p>
         </div>
@@ -184,15 +184,15 @@ export default function Programs() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-3 gap-4 md:gap-8">
             <div className="text-center">
-              <div className="text-3xl font-bold text-maroon-800 mb-2">{totalProgramsCount}</div>
+              <div className="text-2xl font-bold text-maroon-800 mb-2">{totalProgramsCount}</div>
               <div className="text-gray-600">Programs Available</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-maroon-800 mb-2">{categories.length}</div>
+              <div className="text-2xl font-bold text-maroon-800 mb-2">{categories.length}</div>
               <div className="text-gray-600">Categories</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-maroon-800 mb-2">{[...new Set(programs.flatMap(p => p.universities))].length}</div>
+              <div className="text-2xl font-bold text-maroon-800 mb-2">{[...new Set(programs.flatMap(p => p.universities))].length}</div>
               <div className="text-gray-600">Universities</div>
             </div>
           </div>
@@ -202,7 +202,7 @@ export default function Programs() {
       {/* Filters */}
       <div className="bg-white border-b border-gray-200 sticky top-16 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex flex-row gap-2 md:gap-4 items-center">
+          <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <input
@@ -242,7 +242,7 @@ export default function Programs() {
       {/* Results */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex items-center justify-between mb-6">
-          <p className="text-gray-600">
+          <p className="text-sm text-gray-600">
             Showing {filteredPrograms.length} of {programs.length} programs
           </p>
         </div>
@@ -262,8 +262,8 @@ export default function Programs() {
             <div className="text-gray-400 mb-4">
               <BookOpen className="h-16 w-16 mx-auto" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No programs found</h3>
-            <p className="text-gray-600">Try adjusting your search criteria or filters.</p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">No programs found</h3>
+            <p className="text-sm text-gray-600">Try adjusting your search criteria or filters.</p>
           </div>
         )}
       </div>

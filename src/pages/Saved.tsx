@@ -67,8 +67,8 @@ export default function Saved() {
     <div className="min-h-screen bg-gray-50">
       <div className="bg-gradient-to-br from-maroon-900 via-maroon-800 to-red-900 text-white py-8 md:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Saved Universities</h1>
-          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-maroon-100 max-w-3xl">
+          <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Saved Universities</h1>
+          <p className="text-xs sm:text-base md:text-lg lg:text-xl text-maroon-100 max-w-3xl">
             Your bookmarked universities and their current admission status
           </p>
         </div>
@@ -80,8 +80,8 @@ export default function Saved() {
             <div className="text-gray-400 mb-4">
               <Heart className="h-16 w-16 mx-auto" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No Saved Universities</h3>
-            <p className="text-gray-600 mb-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">No Saved Universities</h3>
+            <p className="text-sm text-gray-600 mb-6">
               Start exploring universities and save your favorites to keep track of them.
             </p>
             <Link
@@ -95,10 +95,10 @@ export default function Saved() {
           <>
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">
+                <h2 className="text-xl font-bold text-gray-900">
                   {savedUniversityData.length} Saved {savedUniversityData.length === 1 ? 'University' : 'Universities'}
                 </h2>
-                <p className="text-gray-600">Track admission status and important deadlines</p>
+                <p className="text-sm text-gray-600">Track admission status and important deadlines</p>
               </div>
               {savedUniversityData.length > 0 && (
                 <button
@@ -191,7 +191,7 @@ export default function Saved() {
             </div>
 
             <div className="mt-12 bg-white rounded-xl p-6 shadow-lg">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Admission Status Guide</h3>
+              <h3 className="text-base font-bold text-gray-900 mb-4">Admission Status Guide</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="flex items-center p-3 bg-green-50 rounded-lg border border-green-200">
                   <CheckCircle className="h-5 w-5 text-green-600 mr-3" />

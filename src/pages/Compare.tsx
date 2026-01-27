@@ -40,10 +40,10 @@ function ComparisonTable({ selectedUniversities, onRemove }: ComparisonTableProp
         <div className="text-gray-400 mb-4">
           <TrendingUp className="h-16 w-16 mx-auto" />
         </div>
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">
           Start Comparing Universities
         </h3>
-        <p className="text-gray-600">
+        <p className="text-gray-600 text-sm">
           Select universities from the list below to compare their features.
         </p>
       </div>
@@ -208,8 +208,8 @@ export default function Compare() {
       {/* Header */}
       <div className="bg-gradient-to-br from-maroon-900 via-maroon-800 to-red-900 text-white py-8 md:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Compare Universities</h1>
-          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-maroon-100 max-w-3xl">
+          <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Compare Universities</h1>
+          <p className="text-xs sm:text-base md:text-lg lg:text-xl text-maroon-100 max-w-3xl">
             Compare universities side-by-side to make an informed decision about
             your education.
           </p>
@@ -221,10 +221,10 @@ export default function Compare() {
         <div className="bg-white rounded-xl p-6 mb-8 shadow-lg">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-bold text-gray-900 mb-2">
+              <h2 className="text-lg font-bold text-gray-900 mb-2">
                 University Comparison
               </h2>
-              <p className="text-gray-600">
+              <p className="text-sm text-gray-600">
                 Selected {selectedUniversities.length} of 4 universities for
                 comparison
               </p>
@@ -251,7 +251,7 @@ export default function Compare() {
         {/* Available Universities */}
         {availableUniversities.length > 0 && (
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-6">
               Add Universities to Compare
               {selectedUniversities.length >= 4 && (
                 <span className="text-sm font-normal text-gray-600 ml-2">
