@@ -6,14 +6,6 @@ import { University } from '../components/university/UniversityCard'
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://zdixoeqnifczswpxospm.supabase.co'
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpkaXhvZXFuaWZjenN3cHhvc3BtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjQzNjMsImV4cCI6MjA4MDI0MDM2M30.VUhhm8xzl6Ah2yyG67_kSlin4iDMAfPEg0PExeNPZ4E'
 
-if (!supabaseUrl || supabaseUrl === 'https://zdixoeqnifczswpxospm.supabase.co') {
-  console.warn('⚠️  Supabase URL not configured. Set VITE_SUPABASE_URL in your .env file.')
-}
-
-if (!supabaseAnonKey || supabaseAnonKey === 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpkaXhvZXFuaWZjenN3cHhvc3BtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjQzNjMsImV4cCI6MjA4MDI0MDM2M30.VUhhm8xzl6Ah2yyG67_kSlin4iDMAfPEg0PExeNPZ4E') {
-  console.warn('⚠️  Supabase anon key not configured. Set VITE_SUPABASE_ANON_KEY in your .env file.')
-}
-
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 // Database types based on our schema

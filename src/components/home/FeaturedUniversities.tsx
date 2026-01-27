@@ -69,41 +69,41 @@ function UniversityCard({
 
     return (
         <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group border border-gray-100">
-            <div className="relative h-48">
+            <div className="relative h-40 sm:h-48">
                 <img
                     src={imageUrl}
                     alt={name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute top-4 left-4">
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${type === 'Public'
+                <div className="absolute top-3 left-3">
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${type === 'Public'
                         ? 'bg-blue-100 text-blue-800'
                         : 'bg-purple-100 text-purple-800'
                         }`}>
                         {type}
                     </span>
                 </div>
-                <div className="absolute top-4 right-4">
-                    <div className={`flex items-center px-2 py-1 rounded-full text-xs font-medium border ${statusConfig.color}`}>
+                <div className="absolute top-3 right-3">
+                    <div className={`flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${statusConfig.color}`}>
                         <div className={`w-2 h-2 rounded-full mr-1 ${statusConfig.dot}`}></div>
                         {statusConfig.label}
                     </div>
                 </div>
             </div>
 
-            <div className="p-4 md:p-6">
-                <div className="mb-4">
-                    <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2 group-hover:text-red-900 transition-colors">
+            <div className="p-3 sm:p-4">
+                <div className="mb-3">
+                    <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-1 group-hover:text-red-900 transition-colors">
                         {name}
                     </h3>
-                    <div className="flex items-center text-gray-600 text-sm mb-1">
+                    <div className="flex items-center text-gray-600 text-sm mb-0.5">
                         <MapPin className="h-4 w-4 mr-1" />
                         {location}
                     </div>
                     <div className="text-gray-500 text-sm">Est. {established}</div>
                 </div>
 
-                <div className="flex items-center justify-between mb-4 text-sm">
+                <div className="flex items-center justify-between mb-3 text-sm">
                     <div className="flex items-center text-gray-600">
                         <Users className="h-4 w-4 mr-1" />
                         <span className="font-medium">{students} students</span>
@@ -116,17 +116,17 @@ function UniversityCard({
 
                 {/* Hidden on small and medium screens unless expanded */}
                 <div className={`lg:block ${isExpanded ? 'block' : 'hidden'}`}>
-                    <p className="text-gray-600 text-sm mb-4 leading-relaxed">{description}</p>
+                    <p className="text-gray-600 text-sm mb-3 leading-relaxed">{description}</p>
 
-                    <div className="mb-4 text-xs text-gray-600">
+                    <div className="mb-3 text-xs text-gray-600">
                         📅 {admissionDeadline}
                     </div>
-                    <div className="mb-6">
-                        <div className="flex flex-wrap gap-2">
+                    <div className="mb-4">
+                        <div className="flex flex-wrap gap-1.5">
                             {subjects.map((subject, index) => (
                                 <span
                                     key={index}
-                                    className="px-3 py-1 bg-red-50 text-red-700 text-xs rounded-full font-medium hover:bg-red-100 transition-colors"
+                                    className="px-2 py-0.5 bg-red-50 text-red-700 text-xs rounded-full font-medium hover:bg-red-100 transition-colors"
                                 >
                                     {subject}
                                 </span>
@@ -136,7 +136,7 @@ function UniversityCard({
                 </div>
 
                 {/* See More/Less button - only show on small and medium screens */}
-                <div className="lg:hidden mb-4">
+                <div className="lg:hidden mb-3">
                     <button
                         onClick={() => setIsExpanded(!isExpanded)}
                         className="text-maroon-600 hover:text-maroon-800 font-medium text-sm transition-colors"
@@ -145,11 +145,11 @@ function UniversityCard({
                     </button>
                 </div>
 
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5">
                     <button
                         onClick={() => toggleSaved(id)}
                         disabled={!isLoaded}
-                        className={`flex-1 min-w-0 px-3 py-2 border rounded-lg transition-all duration-300 text-xs sm:text-sm flex items-center
+                        className={`flex-1 min-w-0 px-2 py-1.5 border rounded-lg transition-all duration-300 text-xs sm:text-sm flex items-center
                             ${isSaved(id)
                                 ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'
                                 : 'text-maroon-700 border-maroon-200 hover:bg-maroon-50'
@@ -157,7 +157,7 @@ function UniversityCard({
                             ${!isLoaded ? 'opacity-50 cursor-not-allowed' : ''}
                         `}
                     >
-                        <Heart className={`h-3 w-3 sm:h-4 sm:w-4 mr-1 ${isSaved(id) ? 'fill-current' : ''}`} />
+                        <Heart className={`h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1 ${isSaved(id) ? 'fill-current' : ''}`} />
                         <span className="text-xs sm:text-sm">{isSaved(id) ? 'Saved' : 'Save'}</span>
                     </button>
                     <button
@@ -166,16 +166,16 @@ function UniversityCard({
                             longDescription: '', galleryImages: [], accreditation: [], admissionStatus, admissionDeadline,
                             facilities: [], amenities: [], achievements: [], quickfacts: [], admissionRequirements: [], applicationProcess: []
                         })}
-                        className="flex-1 min-w-0 px-3 py-2 text-red-700 border border-red-200 rounded-lg hover:bg-red-50 transition-all duration-300 text-xs sm:text-sm flex items-center"
+                        className="flex-1 min-w-0 px-2 py-1.5 text-red-700 border border-red-200 rounded-lg hover:bg-red-50 transition-all duration-300 text-xs sm:text-sm flex items-center"
                     >
-                        <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                        <BarChart3 className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" />
                         <span className="text-xs sm:text-sm">Compare</span>
                     </button>
                     <Link
                         to={`/universities/${id}`}
-                        className="flex-1 min-w-0 px-3 py-2 bg-maroon-800 text-white rounded-lg hover:bg-maroon-700 transition-colors flex items-center justify-center text-xs sm:text-sm"
+                        className="flex-1 min-w-0 px-2 py-1.5 bg-maroon-800 text-white rounded-lg hover:bg-maroon-700 transition-colors flex items-center justify-center text-xs sm:text-sm"
                     >
-                        <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                        <ExternalLink className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" />
                         <span className="text-xs sm:text-sm">View</span>
                     </Link>
                 </div>
@@ -241,25 +241,25 @@ export default function FeaturedUniversities() {
 
     if (isLoading) {
     return (
-        <section className="py-10 md:py-20 bg-white">
+        <section className="py-8 md:py-16 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-12">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-10">
                         <div>
-                            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3">
                                 Featured Universities
                             </h2>
 
                         </div>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {[...Array(3)].map((_, index) => (
                             <div key={index} className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 animate-pulse">
-                                <div className="h-48 bg-gray-200"></div>
-                                <div className="p-6">
-                                    <div className="h-6 bg-gray-200 rounded mb-4"></div>
-                                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                                    <div className="h-4 bg-gray-200 rounded mb-4"></div>
-                                    <div className="h-16 bg-gray-200 rounded mb-4"></div>
+                                <div className="h-40 sm:h-48 bg-gray-200"></div>
+                                <div className="p-3 sm:p-4">
+                                    <div className="h-5 bg-gray-200 rounded mb-3"></div>
+                                    <div className="h-3.5 bg-gray-200 rounded mb-2"></div>
+                                    <div className="h-3.5 bg-gray-200 rounded mb-3"></div>
+                                    <div className="h-14 bg-gray-200 rounded mb-3"></div>
                                 </div>
                             </div>
                         ))}
@@ -271,46 +271,46 @@ export default function FeaturedUniversities() {
 
     if (error) {
         return (
-            <section className="py-10 md:py-20 bg-white">
+            <section className="py-8 md:py-16 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3">
                         Featured Universities
                     </h2>
-                    <p className="text-xl text-red-600">{error}</p>
+                    <p className="text-lg text-red-600">{error}</p>
                 </div>
             </section>
         );
     }
 
     return (
-        <section className="py-10 md:py-20 bg-white">
+        <section className="py-8 md:py-16 bg-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-12">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-10">
                     <div>
-                        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3">
                             Featured Universities
                         </h2>
 
                     </div>
 
-                    <div className="mt-6 md:mt-0">
+                    <div className="mt-4 md:mt-0">
                         <Link to="/universities">
-                            <button className="bg-gradient-to-r from-red-900 to-red-700 text-white px-6 py-3 rounded-xl hover:from-red-800 hover:to-red-600 transition-all duration-300 font-semibold">
+                            <button className="bg-gradient-to-r from-red-900 to-red-700 text-white px-4 py-2 rounded-xl hover:from-red-800 hover:to-red-600 transition-all duration-300 font-semibold text-sm">
                                 View All →
                             </button>
                         </Link>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {featuredUniversities.map((university) => (
                         <UniversityCard key={university.id} {...university} onCompare={handleCompare} />
                     ))}
                 </div>
 
-                <div className="text-center mt-12">
+                <div className="text-center mt-10">
                     <Link to="/universities">
-                        <button className="bg-gradient-to-r from-red-900 to-red-700 text-white px-8 py-4 rounded-xl hover:from-red-800 hover:to-red-600 transition-all duration-300 font-semibold text-lg">
+                        <button className="bg-gradient-to-r from-red-900 to-red-700 text-white px-6 py-3 rounded-xl hover:from-red-800 hover:to-red-600 transition-all duration-300 font-semibold text-base">
                             Browse All Universities →
                         </button>
                     </Link>

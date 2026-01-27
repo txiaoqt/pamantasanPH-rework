@@ -13,18 +13,18 @@ interface ToolCardProps {
 function ToolCard({ title, description, icon, color, onClick }: ToolCardProps) {
   return (
     <div
-      className="bg-white rounded-2xl p-4 sm:p-6 lg:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 group cursor-pointer border border-gray-100"
+      className="bg-white rounded-2xl p-3 sm:p-4 shadow-lg hover:shadow-2xl transition-all duration-300 group cursor-pointer border border-gray-100"
       onClick={onClick}
     >
-      <div className={`w-16 h-16 ${color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
-        {icon}
+      <div className={`w-12 h-12 sm:w-16 sm:h-16 ${color} rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+        {React.cloneElement(icon as React.ReactElement, { className: `h-6 w-6 sm:h-8 sm:w-8 text-white` })}
       </div>
 
-      <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-red-900 transition-colors">
+      <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 group-hover:text-red-900 transition-colors">
         {title}
       </h3>
 
-      <p className="text-gray-600 leading-relaxed">
+      <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
         {description}
       </p>
     </div>
@@ -85,13 +85,13 @@ export default function ExploreTools() {
   ];
 
   return (
-    <section className="py-10 md:py-20 bg-gray-50">
+    <section className="py-8 md:py-16 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">
             Explore & Compare
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Tools to help you find the perfect university
           </p>
         </div>

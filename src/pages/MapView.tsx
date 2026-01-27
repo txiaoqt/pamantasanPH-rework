@@ -57,21 +57,21 @@ export default function MapView() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-gradient-to-br from-maroon-900 via-maroon-800 to-red-900 text-white py-8">
+      <div className="bg-gradient-to-br from-maroon-900 via-maroon-800 to-red-900 text-white py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-4">University Map</h1>
-              <p className="text-xl text-maroon-100 max-w-3xl">
+              <h1 className="text-3xl sm:text-4xl font-bold mb-3">University Map</h1>
+              <p className="text-base sm:text-lg text-maroon-100 max-w-3xl">
                 Explore all universities across Metro Manila on an interactive map.
                 Click on markers to learn more about each institution.
               </p>
             </div>
             <button
               onClick={() => navigate('/')}
-              className="flex items-center px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
+              className="flex items-center px-3 py-1.5 text-sm bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
             >
-              <ArrowLeft className="h-5 w-5 mr-2" />
+              <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Home
             </button>
           </div>
@@ -79,14 +79,14 @@ export default function MapView() {
       </div>
 
       {/* Map Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-          <div className="p-6 border-b border-gray-200">
+          <div className="p-4 sm:p-6 border-b border-gray-200">
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-3">
                 <div className="flex items-center space-x-2">
                   <MapPin className="h-5 w-5 text-red-600" />
-                  <span className="text-lg font-semibold text-gray-900">
+                  <span className="text-base sm:text-lg font-semibold text-gray-900">
                     {universitiesWithCoords.length} Universities Mapped
                   </span>
                 </div>
@@ -97,7 +97,7 @@ export default function MapView() {
             </div>
           </div>
 
-          <div className="h-[600px] relative">
+          <div className="h-[400px] sm:h-[500px] md:h-[600px] relative">
             <MapContainer
               center={center}
               zoom={11}
@@ -162,21 +162,21 @@ export default function MapView() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-          <div className="bg-white rounded-lg p-6 shadow-lg text-center">
-            <div className="text-2xl font-bold text-maroon-800 mb-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+          <div className="bg-white rounded-lg p-4 shadow-lg text-center">
+            <div className="text-xl sm:text-2xl font-bold text-maroon-800 mb-2">
               {universitiesWithCoords.length}
             </div>
             <div className="text-gray-600">Universities on Map</div>
           </div>
-          <div className="bg-white rounded-lg p-6 shadow-lg text-center">
-            <div className="text-2xl font-bold text-maroon-800 mb-2">
+          <div className="bg-white rounded-lg p-4 shadow-lg text-center">
+            <div className="text-xl sm:text-2xl font-bold text-maroon-800 mb-2">
               {new Set(universitiesWithCoords.map(u => u.location)).size}
             </div>
             <div className="text-gray-600">Locations Covered</div>
           </div>
-          <div className="bg-white rounded-lg p-6 shadow-lg text-center">
-            <div className="text-2xl font-bold text-maroon-800 mb-2">
+          <div className="bg-white rounded-lg p-4 shadow-lg text-center">
+            <div className="text-xl sm:text-2xl font-bold text-maroon-800 mb-2">
               {universitiesWithCoords.reduce((sum, u) => sum + u.programs, 0)}
             </div>
             <div className="text-gray-600">Total Programs</div>

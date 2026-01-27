@@ -1,10 +1,29 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { MessageCircle, X, Send, Bot, User, ExternalLink } from 'lucide-react';
-import OpenAI from 'openai';
 import { UniversityService } from '../../services/universityService';
 import { AcademicProgramService } from '../../services/academicProgramService';
 import { University } from '../university/UniversityCard';
+import OpenAI from 'openai';
+
+// --- SECURITY WARNING ---
+// The following code initializes the OpenAI API client on the client-side.
+// This is NOT a secure practice for production environments as it exposes
+// the API key to anyone inspecting the browser's network traffic.
+//
+// RECOMMENDATION:
+// Move this AI logic to a secure backend server or a serverless function.
+// The frontend should make a request to your backend, which then securely
+// calls the OpenAI API. This protects your API key and allows for better
+// control over your API usage.
+//
+// For development purposes, you can set the API key in a .env file:
+// VITE_OPENAI_API_KEY=your-openrouter-api-key
+const openai = new OpenAI({
+  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+  baseURL: "https://openrouter.ai/api/v1", // OpenRouter base URL
+  dangerouslyAllowBrowser: true // Required for client-side usage
+});
 
 interface Message {
   id: string;
@@ -43,13 +62,6 @@ interface ConversationContext {
 }
 
 export default function Chatbot() {
-  // Initialize OpenAI client for OpenRouter
-  const openai = new OpenAI({
-    baseURL: "https://openrouter.ai/api/v1",
-    apiKey: import.meta.env.VITE_OPENROUTER_API_KEY,
-    dangerouslyAllowBrowser: true
-  });
-
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -278,6 +290,33 @@ export default function Chatbot() {
       suggestions: ['Civil Engineering', 'Computer Engineering', 'Mechanical Engineering', 'Electrical Engineering']
     },
 
+    artsPrograms: {
+      pattern: /(arts|humanities|social\s+sciences|liberal\s+arts).*(programs?|courses?)/i,
+      responses: [
+          'Arts and humanities programs are well-represented! 🎨 PUP offers a comprehensive selection including communication, psychology, and social sciences. PLM also has strong programs in communication and social work.',
+          'Our universities have excellent programs in the arts and social sciences! 🎭 PUP has a wide range of programs in communication, sociology, and history. PLM offers great programs in communication and social work.'
+      ],
+      suggestions: ['Communication programs', 'Psychology programs', 'Social Work programs']
+    },
+
+    sciencePrograms: {
+        pattern: /(sciences|natural\s+sciences).*(programs?|courses?)/i,
+        responses: [
+            'Science programs are strong in our universities! 🔬 PUP and PLM offer excellent programs in Biology, Chemistry, and Mathematics. TUP also has strong programs in applied sciences.',
+            'For science enthusiasts, our universities have great options! 🧪 PUP and PLM have strong programs in Biology, Chemistry, and Mathematics. TUP offers great programs in applied sciences.'
+        ],
+        suggestions: ['Biology programs', 'Chemistry programs', 'Mathematics programs']
+    },
+
+    educationPrograms: {
+        pattern: /(education).*(programs?|courses?)/i,
+        responses: [
+            'Education programs are excellent in our universities! 📚 PUP and PLM offer a wide range of programs for aspiring teachers, including elementary education, secondary education, and library science.',
+            'If you want to become a teacher, our universities have great programs for you! 🧑‍🏫 PUP and PLM have excellent programs in elementary education, secondary education, and library and information science.'
+        ],
+        suggestions: ['Elementary Education', 'Secondary Education', 'Library Science']
+    },
+
     // Admission and application
     admission: {
       pattern: /\b(admission|admit|apply|application)\b/i,
@@ -401,38 +440,70 @@ export default function Chatbot() {
   const processMessage = async (userMessage: string): Promise<{response: string, suggestions?: string[]}> => {
     const message = userMessage.toLowerCase().trim();
 
-    // Handle thank you and goodbye messages - Keep these rule-based for consistency
-    if (message.match(/^(thanks?|thank you|thx|ty|appreciate it|thanks a lot|thank you so much|thanks for the help)$/i)) {
-      const thankResponses = [
-        "You're so welcome! 😊 I'm thrilled I could help with your university search. Don't hesitate to ask if you need anything else!",
-        "My absolute pleasure! 🎉 I love helping students like you find their perfect university match. What else can I assist with?",
-        "Glad I could help! 🤗 Is there anything else about universities or programs you'd like to know? I'm all ears!",
-        "No problem at all! 🌟 I'm here whenever you need university guidance. Feel free to ask away!",
-        "You're welcome! 💫 I hope you find the perfect university for your journey. Come back anytime!",
-        "Happy to help! 😄 Remember, I'm always here for all your university questions and guidance.",
-        "My pleasure helping you! 🎓 I hope this information helps you make the right choice for your future."
-      ];
-      return {
-        response: thankResponses[Math.floor(Math.random() * thankResponses.length)]
-      };
+    // Handle thank you and goodbye messages
+    const thankYouMatch = message.match(/^(thanks?|thank you|thx|ty|appreciate it|thanks a lot|thank you so much|thanks for the help)$/i);
+    if (thankYouMatch) {
+      return handleThankYou();
     }
 
-    if (message.match(/^(bye|goodbye|see you|see ya|later|farewell|cya|take care)$/i)) {
-      const goodbyeResponses = [
-        "Goodbye! 👋 Thanks for chatting about universities. I hope you find the perfect school for your journey!",
-        "See you later! 🌟 Don't hesitate to come back if you need more university information or guidance.",
-        "Take care! 😊 I'm always here when you need help with university choices. Happy exploring!",
-        "Farewell! 🎓 Remember, I'm just a click away whenever you need university assistance.",
-        "Until next time! 💫 Thanks for letting me help with your university search. Good luck!",
-        "Bye for now! 👋 I hope our conversation helped you discover great university options.",
-        "See you soon! 🌈 Keep me in mind for all your future university questions and decisions."
-      ];
-      return {
-        response: goodbyeResponses[Math.floor(Math.random() * goodbyeResponses.length)]
-      };
+    const goodbyeMatch = message.match(/^(bye|goodbye|see you|see ya|later|farewell|cya|take care)$/i);
+    if (goodbyeMatch) {
+      return handleGoodbye();
     }
 
-    // Handle university details page navigation - MUST BE FIRST
+    // Handle navigation
+    const navigationResponse = handleNavigation(message);
+    if (navigationResponse) {
+      return navigationResponse;
+    }
+
+    // Handle university-specific queries
+    const universityResponse = await handleUniversityQuery(message);
+    if (universityResponse) {
+      return universityResponse;
+    }
+
+    // Check rule-based knowledge base
+    const ruleBasedResponse = handleRuleBasedQuery(message);
+    if (ruleBasedResponse) {
+      return ruleBasedResponse;
+    }
+
+    // Fallback to AI
+    return await handleAiQuery(userMessage);
+  };
+
+  const handleThankYou = () => {
+    const thankResponses = [
+      "You're so welcome! 😊 I'm thrilled I could help with your university search. Don't hesitate to ask if you need anything else!",
+      "My absolute pleasure! 🎉 I love helping students like you find their perfect university match. What else can I assist with?",
+      "Glad I could help! 🤗 Is there anything else about universities or programs you'd like to know? I'm all ears!",
+      "No problem at all! 🌟 I'm here whenever you need university guidance. Feel free to ask away!",
+      "You're welcome! 💫 I hope you find the perfect university for your journey. Come back anytime!",
+      "Happy to help! 😄 Remember, I'm always here for all your university questions and guidance.",
+      "My pleasure helping you! 🎓 I hope this information helps you make the right choice for your future."
+    ];
+    return {
+      response: thankResponses[Math.floor(Math.random() * thankResponses.length)]
+    };
+  };
+
+  const handleGoodbye = () => {
+    const goodbyeResponses = [
+      "Goodbye! 👋 Thanks for chatting about universities. I hope you find the perfect school for your journey!",
+      "See you later! 🌟 Don't hesitate to come back if you need more university information or guidance.",
+      "Take care! 😊 I'm always here when you need help with university choices. Happy exploring!",
+      "Farewell! 🎓 Remember, I'm just a click away whenever you need university assistance.",
+      "Until next time! 💫 Thanks for letting me help with your university search. Good luck!",
+      "Bye for now! 👋 I hope our conversation helped you discover great university options.",
+      "See you soon! 🌈 Keep me in mind for all your future university questions and decisions."
+    ];
+    return {
+      response: goodbyeResponses[Math.floor(Math.random() * goodbyeResponses.length)]
+    };
+  };
+
+  const handleNavigation = (message: string) => {
     if (message.includes('learn more about')) {
       const universityMatch = message.match(/learn more about (pup|tup|plm)/i);
       if (universityMatch) {
@@ -449,7 +520,6 @@ export default function Chatbot() {
       }
     }
 
-    // Handle compare page navigation
     if (message.includes('go to compare page') || message.includes('compare page') || message.includes('go to compare')) {
       return {
         response: `Perfect! 🎯 Let's head to our comparison tool where you can compare up to 3 universities side-by-side. Click the link below to get started:\n\n🔗 **[Go to Compare Page](/compare)**\n\nYou'll be able to select universities and see tuition, programs, location, facilities, and admission requirements all in one view! 📊`,
@@ -457,365 +527,124 @@ export default function Chatbot() {
       };
     }
 
-    // Handle specific university detail queries - RESTORED RULE-BASED LOGIC
-    if (message.includes('pup')) {
-      if (message.includes('programs') && (message.includes('list') || message.includes('what are') || message.includes('show me') || message.includes('undergraduate') || message.includes('graduate') || message.includes('diploma'))) {
-        try {
-          const universities = await UniversityService.getAllUniversities();
-          const pup = universities.find(u => u.name.toLowerCase().includes('polytechnic') || u.name.toLowerCase().includes('pup'));
-          if (pup) {
-            const programs = await AcademicProgramService.getProgramsByUniversityId(pup.id);
+    return null;
+  };
 
-            if (message.includes('undergraduate')) {
-              const undergraduatePrograms = programs.filter(p => p.programType === 'undergraduate');
-              const programNames = undergraduatePrograms.slice(0, 20).map(p => p.programName);
-              const remaining = undergraduatePrograms.length - 20;
-              return {
-                response: `PUP Undergraduate Programs:\n${programNames.map(name => `• ${name}`).join('\n')}${remaining > 0 ? `\n...and ${remaining} more programs` : ''}\n\nThese programs span various fields including technology, business, engineering, education, and sciences.`
-              };
-            } else if (message.includes('graduate')) {
-              const graduatePrograms = programs.filter(p => p.programType === 'graduate');
-              const programNames = graduatePrograms.slice(0, 15).map(p => p.programName);
-              const remaining = graduatePrograms.length - 15;
-              return {
-                response: `PUP Graduate Programs:\n${programNames.map(name => `• ${name}`).join('\n')}${remaining > 0 ? `\n...and ${remaining} more programs` : ''}\n\nThese include master's and doctoral programs in various disciplines.`
-              };
-            } else if (message.includes('diploma')) {
-              const diplomaPrograms = programs.filter(p => p.programType === 'diploma');
-              const programNames = diplomaPrograms.map(p => p.programName);
-              return {
-                response: `PUP Diploma Programs:\n${programNames.map(name => `• ${name}`).join('\n')}\n\nThese specialized diploma programs focus on practical skills and vocational training.`
-              };
-            }
-          }
-        } catch (error) {
-          console.error('Error fetching PUP specific programs:', error);
-        }
+  const handleUniversityQuery = async (message: string) => {
+    const uniKeywords: {[key: string]: string[]} = {
+      'pup': ['pup', 'polytechnic'],
+      'tup': ['tup', 'technological'],
+      'plm': ['plm', 'lungsod', 'maynila']
+    };
+
+    for (const uni in uniKeywords) {
+      if (uniKeywords[uni].some(keyword => message.includes(keyword))) {
+        return await getUniversityDetails(uni, message);
       }
+    }
+    return null;
+  };
 
-      if (message.includes('programs') && !message.includes('list') && !message.includes('what are') && !message.includes('show me') && !message.includes('undergraduate') && !message.includes('graduate') && !message.includes('diploma')) {
-        try {
-          const universities = await UniversityService.getAllUniversities();
-          const pup = universities.find(u => u.name.toLowerCase().includes('polytechnic') || u.name.toLowerCase().includes('pup'));
-          if (pup) {
-            const programs = await AcademicProgramService.getProgramsByUniversityId(pup.id);
-            const undergraduate = programs.filter(p => p.programType === 'undergraduate').length;
-            const graduate = programs.filter(p => p.programType === 'graduate').length;
-            const diploma = programs.filter(p => p.programType === 'diploma').length;
+  const getUniversityDetails = async (university: string, message: string) => {
+    try {
+      const universities = await UniversityService.getAllUniversities();
+      const uniData = universities.find(u => u.name.toLowerCase().includes(university));
+      
+      if (!uniData) return null;
 
-            return {
-              response: `${pup.name} offers ${pup.programs} programs total:\n• ${undergraduate} undergraduate programs\n• ${graduate} graduate programs\n• ${diploma} diploma programs\n\nPopular programs include Computer Science, Information Technology, Business Administration, Civil Engineering, and Education programs.`,
-              suggestions: ['List undergraduate programs', 'Show graduate programs', 'What can I help you more with today?']
-            };
-          }
-        } catch (error) {
-          console.error('Error fetching PUP programs:', error);
-        }
+      if (message.includes('programs')) {
+        return await getProgramDetails(uniData, message);
       }
-
       if (message.includes('admission') || message.includes('requirements') || message.includes('apply')) {
-        try {
-          const universities = await UniversityService.getAllUniversities();
-          const pup = universities.find(u => u.name.toLowerCase().includes('polytechnic') || u.name.toLowerCase().includes('pup'));
-          if (pup && pup.admissionRequirements && pup.admissionRequirements.length > 0) {
-            const requirements = pup.admissionRequirements.join('\n• ');
-            return {
-              response: `🎓 Ready to join PUP? Here's what you need to know about admission! \n\n📋 Admission Requirements:\n• ${requirements}\n\n🚀 Application Process:\n• Head over to the PUP iApply portal (it's super easy!)\n• Submit your documents (birth certificate, high school records, etc.)\n• Take the PUPCET entrance exam\n• Complete your online application\n\nPUP is committed to making education accessible—good luck with your application! 🌟`,
-              suggestions: ['What can I help you more with today?']
-            };
-          }
-        } catch (error) {
-          console.error('Error fetching PUP admission:', error);
-        }
+        return getAdmissionDetails(uniData);
       }
-
       if (message.includes('facilities') || message.includes('campus')) {
-        try {
-          const universities = await UniversityService.getAllUniversities();
-          const pup = universities.find(u => u.name.toLowerCase().includes('polytechnic') || u.name.toLowerCase().includes('pup'));
-          if (pup && pup.facilities && pup.facilities.length > 0) {
-            const facilities = pup.facilities.slice(0, 8).join('\n• ');
-            return {
-              response: `🏛️ PUP has an amazing ${pup.campusSize || '15-hectare'} campus packed with everything students need! Here's what you'll find:\n\n🏢 Facilities:\n• ${facilities}\n\n🍽️ Plus awesome amenities like canteens, bookstores, medical clinics, sports facilities, and super modern classrooms. It's like a mini-city designed for student success! 🎓`,
-              suggestions: ['What can I help you more with today?']
-            };
-          }
-        } catch (error) {
-          console.error('Error fetching PUP facilities:', error);
-        }
+        return getFacilitiesDetails(uniData);
       }
-
       if (message.includes('rankings') || message.includes('ranking')) {
-        try {
-          const universities = await UniversityService.getAllUniversities();
-          const pup = universities.find(u => u.name.toLowerCase().includes('polytechnic') || u.name.toLowerCase().includes('pup'));
-          if (pup && pup.rankings?.details) {
-            return {
-              response: `🏆 PUP Rankings - They're doing AMAZING! 📈\n\n${pup.rankings.details}\n\nPUP consistently ranks among the top state universities in the Philippines and is renowned for its outstanding performance in licensure examinations. Students graduate with real-world skills that employers love! 💼✨`,
-              suggestions: ['What can I help you more with today?']
-            };
-          }
-        } catch (error) {
-          console.error('Error fetching PUP rankings:', error);
-        }
+        return getRankingDetails(uniData);
       }
+
+      const programCount = uniData.programs || 0;
+      return {
+        response: `${uniData.name} is a renowned university with over ${uniData.students} students. ${uniData.description} They offer ${programCount} programs.`,
+        suggestions: [`Want to learn more about ${university.toUpperCase()}?`]
+      };
+
+    } catch (error) {
+      console.error(`Error fetching ${university} data:`, error);
+      return null;
+    }
+  };
+
+  const getProgramDetails = async (uniData: University, message: string) => {
+    const programs = await AcademicProgramService.getProgramsByUniversityId(uniData.id);
+    const undergraduate = programs.filter(p => p.programType === 'undergraduate').length;
+    const graduate = programs.filter(p => p.programType === 'graduate').length;
+    const diploma = programs.filter(p => p.programType === 'diploma').length;
+    
+    let response = `${uniData.name} offers ${uniData.programs} programs total:\n• ${undergraduate} undergraduate programs\n• ${graduate} graduate programs\n• ${diploma} diploma programs\n\n`;
+
+    if (message.includes('list') || message.includes('what are') || message.includes('show me')) {
+      let programList = programs;
+      if (message.includes('undergraduate')) {
+        programList = programs.filter(p => p.programType === 'undergraduate');
+        response = `${uniData.name} Undergraduate Programs:\n`;
+      } else if (message.includes('graduate')) {
+        programList = programs.filter(p => p.programType === 'graduate');
+        response = `${uniData.name} Graduate Programs:\n`;
+      } else if (message.includes('diploma')) {
+        programList = programs.filter(p => p.programType === 'diploma');
+        response = `${uniData.name} Diploma Programs:\n`;
+      }
+      const programNames = programList.slice(0, 20).map(p => p.programName);
+      const remaining = programList.length - 20;
+      response += `${programNames.map(name => `• ${name}`).join('\n')}${remaining > 0 ? `\n...and ${remaining} more programs` : ''}`;
+    } else {
+      response += 'Popular programs include Computer Science, Information Technology, Business Administration, Civil Engineering, and Education programs.';
     }
 
-    if (message.includes('tup')) {
-      if (message.includes('programs') && (message.includes('list') || message.includes('what are') || message.includes('show me') || message.includes('undergraduate') || message.includes('graduate'))) {
-        try {
-          const universities = await UniversityService.getAllUniversities();
-          const tup = universities.find(u => u.name.toLowerCase().includes('technological') || u.name.toLowerCase().includes('tup'));
-          if (tup) {
-            const programs = await AcademicProgramService.getProgramsByUniversityId(tup.id);
+    return {
+      response,
+      suggestions: ['List undergraduate programs', 'Show graduate programs', 'What can I help you more with today?']
+    };
+  };
 
-            if (message.includes('undergraduate')) {
-              const undergraduatePrograms = programs.filter(p => p.programType === 'undergraduate');
-              const programNames = undergraduatePrograms.slice(0, 20).map(p => p.programName);
-              const remaining = undergraduatePrograms.length - 20;
-              return {
-                response: `TUP Undergraduate Programs:\n${programNames.map(name => `• ${name}`).join('\n')}${remaining > 0 ? `\n...and ${remaining} more programs` : ''}\n\nThese programs focus on engineering, technology, industrial education, and applied sciences.`
-              };
-            } else if (message.includes('graduate')) {
-              const graduatePrograms = programs.filter(p => p.programType === 'graduate');
-              const programNames = graduatePrograms.slice(0, 10).map(p => p.programName);
-              const remaining = graduatePrograms.length - 10;
-              return {
-                response: `TUP Graduate Programs:\n${programNames.map(name => `• ${name}`).join('\n')}${remaining > 0 ? `\n...and ${remaining} more programs` : ''}\n\nThese include advanced engineering and technology master's programs.`
-              };
-            }
-          }
-        } catch (error) {
-          console.error('Error fetching TUP specific programs:', error);
-        }
-      }
-
-      if (message.includes('programs') && !message.includes('list') && !message.includes('what are') && !message.includes('show me') && !message.includes('undergraduate') && !message.includes('graduate')) {
-        try {
-          const universities = await UniversityService.getAllUniversities();
-          const tup = universities.find(u => u.name.toLowerCase().includes('technological') || u.name.toLowerCase().includes('tup'));
-          if (tup) {
-            const programs = await AcademicProgramService.getProgramsByUniversityId(tup.id);
-            const undergraduate = programs.filter(p => p.programType === 'undergraduate').length;
-            const graduate = programs.filter(p => p.programType === 'graduate').length;
-
-            return {
-              response: `${tup.name} offers ${tup.programs} programs total:\n• ${undergraduate} undergraduate programs\n• ${graduate} graduate programs\n\nKey programs include Civil Engineering, Electrical Engineering, Mechanical Engineering, Computer Science, Food Technology, and various engineering technology programs.`,
-              suggestions: ['List undergraduate programs', 'Show graduate programs', 'What can I help you more with today?']
-            };
-          }
-        } catch (error) {
-          console.error('Error fetching TUP programs:', error);
-        }
-      }
-
-      if (message.includes('admission') || message.includes('requirements') || message.includes('apply')) {
-        try {
-          const universities = await UniversityService.getAllUniversities();
-          const tup = universities.find(u => u.name.toLowerCase().includes('technological') || u.name.toLowerCase().includes('tup'));
-          if (tup && tup.admissionRequirements && tup.admissionRequirements.length > 0) {
-            const requirements = tup.admissionRequirements.join('\n• ');
-            return {
-              response: `TUP Admission Requirements:\n• ${requirements}\n\nStudents must pass the TUP Scholastic Aptitude Test and meet the required academic standards for their chosen program.`
-            };
-          }
-        } catch (error) {
-          console.error('Error fetching TUP admission:', error);
-        }
-      }
-
-      if (message.includes('facilities') || message.includes('campus')) {
-        try {
-          const universities = await UniversityService.getAllUniversities();
-          const tup = universities.find(u => u.name.toLowerCase().includes('technological') || u.name.toLowerCase().includes('tup'));
-          if (tup && tup.facilities && tup.facilities.length > 0) {
-            const facilities = tup.facilities.slice(0, 6).join('\n• ');
-            return {
-              response: `TUP Campus Facilities:\n• ${facilities}\n\nTUP provides modern engineering and technology laboratories, computer facilities, libraries, and sports facilities to support student learning and development.`
-            };
-          }
-        } catch (error) {
-          console.error('Error fetching TUP facilities:', error);
-        }
-      }
-
-      if (message.includes('rankings') || message.includes('ranking')) {
-        try {
-          const universities = await UniversityService.getAllUniversities();
-          const tup = universities.find(u => u.name.toLowerCase().includes('technological') || u.name.toLowerCase().includes('tup'));
-          if (tup && tup.rankings?.details) {
-            return {
-              response: `TUP Rankings:\n${tup.rankings.details}\n\nTUP is recognized as a leading engineering and technology university with strong performance in engineering licensure examinations.`
-            };
-          }
-        } catch (error) {
-          console.error('Error fetching TUP rankings:', error);
-        }
-      }
+  const getAdmissionDetails = (uniData: University) => {
+    if (uniData.admissionRequirements && uniData.admissionRequirements.length > 0) {
+      const requirements = uniData.admissionRequirements.join('\n• ');
+      return {
+        response: `🎓 Ready to join ${uniData.name}? Here's what you need to know about admission! \n\n📋 Admission Requirements:\n• ${requirements}\n\nVisit the university's official website for the detailed application process. Good luck! 🌟`,
+        suggestions: ['What can I help you more with today?']
+      };
     }
+    return null;
+  };
 
-    if (message.includes('plm')) {
-      if (message.includes('programs') && (message.includes('list') || message.includes('what are') || message.includes('show me') || message.includes('undergraduate') || message.includes('graduate'))) {
-        try {
-          const universities = await UniversityService.getAllUniversities();
-          const plm = universities.find(u => u.name.toLowerCase().includes('lungsod') || u.name.toLowerCase().includes('maynila') || u.name.toLowerCase().includes('plm'));
-          if (plm) {
-            const programs = await AcademicProgramService.getProgramsByUniversityId(plm.id);
-
-            if (message.includes('undergraduate')) {
-              const undergraduatePrograms = programs.filter(p => p.programType === 'undergraduate');
-              const programNames = undergraduatePrograms.slice(0, 20).map(p => p.programName);
-              const remaining = undergraduatePrograms.length - 20;
-              return {
-                response: `PLM Undergraduate Programs:\n${programNames.map(name => `• ${name}`).join('\n')}${remaining > 0 ? `\n...and ${remaining} more programs` : ''}\n\nThese programs include professional courses in medicine, law, engineering, business, education, and sciences.`
-              };
-            } else if (message.includes('graduate')) {
-              const graduatePrograms = programs.filter(p => p.programType === 'graduate');
-              const programNames = graduatePrograms.slice(0, 15).map(p => p.programName);
-              const remaining = graduatePrograms.length - 15;
-              return {
-                response: `PLM Graduate Programs:\n${programNames.map(name => `• ${name}`).join('\n')}${remaining > 0 ? `\n...and ${remaining} more programs` : ''}\n\nThese include advanced professional programs in medicine, law, education, and business administration.`
-              };
-            }
-          }
-        } catch (error) {
-          console.error('Error fetching PLM specific programs:', error);
-        }
-      }
-
-      if (message.includes('programs') && !message.includes('list') && !message.includes('what are') && !message.includes('show me') && !message.includes('undergraduate') && !message.includes('graduate')) {
-        try {
-          const universities = await UniversityService.getAllUniversities();
-          const plm = universities.find(u => u.name.toLowerCase().includes('lungsod') || u.name.toLowerCase().includes('maynila') || u.name.toLowerCase().includes('plm'));
-          if (plm) {
-            const programs = await AcademicProgramService.getProgramsByUniversityId(plm.id);
-            const undergraduate = programs.filter(p => p.programType === 'undergraduate').length;
-            const graduate = programs.filter(p => p.programType === 'graduate').length;
-
-            return {
-              response: `${plm.name} offers ${plm.programs} programs total:\n• ${undergraduate} undergraduate programs\n• ${graduate} graduate programs\n\nNotable programs include Doctor of Medicine, Juris Doctor (Law), Bachelor of Science in Nursing, Civil Engineering, Accountancy, and various business and education programs.`,
-              suggestions: ['List undergraduate programs', 'Show graduate programs', 'What can I help you more with today?']
-            };
-          }
-        } catch (error) {
-          console.error('Error fetching PLM programs:', error);
-        }
-      }
-
-      if (message.includes('admission') || message.includes('requirements') || message.includes('apply')) {
-        try {
-          const universities = await UniversityService.getAllUniversities();
-          const plm = universities.find(u => u.name.toLowerCase().includes('lungsod') || u.name.toLowerCase().includes('maynila') || u.name.toLowerCase().includes('plm'));
-          if (plm && plm.admissionRequirements && plm.admissionRequirements.length > 0) {
-            const requirements = plm.admissionRequirements.join('\n• ');
-            return {
-              response: `PLM Admission Requirements:\n• ${requirements}\n\nPLM prioritizes academically deserving students. The admission process involves document submission, grade validation, and application through their online portal.`
-            };
-          }
-        } catch (error) {
-          console.error('Error fetching PLM admission:', error);
-        }
-      }
-
-      if (message.includes('facilities') || message.includes('campus')) {
-        try {
-          const universities = await UniversityService.getAllUniversities();
-          const plm = universities.find(u => u.name.toLowerCase().includes('lungsod') || u.name.toLowerCase().includes('maynila') || u.name.toLowerCase().includes('plm'));
-          if (plm && plm.facilities && plm.facilities.length > 0) {
-            const facilities = plm.facilities.slice(0, 6).join('\n• ');
-            return {
-              response: `PLM Campus Facilities:\n• ${facilities}\n\nLocated in historic Intramuros, Manila, PLM provides modern facilities including libraries, laboratories, sports facilities, and specialized centers for medicine, law, and engineering.`
-            };
-          }
-        } catch (error) {
-          console.error('Error fetching PLM facilities:', error);
-        }
-      }
-
-      if (message.includes('rankings') || message.includes('ranking')) {
-        try {
-          const universities = await UniversityService.getAllUniversities();
-          const plm = universities.find(u => u.name.toLowerCase().includes('lungsod') || u.name.toLowerCase().includes('maynila') || u.name.toLowerCase().includes('plm'));
-          if (plm && plm.rankings?.details) {
-            return {
-              response: `PLM Rankings:\n${plm.rankings.details}\n\nPLM is recognized for its high performance in professional licensure examinations, particularly in law, medicine, and education.`
-            };
-          }
-        } catch (error) {
-          console.error('Error fetching PLM rankings:', error);
-        }
-      }
+  const getFacilitiesDetails = (uniData: University) => {
+    if (uniData.facilities && uniData.facilities.length > 0) {
+      const facilities = uniData.facilities.slice(0, 8).join('\n• ');
+      return {
+        response: `🏛️ ${uniData.name} has an amazing campus! Here's what you'll find:\n\n🏢 Facilities:\n• ${facilities}\n\nThey also have modern classrooms, libraries, and sports facilities.`,
+        suggestions: ['What can I help you more with today?']
+      };
     }
+    return null;
+  };
 
-    // Handle general university queries
-    if (message.includes('pup') || message.includes('polytechnic')) {
-      try {
-        const universities = await UniversityService.getAllUniversities();
-        const pup = universities.find(u => u.name.toLowerCase().includes('polytechnic') || u.name.toLowerCase().includes('pup'));
-        if (pup) {
-          const programCount = pup.programs || 0;
-          return {
-            response: `${pup.name} is the largest state university with over ${pup.students} students. Known for technology, business, and education programs in ${pup.location}. They offer ${programCount} programs across multiple disciplines.`,
-            suggestions: ['Want to learn more about PUP?']
-          };
-        }
-      } catch (error) {
-        console.error('Error fetching PUP data:', error);
-      }
+  const getRankingDetails = (uniData: University) => {
+    if (uniData.rankings?.details) {
+      return {
+        response: `🏆 ${uniData.name} Rankings - They're doing AMAZING! 📈\n\n${uniData.rankings.details}\n\n${uniData.name} is renowned for its outstanding performance in licensure examinations.`,
+        suggestions: ['What can I help you more with today?']
+      };
     }
-
-    if (message.includes('tup') || message.includes('technological')) {
-      try {
-        const universities = await UniversityService.getAllUniversities();
-        const tup = universities.find(u => u.name.toLowerCase().includes('technological') || u.name.toLowerCase().includes('tup'));
-        if (tup) {
-          const programCount = tup.programs || 0;
-          return {
-            response: `${tup.name} is a leading engineering and technology university with over ${tup.students} students. ${tup.description} They offer ${programCount} programs focused on technology and innovation.`,
-            suggestions: ['Want to learn more about TUP?']
-          };
-        }
-      } catch (error) {
-        console.error('Error fetching TUP data:', error);
-      }
-    }
-
-    if (message.includes('plm') || message.includes('lungsod') || message.includes('maynila')) {
-      try {
-        const universities = await UniversityService.getAllUniversities();
-        const plm = universities.find(u => u.name.toLowerCase().includes('lungsod') || u.name.toLowerCase().includes('maynila') || u.name.toLowerCase().includes('plm'));
-        if (plm) {
-          const programCount = plm.programs || 0;
-          return {
-            response: `${plm.name} is the premier city-funded university with over ${plm.students} students. ${plm.description} They offer ${programCount} programs in medicine, law, engineering, and other fields.`,
-            suggestions: ['Want to learn more about PLM?']
-          };
-        }
-      } catch (error) {
-        console.error('Error fetching PLM data:', error);
-      }
-    }
-
-    // Handle general university queries that might match multiple universities
-    if (message.includes('university') && (message.includes('info') || message.includes('information') || message.includes('details') || message.includes('about'))) {
-      try {
-        const universities = await UniversityService.getAllUniversities();
-        if (universities.length > 0) {
-          const universityList = universities.map(u => u.name).join(', ');
-          return {
-            response: `We have information about these state universities: ${universityList}. Which one would you like to know more about?`,
-            suggestions: ['PUP details', 'TUP information', 'PLM programs']
-          };
-        }
-      } catch (error) {
-        console.error('Error fetching universities:', error);
-      }
-    }
-
-    // Check rule-based knowledge base with regex patterns
+    return null;
+  };
+  
+  const handleRuleBasedQuery = (userMessage: string) => {
     for (const [key, value] of Object.entries(knowledgeBase)) {
       if (value.pattern.test(userMessage)) {
-        // Randomly select a response from the array for variety
         const randomResponse = value.responses[Math.floor(Math.random() * value.responses.length)];
         return {
           response: randomResponse,
@@ -823,34 +652,18 @@ export default function Chatbot() {
         };
       }
     }
+    return null;
+  };
 
-    // Handle compare page navigation
-    if (message.includes('go to compare page') || message.includes('compare page') || message.includes('go to compare')) {
-      return {
-        response: `Perfect! 🎯 Let's head to our comparison tool where you can compare up to 3 universities side-by-side. Click the link below to get started:\n\n🔗 **[Go to Compare Page](/compare)**\n\nYou'll be able to select universities and see tuition, programs, location, facilities, and admission requirements all in one view! 📊`,
-        suggestions: ['What can I help you more with today?']
-      };
-    }
-
-    // Handle dynamic university data queries
-    if (message.includes('how many universities')) {
-      try {
-        const universities = await UniversityService.getAllUniversities();
+  const handleAiQuery = async (userMessage: string) => {
+    try {
+      if (!import.meta.env.VITE_OPENAI_API_KEY) {
         return {
-          response: `We currently have ${universities.length} universities in our database across Metro Manila.`,
-          suggestions: ['View universities', 'Compare universities', 'Find by location']
-        };
-      } catch (error) {
-        return {
-          response: 'We have universities from major institutions across Metro Manila.',
-          suggestions: ['State universities', 'University map', 'Campus locations']
+          response: 'The AI assistant is not configured. Please provide an OpenRouter API key. Check your .env file.',
+          suggestions: ['Find universities', 'Browse programs', 'Admission guidance', 'Compare universities']
         };
       }
-    }
-
-    // ONLY USE AI FOR TRULY UNEXPECTED/UNPREDICTABLE QUESTIONS
-    try {
-      // Get university data for context
+      
       const universities = await UniversityService.getAllUniversities();
       const universityData = universities.map(u => ({
         name: u.name,
@@ -863,14 +676,7 @@ export default function Chatbot() {
         rankings: u.rankings?.details || 'Consistently ranked among top state universities'
       }));
 
-      // Create system prompt with university context
-      const SYSTEM_PROMPT = `You are UniBot, a friendly and helpful AI assistant specializing in Philippine state universities (PUP, TUP, and PLM) in Metro Manila.
-
-YOUR PERSONALITY:
-- Be kind, fun, and engaging with emojis
-- Use casual, friendly language like "Hey!", "Awesome!", "No worries!"
-- Add humor when appropriate but stay professional
-- Be encouraging and supportive to students
+      const SYSTEM_PROMPT = `You are UniBot, a friendly and helpful AI assistant specializing in Philippine state universities (PUP, TUP, and PLM) in Metro Manila. Your personality is kind, fun, and engaging with emojis. Use casual, friendly language. Keep responses under 300 words. You can help with university information, programs, admission requirements, campus facilities, rankings, tuition information, program recommendations, and university comparisons. Only discuss PUP, TUP, and PLM universities. For off-topic questions, answer briefly and always bring conversation back to universities. Use plain text only - NO markdown formatting. End with 2-4 relevant suggestion buttons when helpful.
 
 UNIVERSITIES YOU KNOW (use this data):
 ${universityData.map(u => `
@@ -882,42 +688,8 @@ ${u.name}:
 - Key Facilities: ${u.facilities.join(', ')}
 - Admission Requirements: ${u.admissionRequirements.join(', ')}
 - Rankings: ${u.rankings}
-`).join('\n')}
+`).join('\n')}`;
 
-WHAT YOU CAN HELP WITH:
-- University information, programs, admission requirements
-- Campus facilities and rankings
-- Tuition information (state universities: P5,000-15,000/semester)
-- Program recommendations based on interests
-- University comparisons
-- Navigation to detailed pages and comparison tools
-
-STAY IN SCOPE:
-- Only discuss PUP, TUP, and PLM universities
-- If asked about other universities, kindly redirect to these three
-- For off-topic questions, answer briefly and ALWAYS bring conversation back to universities
-- After answering unexpected questions, immediately redirect to university topics
-- Never ask follow-up questions about off-topic subjects
-- Never discuss tuition costs beyond general ranges
-
-RESPONSE FORMAT:
-- Keep responses under 300 words
-- Use plain text only - NO markdown formatting (**bold**, *italic*, lists, etc.)
-- Use emojis appropriately (not too many)
-- End with 2-4 relevant suggestion buttons when helpful
-- If user asks for specific program lists, provide real data from our database
-- Use simple text formatting - avoid numbered lists, bullet points, bold, italic
-
-SUGGESTIONS TO INCLUDE:
-- Program information
-- Admission details
-- Campus facilities
-- University comparisons
-- Navigation to detailed pages
-
-REMEMBER: You're here to help students make informed university choices! 🎓`;
-
-      // Call Meta Llama 3.2 3B (Free) - ONLY FOR UNEXPECTED QUESTIONS
       const completion = await openai.chat.completions.create({
         model: "meta-llama/llama-3.2-3b-instruct:free",
         messages: [
@@ -930,70 +702,48 @@ REMEMBER: You're here to help students make informed university choices! 🎓`;
 
       const aiResponse = completion.choices[0]?.message?.content || "Sorry, I couldn't process that request. Could you try asking again?";
 
-      // Clean AI response of markdown formatting
-      const cleanAiResponse = aiResponse
-        .replace(/\*\*(.*?)\*\*/g, '$1') // Remove **bold**
-        .replace(/\*(.*?)\*/g, '$1')     // Remove *italic*
-        .replace(/^\d+\.\s*/gm, '')      // Remove numbered lists
-        .replace(/^-\s*/gm, '')          // Remove bullet points
-        .replace(/^###\s*/gm, '')        // Remove ### headers
-        .replace(/^##\s*/gm, '')         // Remove ## headers
-        .replace(/^#\s*/gm, '')          // Remove # headers
-        .replace(/^\s*[-*+]\s+/gm, '')   // Remove list markers
-        .trim();
+      const cleanAiResponse = aiResponse.replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*(.*?)\*/g, '$1').replace(/^\d+\.\s*/gm, '').replace(/^-\s*/gm, '').replace(/^###\s*/gm, '').replace(/^##\s*/gm, '').replace(/^#\s*/gm, '').replace(/^\s*[-*+]\s+/gm, '').trim();
 
-      // Extract suggestions from AI response if it includes them
       let suggestions: string[] = [];
-      const responseLines = cleanAiResponse.split('\n');
-      const lastLines = responseLines.slice(-4);
-
-      // Look for common suggestion patterns
-      if (aiResponse.toLowerCase().includes('program') && !aiResponse.toLowerCase().includes('list')) {
+      if (aiResponse.toLowerCase().includes('program')) {
         suggestions.push('Explore programs');
       }
-      if (aiResponse.toLowerCase().includes('admission') || aiResponse.toLowerCase().includes('apply')) {
+      if (aiResponse.toLowerCase().includes('admission')) {
         suggestions.push('Admission info');
       }
       if (aiResponse.toLowerCase().includes('compare')) {
         suggestions.push('Compare universities');
       }
-      if (aiResponse.toLowerCase().includes('facility') || aiResponse.toLowerCase().includes('campus')) {
-        suggestions.push('Campus facilities');
-      }
-
-      // Ensure we have at least 2 suggestions
       if (suggestions.length < 2) {
-        const defaultSuggestions = [
-          'Explore state universities',
-          'Find programs for me',
-          'Tell me about admissions',
-          'Compare universities'
-        ];
-        suggestions = suggestions.concat(defaultSuggestions.slice(0, 4 - suggestions.length));
+        suggestions.push('Explore state universities', 'Find programs for me', 'Tell me about admissions', 'Compare universities');
       }
 
       return {
-        response: aiResponse,
-        suggestions: suggestions.slice(0, 4) // Max 4 suggestions
+        response: cleanAiResponse,
+        suggestions: suggestions.slice(0, 4)
       };
 
     } catch (error) {
       console.error('AI Error:', error);
-
-      // Fallback to rule-based response
+      let errorMessage = 'Hmm, I\'m having trouble connecting right now 🤔.';
+      if (error instanceof Error) {
+        if (error.message.includes('401')) {
+          errorMessage = 'It seems there is an issue with the AI configuration (Authentication Error).';
+        } else if (error.message.includes('429')) {
+          errorMessage = 'I\'m currently receiving a lot of requests. Please try again in a moment.';
+        }
+      }
       const fallbackResponses = [
-        'Hmm, I\'m having trouble connecting right now 🤔. But hey, I can totally help you with info about PUP, TUP, or PLM—think programs, admissions, tuition, rankings, or comparisons. What are you curious about?',
-        'Oops, technical glitch! 😅 No worries though—I\'m all about helping with Philippine state universities! PUP, TUP, and PLM are my specialties. Programs, rankings, admissions... what would you like to explore?',
-        'Sorry about that! 🤷‍♀️ Let\'s get back to what matters—finding your perfect university! Tell me about programs, admission requirements, or maybe compare some schools?',
-        'Connection hiccup! 📡 But I\'m still here to help with PUP, TUP, and PLM! What university questions can I answer for you today?'
+        `${errorMessage} But hey, I can totally help you with info about PUP, TUP, or PLM. What are you curious about?`,
+        `Oops, technical glitch! 😅 ${errorMessage} No worries though—I'm all about helping with Philippine state universities! What would you like to explore?`,
       ];
-
       return {
         response: fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)],
         suggestions: ['Find universities', 'Browse programs', 'Admission guidance', 'Compare universities']
       };
     }
   };
+
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
