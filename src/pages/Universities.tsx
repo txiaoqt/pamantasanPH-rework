@@ -121,10 +121,10 @@ export default function Universities() {
       {/* Header */}
       <div className="bg-gradient-to-br from-maroon-900 via-maroon-800 to-red-900 text-white py-8 md:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+          <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
             {programFilter ? `Universities offering ${decodeURIComponent(programFilter)}` : 'Universities'}
           </h1>
-          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-maroon-100 max-w-3xl">
+          <p className={`text-xs sm:text-base md:text-lg lg:text-xl text-maroon-100 max-w-3xl ${programFilter ? 'hidden sm:block' : ''}`}>
             {programFilter
               ? `Find universities that offer ${decodeURIComponent(programFilter)} and explore your options.`
               : 'Discover and explore universities across the Philippines. Find the perfect institution for your educational journey.'
@@ -132,7 +132,7 @@ export default function Universities() {
           </p>
           {programFilter && (
             <div className="mt-4 inline-flex items-center px-4 py-2 bg-maroon-800/50 rounded-lg border border-maroon-700">
-              <span className="text-sm font-medium">Filtering by program: {decodeURIComponent(programFilter)}</span>
+              <span className="text-xs sm:text-sm font-medium">Filtering by program: {decodeURIComponent(programFilter)}</span>
             </div>
           )}
         </div>
@@ -216,7 +216,7 @@ export default function Universities() {
           <div className="flex justify-center items-center py-20">
             <div className="flex flex-col items-center space-y-4">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-maroon-800"></div>
-              <p className="text-gray-600">Loading universities...</p>
+              <p className="text-sm text-gray-600">Loading universities...</p>
             </div>
           </div>
         ) : filteredUniversities.length > 0 ? (
@@ -241,8 +241,8 @@ export default function Universities() {
             <div className="text-gray-400 mb-4">
               <MapPin className="h-16 w-16 mx-auto" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No universities found</h3>
-            <p className="text-gray-600 mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">No universities found</h3>
+            <p className="text-sm text-gray-600 mb-4">
               No universities currently offer "{decodeURIComponent(programFilter)}" program.
             </p>
             <button
@@ -257,8 +257,8 @@ export default function Universities() {
             <div className="text-gray-400 mb-4">
               <MapPin className="h-16 w-16 mx-auto" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No universities found</h3>
-            <p className="text-gray-600">Try adjusting your search criteria or filters.</p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">No universities found</h3>
+            <p className="text-sm text-gray-600">Try adjusting your search criteria or filters.</p>
           </div>
         )}
       </div>
