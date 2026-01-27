@@ -12,8 +12,10 @@ import { AcademicProgramService } from '../services/academicProgramService';
 import { University } from '../components/university/UniversityCard';
 import { AcademicProgram } from '../lib/supabase';
 import { useSavedUniversities } from '../hooks/useSavedUniversities';
+import { AdmissionRequirementService, UserRequirementChecklistItem } from '../services/admissionRequirementService';
 import LoginPromptModal from '../components/common/LoginPromptModal';
 
+import { supabase } from '../lib/supabase'; // Make sure supabase is imported
 import {
   ArrowLeft,
   Star,
@@ -100,6 +102,8 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
   const [expandedColleges, setExpandedColleges] = useState<Record<string, boolean>>({});
   const [expandedAmenities, setExpandedAmenities] = useState<Record<string, boolean>>({});
+  const [userChecklistProgress, setUserChecklistProgress] = useState<Map<string, boolean>>(new Map());
+  const [isUniversityTracked, setIsUniversityTracked] = useState<boolean>(false);
 
   const { isSaved, toggleSaved, isLoaded } = useSavedUniversities();
 
@@ -175,6 +179,79 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
 
     // Navigate to compare page
     navigate('/compare');
+  };
+
+  const handleRequirementToggle = async (requirementText: string, isCompleted: boolean) => {
+    if (!session?.user?.id || !university?.id) {
+      // If not logged in or university not loaded, prompt for login
+      setShowLoginModal(true);
+      return;
+    }
+
+    try {
+      await AdmissionRequirementService.toggleRequirementCompletion(
+        session.user.id,
+        university.id,
+        requirementText,
+        isCompleted
+      );
+      // Update local state to reflect the change
+      setUserChecklistProgress(prev => {
+        const newState = new Map(prev);
+        newState.set(requirementText, isCompleted);
+        return newState;
+      });
+    } catch (error) {
+      console.error('Failed to toggle requirement completion:', error);
+      // Optionally, revert UI change or show error message
+    }
+  };
+
+  const handleToggleUniversityTracking = async () => {
+    if (!session?.user?.id || !university?.id || !university.admissionRequirements) {
+      setShowLoginModal(true); // Prompt login if not logged in
+      return;
+    }
+
+    try {
+      if (isUniversityTracked) {
+        // Stop tracking: delete all entries for this university
+        await AdmissionRequirementService.untrackAllRequirements(
+          session.user.id,
+          university.id
+        );
+        // Clear local state
+        setUserChecklistProgress(new Map());
+        setIsUniversityTracked(false);
+      } else {
+        // Start tracking: insert all requirements
+        // Filter out sub-headers before tracking
+        const actualRequirements = university.admissionRequirements.filter(req =>
+          !req.startsWith('GENERAL REQUIREMENTS') &&
+          !req.startsWith('SPECIAL CATEGORIES') &&
+          !req.startsWith('For ') &&
+          !req.startsWith('Bachelor in ') &&
+          !req.startsWith('Bachelor of ') &&
+          req !== '(Allowed only for TUP graduates of specific programs if slots are available.)'
+        );
+
+        await AdmissionRequirementService.trackAllRequirements(
+          session.user.id,
+          university.id,
+          actualRequirements
+        );
+        // After tracking, refetch the progress to update checkboxes
+        const updatedProgress = await AdmissionRequirementService.getUserChecklistProgress(
+          session.user.id,
+          university.id
+        );
+        setUserChecklistProgress(updatedProgress);
+        setIsUniversityTracked(true);
+      }
+    } catch (error) {
+      console.error('Failed to toggle university tracking:', error);
+      // Optionally, show an error message
+    }
   };
 
   useEffect(() => {
@@ -264,6 +341,48 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
     });
     setAcademicPrograms(grouped);
   }, [allPrograms]);
+
+  // Fetch user's admission requirement checklist progress
+  useEffect(() => {
+    const fetchUserChecklist = async () => {
+      if (session?.user?.id && university?.id && activeTab === 'admissions') {
+        try {
+          const progress = await AdmissionRequirementService.getUserChecklistProgress(
+            session.user.id,
+            university.id
+          );
+          setUserChecklistProgress(progress);
+        } catch (error) {
+          console.error('Failed to fetch user checklist progress:', error);
+          // Optionally, show a toast or message to the user
+        }
+      }
+    };
+
+    fetchUserChecklist();
+  }, [session?.user?.id, university?.id, activeTab]);
+
+  // Check if this university's requirements are being tracked
+  useEffect(() => {
+    const checkTrackingStatus = async () => {
+      if (session?.user?.id && university?.id) {
+        try {
+          const tracked = await AdmissionRequirementService.isUniversityBeingTracked(
+            session.user.id,
+            university.id
+          );
+          setIsUniversityTracked(tracked);
+        } catch (error) {
+          console.error('Failed to check university tracking status:', error);
+        }
+      } else {
+        setIsUniversityTracked(false); // Not tracked if not logged in or no university
+      }
+    };
+
+    checkTrackingStatus();
+  }, [session?.user?.id, university?.id]); // Runs when session or university changes
+
 
   if (isLoading) {
     return (
@@ -846,7 +965,22 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
             <div className="space-y-6">
               {university.admissionRequirements && university.admissionRequirements.length > 0 && (
                 <div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">Admission Requirements</h2>
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Admission Requirements</h2>
+                    {session && university.admissionRequirements && university.admissionRequirements.length > 0 && (
+                      <button
+                        onClick={handleToggleUniversityTracking}
+                        className={`flex items-center px-3 py-1.5 text-xs sm:text-sm border rounded-lg transition-colors ${
+                          isUniversityTracked
+                            ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'
+                            : 'bg-green-50 text-green-600 border-green-200 hover:bg-green-100'
+                        }`}
+                      >
+                        {isUniversityTracked ? 'Stop Tracking' : 'Track Requirements'}
+                        <Star className={`h-3 w-3 sm:h-4 sm:w-4 ml-1 ${isUniversityTracked ? 'fill-current text-red-600' : 'text-green-600'}`} />
+                      </button>
+                    )}
+                  </div>
                   <div className="space-y-3">
                     {(() => {
                       const groupedRequirements = groupAdmissionRequirements(university.admissionRequirements);
@@ -882,9 +1016,21 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
                                   }
 
                                   return (
-                                    <div key={index} className="flex items-start">
-                                      <CheckCircle className="h-3.5 w-3.5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                                      <span className="text-xs sm:text-sm text-gray-700 leading-relaxed">{requirement}</span>
+                                    <div key={index} className="flex items-start items-center"> {/* Added items-center for alignment */}
+                                      {session ? ( // Render checkbox only if user is logged in
+                                        <input
+                                          type="checkbox"
+                                          checked={userChecklistProgress.get(requirement) || false}
+                                          onChange={(e) => handleRequirementToggle(requirement, e.target.checked)}
+                                          className="form-checkbox h-4 w-4 text-green-600 rounded focus:ring-green-500 border-gray-300 cursor-pointer"
+                                        />
+                                      ) : (
+                                        // Display original icon if not logged in
+                                        <CheckCircle className="h-3.5 w-3.5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                                      )}
+                                      <span className={`text-xs sm:text-sm text-gray-700 leading-relaxed ml-2 ${userChecklistProgress.get(requirement) && session ? 'line-through text-gray-500' : ''}`}>
+                                        {requirement}
+                                      </span>
                                     </div>
                                   );
                                 })}

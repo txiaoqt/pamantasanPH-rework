@@ -141,7 +141,7 @@ export default function Header({ mobileMenuOpen, setMobileMenuOpen, session }: H
                     </button>
                   </div>
                 ) : (
-                  <Link to="/login" className="w-full text-center block px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-maroon-800 hover:bg-maroon-700">
+                  <Link to="/login" className="w-full text-center block px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-maroon-800 hover:bg-maroon-700" onClick={() => setMobileMenuOpen(false)}>
                     Login
                   </Link>
                 )}

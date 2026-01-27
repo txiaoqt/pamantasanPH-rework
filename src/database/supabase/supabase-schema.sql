@@ -148,6 +148,38 @@ CREATE POLICY "Users can insert their own preferences" ON user_preferences
 CREATE POLICY "Users can update their own preferences" ON user_preferences
     FOR UPDATE USING (auth.uid() = user_id);
 
+-- Create user_requirement_checklist table for tracking user's admission requirement progress
+CREATE TABLE user_requirement_checklist (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  university_id INTEGER REFERENCES universities(id) ON DELETE CASCADE NOT NULL,
+  requirement_text TEXT NOT NULL, -- The exact text of the requirement
+  is_completed BOOLEAN DEFAULT FALSE NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(user_id, university_id, requirement_text) -- Ensures unique entry per user, university, and requirement
+);
+
+-- Enable RLS for user_requirement_checklist
+ALTER TABLE user_requirement_checklist ENABLE ROW LEVEL SECURITY;
+
+-- Policies for user_requirement_checklist (users can only see/modify their own entries)
+CREATE POLICY "Users can view their own requirement checklist progress" ON user_requirement_checklist
+    FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert their own requirement checklist progress" ON user_requirement_checklist
+    FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own requirement checklist progress" ON user_requirement_checklist
+    FOR UPDATE USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete their own requirement checklist progress" ON user_requirement_checklist
+    FOR DELETE USING (auth.uid() = user_id);
+
+-- Create trigger for user_requirement_checklist updated_at
+CREATE TRIGGER update_user_requirement_checklist_updated_at BEFORE UPDATE ON user_requirement_checklist
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
 -- Enable RLS for academic_programs
 ALTER TABLE academic_programs ENABLE ROW LEVEL SECURITY;
 
