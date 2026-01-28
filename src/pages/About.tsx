@@ -52,7 +52,7 @@ export default function About() {
       name: 'The FullStack VibeCoder',
       role: 'Full stack Vibecoder',
       image: memeImage,
-      description: 'lorem ipsum'
+      description: 'The solo developer behind UniCentral, passionately creating a one-stop portal for university information. Bringing the vision to life with code and creativity.'
     }
   ];
 
@@ -81,57 +81,81 @@ export default function About() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-br from-maroon-900 via-maroon-800 to-red-900 text-white py-10 md:py-20">
+      {/* Header */}
+      <div className="bg-maroon-800 text-white py-8 md:py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-6">About UniCentral</h1>
-            <p className="text-xs sm:text-base md:text-lg lg:text-xl text-maroon-100 max-w-4xl mx-auto leading-relaxed">
-              lorem ipsum dolor
-            </p>
-          </div>
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-3 text-center">About UniCentral</h1>
+          <p className="text-xs sm:text-sm text-maroon-100 max-w-3xl mx-auto text-center">
+            Your one-stop portal for state university application information.
+          </p>
         </div>
       </div>
 
 
-
-
-
-      {/* Team Section */}
-      <section className="py-20 bg-white">
+      {/* Values Section */}
+      <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6">Meet Our Team</h2>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Our Core Values</h2>
             <p className="text-base text-gray-600 max-w-3xl mx-auto">
-              lorem ipsum dolor
+              Our commitment to providing the best possible support for your academic journey.
             </p>
           </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {values.map((value, index) => (
+              <ValueCard key={index} {...value} />
+            ))}
+          </div>
+        </div>
+      </section>
 
+      {/* Team Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Meet the Visionary Behind UniCentral</h2>
+            <p className="text-base text-gray-600 max-w-3xl mx-auto">
+              Meet the visionary behind UniCentral's development and mission.
+            </p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {teamMembers.map((member, index) => (
               <TeamMember key={index} {...member} />
             ))}
           </div>
-
         </div>
       </section>
 
-      {/* Story Section */}
-      <section className="py-20 bg-gray-50">
+      {/* Story Section - Updated Content */}
+      <section className="py-16 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6">Our Story</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Our Journey</h2>
+            <p className="text-base text-gray-600 max-w-3xl mx-auto">
+              From identifying a common problem to developing an innovative solution.
+            </p>
           </div>
 
-          <div className="prose prose-lg mx-auto text-gray-600">
-            <p className="text-base leading-relaxed mb-6">
-              lorem ipsum dolor
+          <div className="prose prose-lg mx-auto text-gray-700 space-y-6">
+            <h3 className="text-2xl font-bold text-gray-900">The Challenge</h3>
+            <p>
+              Applying to universities requires careful preparation and submission of numerous documents. The research process is time-consuming for Grade 12 students, especially those applying to multiple state universities. Students commonly rely on university websites and other information sources, but each website presents information differently. This requires applicants to navigate from one website to another, tracking requirements, schedules, deadlines, course offerings, and university details. This lack of uniformity increases cognitive load, resulting in stress, inefficiency, and a higher risk of overlooking important application information, particularly with overlapping application periods among state universities in Metro Manila.
+            </p>
+            <h3 className="text-2xl font-bold text-gray-900">The UniCentral Solution</h3>
+            <p>
+              UniCentral is a one-stop web-based portal designed to consolidate and streamline application information into a single platform. It provides centralized access to essential application details, including admission requirements, application schedules and deadlines, available academic programs, entrance examination information, and general university profiles such as location and areas of specialization.
+            </p>
+            <h3 className="text-2xl font-bold text-gray-900">Our Impact</h3>
+            <p>
+              By centralizing these resources, UniCentral aims to enhance your research process, enabling you to efficiently access, understand, and compare application information across multiple universities. We address existing gaps in current practices, particularly the lack of a centralized platform and the fragmented, time-consuming nature of navigating multiple information sources. This means less stress, more efficiency, and a reduced risk of missing crucial information.
+            </p>
+            <h3 className="text-2xl font-bold text-gray-900">Important Disclaimer</h3>
+            <p>
+              The information on UniCentral is based on data from university websites. While we strive for accuracy, this information is for general guidance only. University details, such as admission requirements and program availability, can change. UniCentral is not an official representative of any university. We strongly recommend that you verify all critical information directly with the respective university's official website or admissions office. Additionally, UniCentral focuses on the presentation and organization of application information only. It does not support online application submission, document uploading, admission processing, or integration with official university enrollment systems.
             </p>
           </div>
         </div>
       </section>
-
-
     </div>
   );
 }
