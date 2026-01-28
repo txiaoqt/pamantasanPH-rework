@@ -223,20 +223,22 @@ export default function FeaturedUniversities() {
     };
 
     useEffect(() => {
-        const fetchFeaturedUniversities = async () => {
+        const fetchFixedFeaturedUniversities = async () => {
             try {
                 setIsLoading(true);
-                const universities = await UniversityService.getFeaturedUniversities(3);
+                // Fetch specific universities by their IDs: PUP (main), TUP (main), PLM
+                const specificUniversityIds = [1, 2, 3]; // Assuming these are the IDs for PUP-main, TUP-main, PLM
+                const universities = await UniversityService.getUniversitiesByIds(specificUniversityIds);
                 setFeaturedUniversities(universities);
             } catch (err) {
-                console.error('Failed to fetch featured universities:', err);
+                console.error('Failed to fetch fixed featured universities:', err);
                 setError('Failed to load featured universities');
             } finally {
                 setIsLoading(false);
             }
         };
 
-        fetchFeaturedUniversities();
+        fetchFixedFeaturedUniversities();
     }, []);
 
     if (isLoading) {

@@ -49,6 +49,29 @@ export class UniversityService {
   }
 
   /**
+   * Fetch multiple universities by an array of IDs
+   */
+  static async getUniversitiesByIds(ids: number[]): Promise<University[]> {
+    try {
+      const { data, error } = await supabase
+        .from('universities')
+        .select('*')
+        .in('id', ids) // Use the .in() filter for multiple IDs
+        .order('name', { ascending: true }); // Keep consistent ordering
+
+      if (error) {
+        console.error('Error fetching universities by IDs:', error);
+        throw error;
+      }
+
+      return (data as DatabaseUniversity[]).map(transformDbUniversityToUniversity);
+    } catch (error) {
+      console.error('Failed to fetch universities by IDs:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Filter universities by criteria
    */
   static async filterUniversities(filters: {
