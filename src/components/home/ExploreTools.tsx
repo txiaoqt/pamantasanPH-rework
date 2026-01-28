@@ -13,18 +13,16 @@ interface ToolCardProps {
 function ToolCard({ title, description, icon, color, onClick }: ToolCardProps) {
   return (
     <div
-      className="bg-white rounded-2xl p-3 sm:p-4 shadow-lg hover:shadow-2xl transition-all duration-300 group cursor-pointer border border-gray-100"
+      className="bg-white rounded-xl p-6 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group cursor-pointer border border-gray-100"
       onClick={onClick}
     >
-      <div className={`w-12 h-12 sm:w-16 sm:h-16 ${color} rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-        {React.cloneElement(icon as React.ReactElement, { className: `h-6 w-6 sm:h-8 sm:w-8 text-white` })}
+      <div className={`w-12 h-12 ${color} rounded-lg flex items-center justify-center mb-4 transition-colors`}>
+        {React.cloneElement(icon as React.ReactElement, { className: `h-6 w-6 text-white` })}
       </div>
-
-      <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 group-hover:text-red-900 transition-colors">
+      <h3 className="text-lg font-bold text-gray-800 mb-2 group-hover:text-maroon-800 transition-colors">
         {title}
       </h3>
-
-      <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+      <p className="text-sm text-gray-600 leading-relaxed">
         {description}
       </p>
     </div>
@@ -39,14 +37,14 @@ export default function ExploreTools() {
       case 'Advanced Search':
         navigate('/universities');
         break;
-      case 'Compare':
+      case 'Compare Universities':
         navigate('/compare');
         break;
-      case 'Map View':
+      case 'Interactive Map':
         navigate('/map');
         break;
-      case 'Reviews':
-        // Leave non-functional as requested - no login functionality yet
+      case 'Student Reviews':
+        // This can be linked to a future reviews page or modal
         break;
       default:
         break;
@@ -56,47 +54,47 @@ export default function ExploreTools() {
   const tools = [
     {
       title: 'Advanced Search',
-      description: 'Find universities by location, programs, and more',
-      icon: <Search className="h-8 w-8 text-white" />,
-      color: 'bg-gradient-to-br from-blue-600 to-blue-500',
+      description: 'Filter universities by location, programs, and more to find the best fit for you.',
+      icon: <Search />,
+      color: 'bg-maroon-700',
       onClick: () => handleToolClick('Advanced Search')
     },
     {
-      title: 'Compare',
-      description: 'Side-by-side comparison of universities',
-      icon: <BarChart3 className="h-8 w-8 text-white" />,
-      color: 'bg-gradient-to-br from-green-600 to-green-500',
-      onClick: () => handleToolClick('Compare')
+      title: 'Compare Universities',
+      description: 'Select and compare universities side-by-side to evaluate their key differences.',
+      icon: <BarChart3 />,
+      color: 'bg-indigo-600',
+      onClick: () => handleToolClick('Compare Universities')
     },
     {
-      title: 'Map View',
-      description: 'Explore universities on an interactive map',
-      icon: <Map className="h-8 w-8 text-white" />,
-      color: 'bg-gradient-to-br from-purple-600 to-purple-500',
-      onClick: () => handleToolClick('Map View')
+      title: 'Interactive Map',
+      description: 'Visually explore the locations of universities across different regions.',
+      icon: <Map />,
+      color: 'bg-maroon-700',
+      onClick: () => handleToolClick('Interactive Map')
     },
     {
-      title: 'Reviews',
-      description: 'Read authentic student reviews and ratings',
-      icon: <Star className="h-8 w-8 text-white" />,
-      color: 'bg-gradient-to-br from-yellow-600 to-yellow-500',
-      onClick: () => handleToolClick('Reviews')
+      title: 'Student Reviews',
+      description: 'Gain insights from authentic student reviews and ratings to make an informed choice.',
+      icon: <Star />,
+      color: 'bg-indigo-600',
+      onClick: () => handleToolClick('Student Reviews')
     }
   ];
 
   return (
-    <section className="py-8 md:py-16 bg-gray-50">
+    <section className="py-12 md:py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Explore & Compare
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">
+            Find Your Perfect University
           </h2>
-          <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Tools to help you find the perfect university
+          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
+            Our powerful tools are designed to simplify your search and decision-making process.
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {tools.map((tool, index) => (
             <ToolCard key={index} {...tool} />
           ))}

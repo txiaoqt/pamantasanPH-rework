@@ -1,316 +1,238 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
-  Plus,
-  X,
-  Star,
-  Users,
-  BookOpen,
-  MapPin,
-  DollarSign,
-  TrendingUp,
+  Plus, X, BookOpen, MapPin, Users, Building, ShieldCheck, BarChart3
 } from 'lucide-react';
 import { UniversityService } from '../services/universityService';
+import { University } from '../components/university/UniversityCard';
 
-interface University {
-  id: number;
-  name: string;
-  location: string;
-  type: string;
-  established: string;
-  students: string;
-  programs: number;
-  accreditation: string[];
-  imageUrl: string;
-  strengths?: string[];
-  facilities?: string[];
-  admissionRate?: string;
-  graduationRate?: string;
-  employmentRate?: string;
+// This is a simplified interface for the comparison data
+interface ComparisonUniversity extends University {
+  // We can add more specific fields for comparison if needed
 }
 
-interface ComparisonTableProps {
-  selectedUniversities: University[];
-  onRemove: (id: number) => void;
-}
-
-function ComparisonTable({ selectedUniversities, onRemove }: ComparisonTableProps) {
-  if (selectedUniversities.length === 0) {
-    return (
-      <div className="text-center py-16">
-        <div className="text-gray-400 mb-4">
-          <TrendingUp className="h-16 w-16 mx-auto" />
-        </div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">
-          Start Comparing Universities
-        </h3>
-        <p className="text-gray-600 text-sm">
-          Select universities from the list below to compare their features.
-        </p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead className="bg-maroon-50">
-            <tr>
-              <td className="px-6 py-4 font-semibold text-gray-900 w-48">
-                University
-              </td>
-              {selectedUniversities.map((university) => (
-                <td
-                  key={university.id}
-                  className="px-6 py-4 text-center min-w-64"
-                >
-                  <div className="relative">
-                    <button
-                      onClick={() => onRemove(university.id)}
-                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
-                    >
-                      <X className="h-4 w-4" />
-                    </button>
-                    <img
-                      src={university.imageUrl}
-                      alt={university.name}
-                      className="w-full h-32 object-cover rounded-lg mb-3"
-                    />
-                    <h3 className="font-bold text-gray-900 text-sm">
-                      {university.name}
-                    </h3>
-                  </div>
-                </td>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            <tr>
-              <td className="px-6 py-4 font-medium text-gray-900 bg-gray-50">
-                Location
-              </td>
-              {selectedUniversities.map((university) => (
-                <td key={university.id} className="px-6 py-4 text-center">
-                  <div className="flex items-center justify-center text-sm text-gray-600">
-                    <MapPin className="h-4 w-4 mr-1" />
-                    {university.location}
-                  </div>
-                </td>
-              ))}
-            </tr>
-            <tr>
-              <td className="px-6 py-4 font-medium text-gray-900 bg-gray-50">
-                Type
-              </td>
-              {selectedUniversities.map((university) => (
-                <td key={university.id} className="px-6 py-4 text-center">
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      university.type === 'Public'
-                        ? 'bg-blue-100 text-blue-800'
-                        : university.type === 'State'
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-purple-100 text-purple-800'
-                    }`}
-                  >
-                    {university.type}
-                  </span>
-                </td>
-              ))}
-            </tr>
-            <tr>
-              <td className="px-6 py-4 font-medium text-gray-900 bg-gray-50">
-                Established
-              </td>
-              {selectedUniversities.map((university) => (
-                <td
-                  key={university.id}
-                  className="px-6 py-4 text-center text-gray-600"
-                >
-                  {university.established}
-                </td>
-              ))}
-            </tr>
-
-            <tr>
-              <td className="px-6 py-4 font-medium text-gray-900 bg-gray-50">
-                Students
-              </td>
-              {selectedUniversities.map((university) => (
-                <td key={university.id} className="px-6 py-4 text-center">
-                  <div className="flex items-center justify-center text-gray-600">
-                    <Users className="h-4 w-4 mr-1" />
-                    {university.students}
-                  </div>
-                </td>
-              ))}
-            </tr>
-            <tr>
-              <td className="px-6 py-4 font-medium text-gray-900 bg-gray-50">
-                Programs
-              </td>
-              {selectedUniversities.map((university) => (
-                <td key={university.id} className="px-6 py-4 text-center">
-                  <div className="flex items-center justify-center text-gray-600">
-                    <BookOpen className="h-4 w-4 mr-1" />
-                    {university.programs}
-                  </div>
-                </td>
-              ))}
-            </tr>
-
-
-
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-
-export default function Compare() {
-  const [selectedUniversities, setSelectedUniversities] = useState<University[]>([]);
-  const [universities, setUniversities] = useState<University[]>([]);
+function Compare() {
+  const navigate = useNavigate();
+  const [selectedUniversities, setSelectedUniversities] = useState<ComparisonUniversity[]>([]);
+  const [allUniversities, setAllUniversities] = useState<University[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [mobileActiveIndex, setMobileActiveIndex] = useState(0);
 
   useEffect(() => {
     const fetchUniversities = async () => {
       try {
-        const data = await UniversityService.getAllUniversities();
-        setUniversities(data);
+        setIsLoading(true);
+        const storedIds = JSON.parse(localStorage.getItem('compareUniversities') || '[]').map((u: any) => u.id);
+        
+        const allData = await UniversityService.getAllUniversities();
+        setAllUniversities(allData);
+
+        if (storedIds.length > 0) {
+          const selectedData = allData.filter(u => storedIds.includes(u.id));
+          setSelectedUniversities(selectedData);
+        }
       } catch (error) {
         console.error('Failed to fetch universities:', error);
-        setUniversities([]);
+      } finally {
+        setIsLoading(false);
       }
     };
-
     fetchUniversities();
   }, []);
 
+  const handleRemove = (id: number) => {
+    const updatedSelection = selectedUniversities.filter(u => u.id !== id);
+    setSelectedUniversities(updatedSelection);
+    
+    const storedItems = JSON.parse(localStorage.getItem('compareUniversities') || '[]').filter((u: any) => u.id !== id);
+    localStorage.setItem('compareUniversities', JSON.stringify(storedItems));
+    
+    if (mobileActiveIndex >= updatedSelection.length) {
+      setMobileActiveIndex(Math.max(0, updatedSelection.length - 1));
+    }
+  };
+  
+  const availableUniversities = allUniversities.filter(
+    (u) => !selectedUniversities.find((selected) => selected.id === u.id)
+  );
+
   const addUniversity = (university: University) => {
-    if (
-      selectedUniversities.length < 4 &&
-      !selectedUniversities.find((u) => u.id === university.id)
-    ) {
-      setSelectedUniversities([...selectedUniversities, university]);
+    if (selectedUniversities.length < 3) {
+      const newSelection = [...selectedUniversities, university];
+      setSelectedUniversities(newSelection);
+      
+      const storedItems = JSON.parse(localStorage.getItem('compareUniversities') || '[]');
+      storedItems.push({ id: university.id, name: university.name, imageUrl: university.imageUrl });
+      localStorage.setItem('compareUniversities', JSON.stringify(storedItems));
+    } else {
+      alert('You can compare a maximum of 3 universities.');
     }
   };
 
-  const removeUniversity = (id: number) => {
-    setSelectedUniversities(selectedUniversities.filter((u) => u.id !== id));
+  const getBestValue = (key: 'students' | 'programs' | 'established', higherIsBetter: boolean) => {
+    if (selectedUniversities.length < 2) return null;
+    
+    const values = selectedUniversities.map(u => {
+      const value = u[key];
+      if (typeof value === 'string') {
+        // Attempt to parse string numbers, removing commas
+        return parseInt(value.replace(/,/g, ''), 10);
+      }
+      return value;
+    }).filter(v => !isNaN(v as number)) as number[];
+
+    if (values.length === 0) return null;
+    
+    return higherIsBetter ? Math.max(...values) : Math.min(...values);
+  };
+  
+  const best = {
+    students: getBestValue('students', true),
+    programs: getBestValue('programs', true),
+    established: getBestValue('established', false),
   };
 
-  const availableUniversities = universities.filter(
-    (u) => !selectedUniversities.find((selected) => selected.id === u.id)
-  );
+  const comparisonRows = [
+    { label: 'Type', key: 'type' },
+    { label: 'Location', key: 'location' },
+    { label: 'Established', key: 'established' },
+    { label: 'Student Population', key: 'students' },
+    { label: 'Number of Programs', key: 'programs' },
+    { label: 'Accreditation', key: 'accreditation' },
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-gradient-to-br from-maroon-900 via-maroon-800 to-red-900 text-white py-8 md:py-16">
+      <div className="bg-maroon-800 text-white py-8 md:py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Compare Universities</h1>
-          <p className="text-xs sm:text-base md:text-lg lg:text-xl text-maroon-100 max-w-3xl">
-            Compare universities side-by-side to make an informed decision about
-            your education.
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-3">Compare Universities</h1>
+          <p className="text-xs sm:text-sm text-maroon-100 max-w-3xl">
+            Compare universities side-by-side to make an informed decision about your education.
           </p>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Selection Info */}
-        <div className="bg-white rounded-xl p-6 mb-8 shadow-lg">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-lg font-bold text-gray-900 mb-2">
-                University Comparison
-              </h2>
-              <p className="text-sm text-gray-600">
-                Selected {selectedUniversities.length} of 4 universities for
-                comparison
-              </p>
-            </div>
-            {selectedUniversities.length > 0 && (
-              <button
-                onClick={() => setSelectedUniversities([])}
-                className="px-4 py-2 text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition-colors"
-              >
-                Clear All
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Comparison Table */}
-        <div className="mb-8">
-          <ComparisonTable
-            selectedUniversities={selectedUniversities}
-            onRemove={removeUniversity}
-          />
-        </div>
-
-        {/* Available Universities */}
-        {availableUniversities.length > 0 && (
-          <div>
-            <h2 className="text-xl font-bold text-gray-900 mb-6">
-              Add Universities to Compare
-              {selectedUniversities.length >= 4 && (
-                <span className="text-sm font-normal text-gray-600 ml-2">
-                  (Maximum 4 universities reached)
-                </span>
-              )}
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {availableUniversities.map((university) => (
-                <div
-                  key={university.id}
-                  className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100"
-                >
-                  <img
-                    src={university.imageUrl}
-                    alt={university.name}
-                    className="w-full h-32 object-cover"
-                  />
-                  <div className="p-4">
-                    <h3 className="font-bold text-gray-900 mb-2">
-                      {university.name}
-                    </h3>
-                    <div className="flex items-center text-gray-600 text-sm mb-2">
-                      <MapPin className="h-4 w-4 mr-1" />
-                      {university.location}
-                    </div>
-                    <div className="flex items-center justify-between mb-4">
-                      <span
-                        className={`px-3 py-1 rounded-full text-sm font-medium ${
-                          university.type === 'Public'
-                            ? 'bg-blue-100 text-blue-800'
-                            : university.type === 'State'
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-purple-100 text-purple-800'
-                        }`}
-                      >
-                        {university.type}
-                      </span>
-                    </div>
+        {selectedUniversities.length > 0 ? (
+          <>
+            {/* Desktop View */}
+            <div className="hidden lg:block bg-white rounded-xl shadow-lg border border-gray-200">
+              <div className="flex">
+                <div className="w-1/4 p-4 font-semibold text-gray-600 border-r border-gray-200">Feature</div>
+                {selectedUniversities.map(uni => (
+                  <div key={uni.id} className="w-1/4 p-4 text-center border-r border-gray-200 last:border-r-0 relative">
                     <button
-                      onClick={() => addUniversity(university)}
-                      disabled={selectedUniversities.length >= 4}
-                      className={`w-full flex items-center justify-center px-4 py-2 rounded-lg transition-colors ${
-                        selectedUniversities.length >= 4
-                          ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                          : 'bg-maroon-800 text-white hover:bg-maroon-700'
-                      }`}
+                      onClick={() => handleRemove(uni.id)}
+                      className="absolute top-2 right-2 bg-red-100 text-red-600 rounded-full p-1 hover:bg-red-200 transition-colors"
                     >
-                      <Plus className="h-4 w-4 mr-1" />
-                      Add to Compare
+                      <X className="h-4 w-4" />
                     </button>
+                    <img src={uni.imageUrl} alt={uni.name} className="w-24 h-24 rounded-full mx-auto mb-2 object-cover"/>
+                    <p className="font-bold text-gray-800 text-sm">{uni.name}</p>
                   </div>
+                ))}
+              </div>
+              {comparisonRows.map(row => (
+                <div key={row.key} className="flex border-t border-gray-200">
+                  <div className="w-1/4 p-4 font-medium text-gray-700 bg-gray-50/70 border-r border-gray-200">{row.label}</div>
+                  {selectedUniversities.map(uni => {
+                    const value = (uni as any)[row.key];
+                    const isBest = value && (best as any)[row.key] !== null && parseInt(String(value).replace(/,/g, '')) === (best as any)[row.key];
+                    return (
+                      <div key={uni.id} className={`w-1/4 p-4 text-center text-sm text-gray-700 ${isBest ? 'bg-green-50' : ''}`}>
+                        {Array.isArray(value) ? value.slice(0, 2).join(', ') + (value.length > 2 ? '...' : '') : value}
+                      </div>
+                    );
+                  })}
                 </div>
               ))}
             </div>
+
+            {/* Mobile View */}
+            <div className="lg:hidden">
+              <div className="flex justify-center mb-4 border border-gray-200 rounded-lg p-1 bg-gray-100">
+                {selectedUniversities.map((uni, index) => (
+                  <button
+                    key={uni.id}
+                    onClick={() => setMobileActiveIndex(index)}
+                    className={`flex-1 text-center text-sm font-medium py-2 rounded-md transition-colors ${mobileActiveIndex === index ? 'bg-white shadow' : 'text-gray-600'}`}
+                  >
+                    {uni.name}
+                  </button>
+                ))}
+              </div>
+              
+              {selectedUniversities[mobileActiveIndex] && (
+                <div className="bg-white rounded-xl shadow-lg border border-gray-200">
+                  <div className="p-4 text-center relative">
+                    <button
+                      onClick={() => handleRemove(selectedUniversities[mobileActiveIndex].id)}
+                      className="absolute top-2 right-2 bg-red-100 text-red-600 rounded-full p-1 hover:bg-red-200 transition-colors"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                    <img src={selectedUniversities[mobileActiveIndex].imageUrl} alt={selectedUniversities[mobileActiveIndex].name} className="w-24 h-24 rounded-full mx-auto mb-2 object-cover"/>
+                    <p className="font-bold text-gray-800">{selectedUniversities[mobileActiveIndex].name}</p>
+                  </div>
+                  {comparisonRows.map(row => (
+                    <div key={row.key} className="flex justify-between p-4 border-t border-gray-100">
+                      <p className="font-medium text-gray-700">{row.label}</p>
+                      <p className="text-gray-700 text-right">
+                        {Array.isArray((selectedUniversities[mobileActiveIndex] as any)[row.key])
+                          ? ((selectedUniversities[mobileActiveIndex] as any)[row.key]).slice(0, 2).join(', ') + (((selectedUniversities[mobileActiveIndex] as any)[row.key]).length > 2 ? '...' : '')
+                          : (selectedUniversities[mobileActiveIndex] as any)[row.key]
+                        }
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </>
+        ) : (
+          <div className="text-center py-16 bg-white rounded-xl shadow-md border border-gray-200">
+            <BarChart3 className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">Your Comparison List is Empty</h3>
+            <p className="text-gray-500 text-sm mb-6">Add up to 3 universities to compare them side-by-side.</p>
+            <button
+              onClick={() => navigate('/universities')}
+              className="px-6 py-2 bg-maroon-800 text-white rounded-lg hover:bg-maroon-700 transition-colors"
+            >
+              Browse Universities
+            </button>
           </div>
         )}
+        
+        <div className="mt-12">
+            <h2 className="text-xl font-bold text-gray-900 mb-6">
+              Add More Universities to Compare
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {isLoading ? (
+                 [...Array(4)].map((_, i) => <div key={i} className="bg-white rounded-xl h-64 animate-pulse"></div>)
+              ) : (
+                availableUniversities.slice(0, 4).map(uni => (
+                  <div key={uni.id} className="bg-white rounded-xl shadow-md p-4 flex flex-col items-center text-center">
+                     <img src={uni.imageUrl} alt={uni.name} className="w-20 h-20 rounded-full mb-3 object-cover"/>
+                     <h4 className="font-semibold text-sm flex-grow">{uni.name}</h4>
+                     <button
+                       onClick={() => addUniversity(uni)}
+                       disabled={selectedUniversities.length >= 3}
+                       className="w-full mt-4 flex items-center justify-center px-3 py-2 text-sm rounded-lg bg-gray-100 hover:bg-gray-200 disabled:bg-gray-50 disabled:text-gray-400 transition-colors"
+                     >
+                       <Plus className="h-4 w-4 mr-1" />
+                       Add to Compare
+                     </button>
+                  </div>
+                ))
+              )}
+            </div>
+        </div>
       </div>
     </div>
   );
 }
+
+export default Compare;
+

@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 import { User } from '@supabase/supabase-js';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { User as UserIcon, Shield, Settings, AlertTriangle, LogOut, Camera } from 'lucide-react';
 
 interface ProfileType {
   id: string;
@@ -15,94 +16,74 @@ export default function Profile() {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<ProfileType | null>(null);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('profile');
+  
+  // Form state
   const [fullName, setFullName] = useState('');
   const [location, setLocation] = useState('');
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [password, setPassword] = useState('');
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchUserData = async () => {
+      setLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
       if (user) {
-        const { data: profile, error } = await supabase
+        setUser(user);
+        const { data: profileData } = await supabase
           .from('profiles')
           .select('id, full_name, location, avatar_url')
           .eq('id', user.id)
           .single();
-        if (profile) {
-          setProfile(profile);
-          setFullName(profile.full_name || '');
-          setLocation(profile.location || '');
-          setAvatarUrl(profile.avatar_url || null);
-        } else if (error) {
-          console.error('Error fetching profile:', error);
+        
+        if (profileData) {
+          setProfile(profileData);
+          setFullName(profileData.full_name || '');
+          setLocation(profileData.location || '');
+          setAvatarUrl(profileData.avatar_url || null);
         }
+      } else {
+        navigate('/login');
       }
       setLoading(false);
     };
-    fetchUser();
-  }, []);
+    fetchUserData();
+  }, [navigate]);
 
   const uploadAvatar = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!user) return;
-
     const file = event.target.files?.[0];
     if (!file) return;
 
     setUploading(true);
     const fileExt = file.name.split('.').pop();
-    const fileName = `${user.id}.${fileExt}`;
-    const filePath = `${fileName}`;
+    const fileName = `${user.id}-${Date.now()}.${fileExt}`;
+    const { error: uploadError } = await supabase.storage.from('avatars').upload(fileName, file);
 
-    try {
-      const { error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(filePath, file, { upsert: true });
-
-      if (uploadError) {
-        throw uploadError;
-      }
-
-      const { data: publicUrlData } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(filePath);
-
-      if (publicUrlData) {
-        setAvatarUrl(publicUrlData.publicUrl);
-        const { error: updateError } = await supabase
-          .from('profiles')
-          .upsert({ id: user.id, avatar_url: publicUrlData.publicUrl, updated_at: new Date() });
-
-        if (updateError) {
-          throw updateError;
-        }
-      }
-    } catch (error) {
-      alert(error.message);
-    } finally {
+    if (uploadError) {
+      alert(uploadError.message);
       setUploading(false);
+      return;
     }
+
+    const { data: publicUrlData } = supabase.storage.from('avatars').getPublicUrl(fileName);
+    if (publicUrlData) {
+      setAvatarUrl(publicUrlData.publicUrl);
+      await supabase.from('profiles').upsert({ id: user.id, avatar_url: publicUrlData.publicUrl, updated_at: new Date() });
+    }
+    setUploading(false);
   }, [user]);
 
   const handleUpdateProfile = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!user) return;
-
     setLoading(true);
-    const updates = {
-      id: user.id,
-      full_name: fullName,
-      location,
-      updated_at: new Date(),
-    };
-
-    const { error } = await supabase.from('profiles').upsert(updates);
-    if (error) {
-      alert(error.message);
-    }
+    const { error } = await supabase.from('profiles').upsert({ id: user.id, full_name: fullName, location, updated_at: new Date() });
+    if (error) alert(error.message);
+    else alert('Profile updated successfully!');
     setLoading(false);
   };
 
@@ -112,133 +93,145 @@ export default function Profile() {
       return;
     }
     const { error } = await supabase.auth.updateUser({ password });
-    if (error) {
-      alert(error.message);
-    } else {
+    if (error) alert(error.message);
+    else {
       alert('Password updated successfully!');
       setPassword('');
     }
   };
 
   const handleLogout = async () => {
-    setLoading(true);
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      alert(error.message);
-    } else {
-      navigate('/');
-    }
-    setLoading(false);
+    await supabase.auth.signOut();
+    navigate('/');
   };
 
+  const handleDeleteAccount = () => {
+    if (window.confirm('Are you sure you want to delete your account? This action is irreversible.')) {
+      alert('Account deletion functionality is not yet implemented.');
+      // In a real app, you would call a Supabase edge function to delete user data and auth record.
+    }
+  };
+  
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="min-h-screen bg-gray-50 flex items-center justify-center">Loading...</div>;
   }
 
-  if (!user) {
-    return <div>Please log in to view your profile.</div>;
-  }
+  const navItems = [
+    { id: 'profile', label: 'Edit Profile', icon: UserIcon },
+    { id: 'account', label: 'Account Settings', icon: Shield },
+    { id: 'settings', label: 'Website Settings', icon: Settings },
+    { id: 'danger', label: 'Danger Zone', icon: AlertTriangle },
+  ];
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <div className="w-full max-w-lg p-6 sm:p-8 space-y-6 sm:space-y-8 bg-white rounded-lg shadow-md">
-        <div className="text-center">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Your Profile</h1>
-          <p className="mt-2 text-sm text-gray-600">Manage your account settings</p>
-          <div className="mt-6 flex flex-col items-center">
-            <div className="relative w-24 h-24 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
-              {avatarUrl ? (
-                <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
-              ) : (
-                <svg className="w-16 h-16 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4.002 4.002 0 11-8.004 0 4.002 4.002 0 018.004 0zM12.004 5.999a7.002 7.002 0 100 14.004 7.002 7.002 0 000-14.004z" />
-                </svg>
-              )}
-            </div>
-            <label htmlFor="avatar-upload" className="mt-3 cursor-pointer bg-maroon-800 text-white py-1.5 px-4 rounded-md text-sm font-medium hover:bg-maroon-700 transition-colors duration-200">
-              {uploading ? 'Uploading...' : 'Upload Avatar'}
-              <input
-                type="file"
-                id="avatar-upload"
-                className="sr-only"
-                accept="image/*"
-                onChange={uploadAvatar}
-                disabled={uploading}
-              />
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        {/* Profile Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center mb-8">
+          <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden group shrink-0">
+            <img src={avatarUrl || `https://api.dicebear.com/8.x/initials/svg?seed=${fullName || user?.email}`} alt="Avatar" className="w-full h-full object-cover" />
+            <label htmlFor="avatar-upload" className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 flex items-center justify-center cursor-pointer transition-opacity">
+              <Camera className="h-8 w-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+              <input type="file" id="avatar-upload" className="sr-only" accept="image/*" onChange={uploadAvatar} disabled={uploading} />
             </label>
           </div>
-        </div>
-        <div className="text-center">
-            <p className="text-base sm:text-lg font-medium text-gray-900">{profile?.full_name}</p>
-            <p className="text-sm text-gray-500">{user.email}</p>
-        </div>
-        <form onSubmit={handleUpdateProfile} className="space-y-4 sm:space-y-6">
-          <div>
-            <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">Full Name</label>
-            <input
-              id="fullName"
-              type="text"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              className="w-full mt-1 px-3 py-1.5 text-sm border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:ring-maroon-500 focus:border-maroon-500"
-            />
+          <div className="mt-4 sm:mt-0 sm:ml-6">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{fullName || 'New User'}</h1>
+            <p className="text-sm text-gray-600">{user?.email}</p>
           </div>
-          <div>
-            <label htmlFor="location" className="block text-sm font-medium text-gray-700">Location</label>
-            <input
-              id="location"
-              type="text"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              className="w-full mt-1 px-3 py-1.5 text-sm border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:ring-maroon-500 focus:border-maroon-500"
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full flex justify-center py-1.5 px-3 text-sm border border-transparent rounded-md shadow-sm font-medium text-white bg-maroon-800 hover:bg-maroon-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-maroon-500"
-          >
-            {loading ? 'Updating...' : 'Update Profile'}
-          </button>
-        </form>
-        <div className="border-t border-gray-200 pt-4 sm:pt-6">
-            <h2 className="text-base sm:text-lg font-medium text-gray-900">Change Password</h2>
-            <div className="mt-3 sm:mt-4 space-y-3 sm:space-y-4">
-                <div>
-                    <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700">New Password</label>
-                    <input
-                    id="newPassword"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full mt-1 px-3 py-1.5 text-sm border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:ring-maroon-500 focus:border-maroon-500"
-                    />
-                </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* Sidebar Navigation */}
+          <aside className="md:col-span-1">
+            <nav className="space-y-1">
+              {navItems.map(item => (
                 <button
-                    onClick={handleUpdatePassword}
-                    disabled={loading}
-                    className="w-full flex justify-center py-1.5 px-3 text-sm border border-transparent rounded-md shadow-sm font-medium text-white bg-maroon-800 hover:bg-maroon-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-maroon-500"
+                  key={item.id}
+                  onClick={() => setActiveTab(item.id)}
+                  className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                    activeTab === item.id 
+                      ? 'bg-maroon-100 text-maroon-800' 
+                      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                  }`}
                 >
-                    {loading ? 'Updating...' : 'Update Password'}
+                  <item.icon className="h-5 w-5 mr-3" />
+                  <span>{item.label}</span>
                 </button>
-            </div>
-        </div>
-        <div className="border-t border-gray-200 pt-4 sm:pt-6">
-            <h2 className="text-base sm:text-lg font-medium text-gray-900">Admission Tracking</h2>
-            <div className="mt-3 sm:mt-4">
-                <Link to="/tracked-requirements" className="w-full flex justify-center py-1.5 px-3 text-sm border border-transparent rounded-md shadow-sm font-medium text-white bg-maroon-800 hover:bg-maroon-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-maroon-500">
-                    View Tracked Requirements
-                </Link>
-            </div>
-        </div>
-        <div className="border-t border-gray-200 pt-4 text-center">
-            <button
-                onClick={handleLogout}
-                disabled={loading}
-                className="text-sm font-medium text-red-600 hover:text-red-500"
-            >
-                {loading ? 'Logging out...' : 'Log out'}
-            </button>
+              ))}
+               <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                >
+                  <LogOut className="h-5 w-5 mr-3" />
+                  <span>Logout</span>
+                </button>
+            </nav>
+          </aside>
+
+          {/* Main Content */}
+          <main className="md:col-span-3">
+            {activeTab === 'profile' && (
+              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Personal Information</h2>
+                <form onSubmit={handleUpdateProfile} className="space-y-4">
+                  <div>
+                    <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">Full Name</label>
+                    <input id="fullName" type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full mt-1 px-3 py-2 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-maroon-500 focus:border-maroon-500"/>
+                  </div>
+                  <div>
+                    <label htmlFor="location" className="block text-sm font-medium text-gray-700">Location</label>
+                    <input id="location" type="text" value={location} onChange={(e) => setLocation(e.target.value)} className="w-full mt-1 px-3 py-2 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-maroon-500 focus:border-maroon-500" placeholder="e.g., Manila, Philippines"/>
+                  </div>
+                  <div className="text-right">
+                    <button type="submit" disabled={loading} className="px-4 py-2 text-sm font-medium text-white bg-maroon-800 rounded-lg hover:bg-maroon-700 disabled:opacity-50">
+                      {loading ? 'Saving...' : 'Save Changes'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+
+            {activeTab === 'account' && (
+              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Account Settings</h2>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Email Address</label>
+                    <p className="text-sm text-gray-500 mt-1">{user?.email}</p>
+                  </div>
+                  <div className="border-t border-gray-200 pt-4">
+                    <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700">New Password</label>
+                    <input id="newPassword" type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full mt-1 px-3 py-2 text-sm border border-gray-300 rounded-md shadow-sm focus:ring-maroon-500 focus:border-maroon-500" placeholder="Enter new password"/>
+                  </div>
+                  <div className="text-right">
+                    <button onClick={handleUpdatePassword} disabled={!password || loading} className="px-4 py-2 text-sm font-medium text-white bg-maroon-800 rounded-lg hover:bg-maroon-700 disabled:opacity-50">
+                      Update Password
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'settings' && (
+              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Website Settings</h2>
+                <p className="text-sm text-gray-500">Theme and notification preferences will be available here in a future update.</p>
+              </div>
+            )}
+
+            {activeTab === 'danger' && (
+              <div className="bg-white p-6 rounded-xl shadow-sm border border-red-300">
+                <h2 className="text-lg font-semibold text-red-800 mb-2">Danger Zone</h2>
+                <p className="text-sm text-gray-600 mb-4">These actions are permanent and cannot be undone.</p>
+                <div className="border-t border-red-200 pt-4 text-left">
+                  <button onClick={handleDeleteAccount} className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700">
+                    Delete My Account
+                  </button>
+                </div>
+              </div>
+            )}
+          </main>
         </div>
       </div>
     </div>

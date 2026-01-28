@@ -105,6 +105,31 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
   const [userChecklistProgress, setUserChecklistProgress] = useState<Map<string, boolean>>(new Map());
   const [isUniversityTracked, setIsUniversityTracked] = useState<boolean>(false);
 
+  const [searchTerm, setSearchTerm] = useState('');
+  const [programLevelFilter, setProgramLevelFilter] = useState('All');
+
+  const filteredAndGroupedPrograms = React.useMemo(() => {
+    const filtered = allPrograms.filter(program => {
+      const matchesSearch = program.programName.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesLevel = programLevelFilter === 'All' || program.degreeLevel === programLevelFilter;
+      return matchesSearch && matchesLevel;
+    });
+
+    const grouped: Record<string, AcademicProgram[]> = {};
+    filtered.forEach(program => {
+      if (!grouped[program.collegeName]) {
+        grouped[program.collegeName] = [];
+      }
+      grouped[program.collegeName].push(program);
+    });
+    return grouped;
+  }, [allPrograms, searchTerm, programLevelFilter]);
+
+  const degreeLevels = React.useMemo(() => {
+    const levels = new Set(allPrograms.map(p => p.degreeLevel).filter(Boolean));
+    return ['All', ...Array.from(levels)];
+  }, [allPrograms]);
+      
   const { isSaved, toggleSaved, isLoaded } = useSavedUniversities();
 
   const handleTabChange = (tabId: string) => {
@@ -606,368 +631,265 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
         <TabNavigation activeTab={activeTab} setActiveTab={handleTabChange} tabs={tabs} />
 
         {activeTab === 'overview' && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 space-y-8">
-              {university.longDescription && (
-                <div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">About {university.name}</h2>
-                  <div className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200">
-                    <p className="text-sm sm:text-base text-gray-700 leading-relaxed">{university.longDescription}</p>
-                  </div>
+          <div className="max-w-7xl mx-auto space-y-8">
+            {university.longDescription && (
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">About {university.name}</h2>
+                <div className="bg-white p-4 sm:p-6 rounded-xl border border-gray-200">
+                  <p className="text-sm sm:text-base text-gray-700 leading-relaxed">{university.longDescription}</p>
                 </div>
-              )}
-              {university.rankings?.source && university.rankings?.details && (
-                <div>
-                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3">Edurank 2025 & QS Asia 2026</h3>
-                  <div className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200">
-                    <div className="text-sm sm:text-base text-gray-700 leading-relaxed">
-                      {university.rankings.details.split('. ').map((sentence, index) => (
-                        <p key={index} className="mb-1 last:mb-0">{sentence}{sentence.endsWith('.') ? '' : '.'}</p>
-                      ))}
+              </div>
+            )}
+
+            {(university.accreditation?.length > 0 || university.achievements?.length > 0 || university.quickfacts?.length > 0) && (
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">Key Information</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {university.accreditation && university.accreditation.length > 0 && (
+                    <div className="bg-white p-4 rounded-xl border border-gray-200">
+                      <h3 className="font-semibold text-gray-800 mb-3 flex items-center">
+                        <Award className="h-5 w-5 mr-2 text-yellow-500" />
+                        Accreditation
+                      </h3>
+                      <ul className="space-y-2">
+                        {university.accreditation.map((item, index) => (
+                          <li key={index} className="flex items-start text-sm text-gray-600">
+                            <span className="mr-2 mt-1">•</span>
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
-                  </div>
+                  )}
+                  {university.achievements && university.achievements.length > 0 && (
+                    <div className="bg-white p-4 rounded-xl border border-gray-200">
+                      <h3 className="font-semibold text-gray-800 mb-3 flex items-center">
+                        <Star className="h-5 w-5 mr-2 text-yellow-500" />
+                        Achievements
+                      </h3>
+                      <ul className="space-y-2">
+                        {university.achievements.map((item, index) => (
+                          <li key={index} className="flex items-start text-sm text-gray-600">
+                            <span className="mr-2 mt-1">•</span>
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {university.quickfacts && university.quickfacts.length > 0 && (
+                    <div className="bg-white p-4 rounded-xl border border-gray-200">
+                      <h3 className="font-semibold text-gray-800 mb-3 flex items-center">
+                        <TrendingUp className="h-5 w-5 mr-2 text-yellow-500" />
+                        Quick Facts
+                      </h3>
+                      <ul className="space-y-2">
+                        {university.quickfacts.map((item, index) => (
+                          <li key={index} className="flex items-start text-sm text-gray-600">
+                            <span className="mr-2 mt-1">•</span>
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
-              )}
-              {overviewPrograms.length > 0 && (
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-900">Academic Programs</h3>
-                    <button
-                      onClick={() => handleTabChange('academic-programs')}
-                      className="px-3 py-1.5 bg-indigo-600 text-white text-xs sm:text-sm rounded-lg hover:bg-indigo-700 transition-colors font-medium"
-                    >
-                      View All Programs
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {overviewPrograms.slice(0, 6).map((program) => (
-                      <div key={program.id} className="bg-white p-3 rounded-lg border border-gray-200 hover:border-indigo-200 hover:shadow-sm transition-all duration-200">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h4 className="text-xs sm:text-sm font-semibold text-gray-900 leading-tight mb-0.5">
-                              {program.programName}
-                            </h4>
-                            <p className="text-xs text-gray-600">{program.collegeName}</p>
-                          </div>
-                          {program.programType && (
-                            <span className={`px-1.5 py-0.5 rounded-full text-xs font-medium ${
-                              program.programType === 'undergraduate' ? 'bg-emerald-100 text-emerald-800' :
-                              program.programType === 'graduate' ? 'bg-violet-100 text-violet-800' :
-                              program.programType === 'diploma' ? 'bg-amber-100 text-amber-800' :
-                              'bg-gray-100 text-gray-800'
-                            }`}>
-                              {program.programType}
-                            </span>
-                          )}
-                        </div>
-                      </div>
+              </div>
+            )}
+
+            {university.rankings?.source && university.rankings?.details && (
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">Rankings</h2>
+                <div className="bg-white p-6 rounded-xl border border-gray-200">
+                  <h3 className="font-semibold text-lg text-gray-800">{university.rankings.source}</h3>
+                  <div className="mt-2 text-sm text-gray-600">
+                    {university.rankings.details.split('. ').map((sentence, index) => (
+                      <p key={index} className="mb-1 last:mb-0">{sentence}{sentence.endsWith('.') ? '' : '.'}</p>
                     ))}
                   </div>
                 </div>
-              )}
-            </div>
-            <div className="space-y-6">
-
-              {university.accreditation && university.accreditation.length > 0 && (
-                <div>
-                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3">Accreditation</h3>
-                  <div className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200">
-                    <div className="space-y-2">
-                      {university.accreditation.map((acc, index) => (
-                        <div key={index} className="flex items-start">
-                          <span className="text-maroon-600 mr-2 mt-0.5">•</span>
-                          <span className="text-sm sm:text-base text-gray-700 leading-relaxed">{acc}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-              {university.achievements && university.achievements.length > 0 && (
-                <div>
-                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3">Achievements & Recognition</h3>
-                  <div className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200">
-                    <div className="space-y-2">
-                      {university.achievements.map((achievement, index) => (
-                        <div key={index} className="flex items-start">
-                          <span className="text-maroon-600 mr-2 mt-0.5">•</span>
-                          <span className="text-sm sm:text-base text-gray-700 leading-relaxed">{achievement}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-              {university.quickfacts && university.quickfacts.length > 0 && (
-                <div>
-                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3">Quick Facts</h3>
-                  <div className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200">
-                    <div className="space-y-2">
-                      {university.quickfacts.map((fact, index) => (
-                        <div key={index} className="flex items-start">
-                          <span className="text-maroon-600 mr-2 mt-0.5">•</span>
-                          <span className="text-sm sm:text-base text-gray-700 leading-relaxed">{fact}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'academic-programs' && (
-          <div className="max-w-7xl mx-auto">
-            {isProgramsLoading ? (
-              <div className="flex items-center justify-center py-12">
-                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
-                <span className="ml-3 text-gray-600 text-base">Loading academic programs...</span>
               </div>
-            ) : Object.keys(academicPrograms).length > 0 ? (
-              <div className="space-y-6">
-                {Object.entries(academicPrograms).map(([collegeName, programs], index) => {
-                    const colors = [
-                      'from-blue-50 to-indigo-50 border-blue-200',
-                      'from-emerald-50 to-teal-50 border-emerald-200',
-                      'from-violet-50 to-purple-50 border-violet-200',
-                      'from-amber-50 to-orange-50 border-amber-200',
-                      'from-rose-50 to-pink-50 border-rose-200',
-                      'from-cyan-50 to-sky-50 border-cyan-200'
-                    ];
-                    const colorClass = colors[index % colors.length];
+            )}
 
-                    return (
-                      <div key={collegeName} className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                        <button
-                          onClick={() => toggleCollege(collegeName)}
-                          className={`w-full px-4 sm:px-6 py-3 sm:py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors ${colorClass.replace('border-', 'border-l-4 ')}`}
-                        >
-                          <div>
-                            <h3 className="text-base sm:text-lg font-semibold text-gray-900">{collegeName}</h3>
-                            <p className="text-gray-600 mt-1 text-sm">{programs.length} program{programs.length !== 1 ? 's' : ''}</p>
-                          </div>
-                          <ChevronDown
-                            className={`h-4 w-4 text-gray-500 transition-transform ${
-                              expandedColleges[collegeName] ? 'rotate-180' : ''
-                            }`}
-                          />
-                        </button>
-                        {expandedColleges[collegeName] && (
-                          <div className="px-4 sm:px-6 pb-4 sm:pb-6 border-t border-gray-100">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6 pt-4 sm:pt-6">
-                              {programs.map((program) => (
-                                <div key={program.id} className="bg-white p-3 rounded-xl border border-gray-200 hover:border-indigo-300 hover:shadow-lg transition-all duration-300 group">
-                                  <div className="space-y-2">
-                                    <div className="flex items-start justify-between">
-                                      <div className="flex-1">
-                                        <h4 className="text-sm font-semibold text-gray-900 leading-tight mb-0.5 group-hover:text-indigo-700 transition-colors">
-                                          {program.programName}
-                                        </h4>
-                                        {program.degreeLevel && (
-                                          <p className="text-xs text-gray-600 mb-1">{program.degreeLevel}</p>
-                                        )}
-                                      </div>
-                                      {program.programType && (
-                                        <span className={`px-1.5 py-0.5 rounded-full text-xs font-medium border ${
-                                          program.programType === 'undergraduate' ? 'bg-emerald-100 text-emerald-800 border-emerald-300' :
-                                          program.programType === 'graduate' ? 'bg-violet-100 text-violet-800 border-violet-300' :
-                                          program.programType === 'diploma' ? 'bg-amber-100 text-amber-800 border-amber-300' :
-                                          'bg-gray-100 text-gray-800 border-gray-300'
-                                        }`}>
-                                          {program.programType}
-                                        </span>
-                                      )}
-                                    </div>
-
-                                    {program.specializations && program.specializations.length > 0 && (
-                                      <div className="space-y-1">
-                                        <p className="text-xs font-medium text-gray-700">Specializations</p>
-                                        <div className="flex flex-wrap gap-1">
-                                          {program.specializations.map((spec, index) => (
-                                            <span key={index} className="px-1.5 py-0.5 bg-slate-100 text-slate-700 text-xs rounded-lg border border-slate-300 hover:bg-slate-200 transition-colors">
-                                              {spec}
-                                            </span>
-                                          ))}
-                                        </div>
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
+            {overviewPrograms.length > 0 && (
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Popular Programs</h2>
+                  <button
+                    onClick={() => handleTabChange('academic-programs')}
+                    className="px-4 py-2 bg-maroon-800 text-white text-sm rounded-lg hover:bg-maroon-700 transition-colors font-medium"
+                  >
+                    View All
+                  </button>
                 </div>
-            ) : (
-              <div className="text-center py-16">
-                <div className="text-indigo-100 mb-4 rounded-full w-16 h-16 mx-auto flex items-center justify-center">
-                  <BookOpen className="h-8 w-8 text-indigo-600" />
-                </div>
-                <h3 className="text-xl font-light text-gray-900 mb-3">Programs Coming Soon</h3>
-                <p className="text-sm text-gray-600 mb-6 max-w-md mx-auto leading-relaxed">
-                  We're organizing detailed program information for {university.name}.
-                  Check back soon for the complete academic offerings.
-                </p>
-                <div className="inline-flex items-center px-4 py-2 bg-indigo-100 border border-indigo-300 rounded-xl">
-                  <p className="text-xs text-indigo-800 font-medium">
-                    Program details are being enhanced for better clarity
-                  </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {overviewPrograms.map((program) => (
+                    <div key={program.id} className="bg-white p-4 rounded-lg border border-gray-200 hover:border-maroon-200 hover:shadow-md transition-all duration-200">
+                      <h4 className="font-semibold text-gray-800">{program.programName}</h4>
+                      <p className="text-sm text-gray-500 mt-1">{program.collegeName}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
           </div>
         )}
 
-        {activeTab === 'academics' && (
+        {activeTab === 'academic-programs' && (
           <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-6">
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">Academic & Campus Life</h2>
-              <p className="text-sm sm:text-base text-gray-600 max-w-3xl mx-auto">
-                Academic calendar, campus amenities, and campus facilities available at {university.name}.
+            <div className="mb-6">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">Academic Programs</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="md:col-span-2">
+                  <input
+                    type="text"
+                    placeholder="Search for a program..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-maroon-500 focus:border-maroon-500"
+                  />
+                </div>
+                <div>
+                  <select
+                    value={programLevelFilter}
+                    onChange={(e) => setProgramLevelFilter(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-maroon-500 focus:border-maroon-500"
+                  >
+                    {degreeLevels.map(level => (
+                      <option key={level} value={level}>{level}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+            {isProgramsLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
+                <span className="ml-3 text-gray-600 text-base">Loading academic programs...</span>
+              </div>
+            ) : Object.keys(filteredAndGroupedPrograms).length > 0 ? (
+              <div className="space-y-6">
+                {Object.entries(filteredAndGroupedPrograms).map(([collegeName, programs]) => (
+                  <div key={collegeName} className="bg-white border border-gray-200 rounded-lg">
+                    <div className="px-4 py-3 sm:px-6 sm:py-4 bg-gray-50/50 rounded-t-lg">
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-800">{collegeName}</h3>
+                      <p className="text-gray-500 mt-1 text-sm">{programs.length} program{programs.length !== 1 ? 's' : ''}</p>
+                    </div>
+                    <div className="divide-y divide-gray-100">
+                      {programs.map((program) => (
+                        <div key={program.id} className="p-4 sm:p-6 hover:bg-gray-50/50 transition-colors duration-150">
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                            <div className="flex-1 mb-2 sm:mb-0">
+                              <h4 className="text-sm font-semibold text-gray-800 leading-tight">
+                                {program.programName}
+                              </h4>
+                              {program.specializations && program.specializations.length > 0 && (
+                                <p className="text-xs text-gray-500 mt-1">
+                                  Specializations: {program.specializations.join(', ')}
+                                </p>
+                              )}
+                            </div>
+                            <div className="flex flex-wrap gap-1 sm:space-x-2 sm:ml-4 mt-2 sm:mt-0">
+                              {program.degreeLevel && (
+                                <span className="px-2 py-1 rounded-md text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
+                                  {program.degreeLevel}
+                                </span>
+                              )}
+                              {program.programType && (
+                                <span className={`px-2 py-1 rounded-md text-xs font-medium border ${
+                                  program.programType === 'undergraduate' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                                  program.programType === 'graduate' ? 'bg-violet-50 text-violet-700 border-violet-200' :
+                                  'bg-gray-100 text-gray-700 border-gray-200'
+                                }`}>
+                                  {program.programType}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-16">
+                <div className="text-indigo-100 mb-4 rounded-full w-16 h-16 mx-auto flex items-center justify-center">
+                  <BookOpen className="h-8 w-8 text-indigo-600" />
+                </div>
+                <h3 className="text-xl font-light text-gray-900 mb-3">No matching programs found.</h3>
+                <p className="text-sm text-gray-600 mb-6 max-w-md mx-auto leading-relaxed">
+                  Try adjusting your search term or filter to find the program you're looking for.
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'academics' && (
+          <div className="max-w-7xl mx-auto space-y-8">
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Academic & Campus Life</h2>
+              <p className="text-sm sm:text-base text-gray-600 max-w-3xl">
+                Key dates, facilities, and amenities available at {university.name}.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="space-y-6">
-                {university.academicCalendar && university.academicCalendar.semesterStart && university.academicCalendar.semesterEnd && university.academicCalendar.applicationDeadline && (
-                  <div>
-                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">Academic Calendar</h2>
-                    <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                          <div className="flex items-center">
-                            <Calendar className="h-5 w-5 text-maroon-600 mr-3" />
-                            <span className="text-sm text-gray-900 font-medium">Semester Start</span>
-                          </div>
-                          <span className="text-base font-semibold text-maroon-600">{university.academicCalendar.semesterStart}</span>
-                        </div>
-                        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                          <div className="flex items-center">
-                            <Calendar className="h-5 w-5 text-maroon-600 mr-3" />
-                            <span className="text-sm text-gray-900 font-medium">Semester End</span>
-                          </div>
-                          <span className="text-base font-semibold text-maroon-600">{university.academicCalendar.semesterEnd}</span>
-                        </div>
-                        <div className="flex items-center justify-between p-3 bg-maroon-50 rounded-lg">
-                          <div className="flex items-center">
-                            <Clock className="h-5 w-5 text-maroon-600 mr-3" />
-                            <span className="text-sm text-gray-900 font-medium">Application Deadline</span>
-                          </div>
-                          <span className="text-base font-semibold text-maroon-600">{university.academicCalendar.applicationDeadline}</span>
-                        </div>
-                      </div>
-                    </div>
+            {university.academicCalendar && (
+              <div className="bg-white p-4 sm:p-6 rounded-xl border border-gray-200">
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">Academic Calendar</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <p className="text-sm font-medium text-gray-500">Semester Start</p>
+                    <p className="text-xl font-bold text-maroon-800 mt-1">{university.academicCalendar.semesterStart || 'TBA'}</p>
                   </div>
-                )}
-
-                {university.amenities && university.amenities.length > 0 && (
-                  <div>
-                    {/* Always expanded on desktop, collapsible on mobile */}
-                    <div className="hidden lg:block">
-                      <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">Campus Amenities</h3>
-                      <div className="space-y-2">
-                        {university.amenities.map((amenity, index) => (
-                          <div key={index} className="flex items-center bg-white p-3 rounded-lg border border-gray-200">
-                            <CheckCircle className="h-4 w-4 text-green-600 mr-3" />
-                            <span className="text-sm sm:text-base text-gray-700">{amenity}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Collapsible on mobile */}
-                    <div className="lg:hidden">
-                      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                        <button
-                          onClick={() => toggleAmenity('amenities')}
-                          className="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
-                        >
-                          <h3 className="text-base sm:text-lg font-bold text-gray-900">Campus Amenities</h3>
-                          <ChevronDown
-                            className={`h-4 w-4 text-gray-500 transition-transform ${
-                              expandedAmenities['amenities'] ? 'rotate-180' : ''
-                            }`}
-                          />
-                        </button>
-                        {expandedAmenities['amenities'] && (
-                          <div className="px-4 pb-3 border-t border-gray-100">
-                            <div className="space-y-2 pt-3">
-                              {university.amenities.map((amenity, index) => (
-                                <div key={index} className="flex items-center bg-gray-50 p-2 rounded-lg border border-gray-100">
-                                  <CheckCircle className="h-3.5 w-3.5 text-green-600 mr-2" />
-                                  <span className="text-xs sm:text-sm text-gray-700">{amenity}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <p className="text-sm font-medium text-gray-500">Semester End</p>
+                    <p className="text-xl font-bold text-maroon-800 mt-1">{university.academicCalendar.semesterEnd || 'TBA'}</p>
                   </div>
-                )}
+                  <div className="bg-maroon-50 p-4 rounded-lg border border-maroon-100">
+                    <p className="text-sm font-medium text-maroon-700">Application Deadline</p>
+                    <p className="text-xl font-bold text-maroon-800 mt-1">{university.academicCalendar.applicationDeadline || 'TBA'}</p>
+                  </div>
+                </div>
               </div>
+            )}
 
-              <div className="space-y-6">
-                {university.facilities && university.facilities.length > 0 && (
-                  <div>
-                    {/* Always expanded on desktop, collapsible on mobile */}
-                    <div className="hidden lg:block">
-                      <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">Campus Facilities</h3>
-                      <div className="grid grid-cols-1 gap-3">
-                        {university.facilities.map((facility, index) => (
-                          <div key={index} className="flex items-center bg-white p-4 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                            <div className="flex items-center">
-                              <Building className="h-5 w-5 text-maroon-600 mr-3 flex-shrink-0" />
-                              <span className="text-sm sm:text-base text-gray-900 font-medium">{facility}</span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
+            {university.facilities && university.facilities.length > 0 && (
+              <div className="bg-white p-4 sm:p-6 rounded-xl border border-gray-200">
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">Campus Facilities</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {university.facilities.map((facility, index) => (
+                    <div key={index} className="flex items-center bg-gray-50 p-3 rounded-lg">
+                      <Building className="h-5 w-5 text-gray-500 mr-3 flex-shrink-0" />
+                      <span className="text-sm text-gray-800 font-medium">{facility}</span>
                     </div>
-
-                    {/* Collapsible on mobile */}
-                    <div className="lg:hidden">
-                      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                        <button
-                          onClick={() => toggleAmenity('facilities')}
-                          className="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
-                        >
-                          <h3 className="text-base sm:text-lg font-bold text-gray-900">Campus Facilities</h3>
-                          <ChevronDown
-                            className={`h-4 w-4 text-gray-500 transition-transform ${
-                              expandedAmenities['facilities'] ? 'rotate-180' : ''
-                            }`}
-                          />
-                        </button>
-                        {expandedAmenities['facilities'] && (
-                          <div className="px-4 pb-3 border-t border-gray-100">
-                            <div className="space-y-2 pt-3">
-                              {university.facilities.map((facility, index) => (
-                                <div key={index} className="flex items-center bg-gray-50 p-3 rounded-lg border border-gray-100">
-                                  <Building className="h-3.5 w-3.5 text-maroon-600 mr-2 flex-shrink-0" />
-                                  <span className="text-xs sm:text-sm text-gray-900 font-medium">{facility}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {(!university.academicCalendar?.semesterStart || !university.facilities || university.facilities.length === 0) && (
-                  <div className="bg-white p-6 rounded-xl border border-gray-200 text-center">
-                    <Calendar className="h-10 w-10 text-gray-400 mx-auto mb-3" />
-                    <p className="text-sm text-gray-600">Additional academic and campus information will be displayed here.</p>
-                  </div>
-                )}
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
+
+            {university.amenities && university.amenities.length > 0 && (
+              <div className="bg-white p-4 sm:p-6 rounded-xl border border-gray-200">
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">Campus Amenities</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {university.amenities.map((amenity, index) => (
+                    <div key={index} className="flex items-center bg-gray-50 p-3 rounded-lg">
+                      <CheckCircle className="h-5 w-5 text-green-600 mr-3 flex-shrink-0" />
+                      <span className="text-sm text-gray-800 font-medium">{amenity}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {(!university.academicCalendar && (!university.facilities || university.facilities.length === 0)) && (
+              <div className="bg-white p-8 rounded-xl border border-gray-200 text-center">
+                <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-800">More Information Coming Soon</h3>
+                <p className="text-sm text-gray-500 mt-1">Detailed academic and campus life information is being prepared.</p>
+              </div>
+            )}
           </div>
         )}
 

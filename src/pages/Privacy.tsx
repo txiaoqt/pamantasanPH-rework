@@ -5,26 +5,13 @@ import { ArrowLeft, Shield } from 'lucide-react';
 export default function Privacy() {
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-gradient-to-br from-maroon-900 via-maroon-800 to-red-900 text-white py-12">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="flex items-center mb-4">
-                <Shield className="h-8 w-8 mr-3" />
-                <h1 className="text-3xl md:text-4xl font-bold">Privacy Policy</h1>
-              </div>
-              <p className="text-lg text-maroon-100">
-                Your privacy is important to us. Here’s how we collect, use, and protect your data.
-              </p>
-            </div>
-            <Link
-              to="/"
-              className="flex items-center px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
-            >
-              <ArrowLeft className="h-5 w-5 mr-2" />
-              Back to Home
-            </Link>
-          </div>
+      {/* Header */}
+      <div className="bg-maroon-800 text-white py-8 md:py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-3">Privacy Policy</h1>
+          <p className="text-xs sm:text-sm text-maroon-100 max-w-3xl">
+            Your privacy is important to us. Here’s how we collect, use, and protect your data.
+          </p>
         </div>
       </div>
 
