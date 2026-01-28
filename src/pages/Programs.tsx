@@ -103,7 +103,6 @@ export default function Programs() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [programs, setPrograms] = useState<AggregatedProgram[]>([]);
-  const [totalProgramsCount, setTotalProgramsCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState(searchParams.get('category') || '');
@@ -116,13 +115,11 @@ export default function Programs() {
     const fetchPrograms = async () => {
       try {
         setIsLoading(true);
-        const [aggregatedData, allPrograms] = await Promise.all([
+        const [aggregatedData] = await Promise.all([
           AcademicProgramService.getAggregatedPrograms(),
           AcademicProgramService.getAllPrograms()
         ]);
-        setPrograms(aggregatedData);
-        setTotalProgramsCount(allPrograms.length);
-      } catch (error) {
+                  setPrograms(aggregatedData);      } catch (error) {
         console.error('Failed to fetch programs:', error);
       } finally {
         setIsLoading(false);
@@ -184,8 +181,8 @@ export default function Programs() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-3 gap-4 md:gap-8">
             <div className="text-center">
-              <div className="text-2xl font-bold text-maroon-800 mb-2">{totalProgramsCount}</div>
-              <div className="text-gray-600">Programs Available</div>
+              <div className="text-2xl font-bold text-maroon-800 mb-2">{programs.length}</div>
+              <div className="text-gray-600">Unique Programs</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-maroon-800 mb-2">{categories.length}</div>

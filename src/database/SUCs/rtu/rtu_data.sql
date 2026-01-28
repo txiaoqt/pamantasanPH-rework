@@ -3,7 +3,7 @@
 -- Programs Reference: https://www.rtu.edu.ph/academics-and-admissions/
 
 INSERT INTO universities (
-  name, location, province, established, type, rating, students, programs,
+  name, location, province, established, type, students, programs,
   description, long_description, subjects, image_url, gallery_images,
   accreditation, campus_size, founded, website, phone, email, address,
   facilities, amenities, achievements, quickfacts, admission_requirements, application_process, admission_status, admission_deadline,
@@ -15,14 +15,13 @@ INSERT INTO universities (
   'Metro Manila',
   '1969', -- established (year)
   'Public',
-  NULL, -- rating
   '25000', -- students (as string)
   90, -- programs
   'A state university in the Philippines that is mandated to provide instruction and professional training in science, technology and other areas.',
   'Rizal Technological University (RTU) is a state university located at Mandaluyong, Philippines. It was established on July 11, 1969 as the College of Rizal, part of the University of Rizal System, before it was granted autonomy in 1975. The university is the first educational institution in the country to use cooperative education as a curriculum plan which is recognized by various industries, businesses and agencies all over the country.',
   ARRAY['Engineering', 'Architecture', 'Computer Studies', 'Business', 'Education', 'Arts and Sciences', 'Human Kinetics', 'Astronomy']::text[], -- subjects (inferred from programs)
-  'https://www.rtu.edu.ph/wp-content/uploads/2021/08/RTU-Facade-1.jpg', -- image_url
-  ARRAY['https://www.rtu.edu.ph/wp-content/uploads/2021/08/RTU-Facade-1.jpg', 'https://www.rtu.edu.ph/wp-content/uploads/2021/08/RTU-Library.jpg']::text[], -- gallery_images
+  'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', -- image_url
+  ARRAY['https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg']::text[], -- gallery_images
   ARRAY['ISO 9001:2015 Certified', 'Accredited by the Accrediting Agency of Chartered Colleges and Universities in the Philippines (AACCUP).']::text[], -- accreditation
   NULL, -- campus_size
   '1969', -- founded
@@ -46,10 +45,10 @@ INSERT INTO universities (
     'Wait for the release of the RTUCAT results.'
   ]::text[], -- application_process
   'Varies', -- admission_status
-  'Varies', -- admission_deadline
-  'August', -- academic_semester_start
-  'May', -- academic_semester_end
-  'Varies', -- academic_application_deadline
+  NULL, -- admission_deadline
+  NULL, -- academic_semester_start
+  NULL, -- academic_semester_end
+  NULL, -- academic_application_deadline
   'UniRank 2023', -- ranking_source
   'Ranked among the top 100 universities in the Philippines.', -- ranking_details
   14.577, -- map_location_lat

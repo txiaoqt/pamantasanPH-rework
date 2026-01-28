@@ -108,12 +108,7 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
   const { isSaved, toggleSaved, isLoaded } = useSavedUniversities();
 
   const handleTabChange = (tabId: string) => {
-    const protectedTabs = ['academic-programs', 'academics', 'admissions', 'contact'];
-    if (protectedTabs.includes(tabId) && !session) {
-      setShowLoginModal(true);
-    } else {
-      setActiveTab(tabId);
-    }
+    setActiveTab(tabId);
   };
   
   // Handle sharing functionality
@@ -146,8 +141,22 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
     }
   };
 
-  // Handle comparison functionality
+  const handleSaveClick = () => {
+    if (!session) {
+      console.log('Showing login modal from handleSaveClick');
+      setShowLoginModal(true);
+    } else {
+      toggleSaved(university.id);
+    }
+  };
+
   const handleCompare = () => {
+    if (!session) {
+      console.log('Showing login modal from handleCompare');
+      setShowLoginModal(true);
+      return;
+    }
+
     if (!university) return;
 
     const compareList = JSON.parse(localStorage.getItem('compareUniversities') || '[]');
@@ -183,6 +192,7 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
 
   const handleRequirementToggle = async (requirementText: string, isCompleted: boolean) => {
     if (!session?.user?.id || !university?.id) {
+      console.log('Showing login modal from handleRequirementToggle');
       // If not logged in or university not loaded, prompt for login
       setShowLoginModal(true);
       return;
@@ -209,6 +219,7 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
 
   const handleToggleUniversityTracking = async () => {
     if (!session?.user?.id || !university?.id || !university.admissionRequirements) {
+      console.log('Showing login modal from handleToggleUniversityTracking');
       setShowLoginModal(true); // Prompt login if not logged in
       return;
     }
@@ -522,7 +533,7 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
 
             <div className="flex items-center justify-center sm:justify-start space-x-2 mt-4 lg:mt-0">
               <button
-                onClick={() => toggleSaved(university.id)}
+                onClick={handleSaveClick}
                 disabled={!isLoaded}
                 className={`flex items-center px-3 py-1.5 text-xs sm:text-sm border rounded-lg transition-colors ${
                   isSaved(university.id)

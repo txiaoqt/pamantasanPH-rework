@@ -5,7 +5,7 @@
 DELETE FROM universities WHERE id = 2;
 
 INSERT INTO universities (
-  id, name, location, province, established, type, rating, students, programs,
+  id, name, location, province, established, type, students, programs,
   description, long_description, subjects, image_url, gallery_images,
   accreditation, campus_size, founded, website, phone, email, address,
   facilities, amenities, achievements, quickfacts, admission_requirements, application_process, admission_status, admission_deadline,
@@ -19,14 +19,13 @@ INSERT INTO universities (
   'Metro Manila',
   '1901',
   'State',
-  NULL,
   '10,000',
   49,
   'A leading engineering and technology university focused on innovation and industry-relevant education.',
   'Founded in 1901, the Technological University of the Philippines (TUP) is one of the oldest institutions of higher learning in the country. Located in Manila, TUP specializes in engineering, technology, and vocational programs that prepare students for careers in various industries. The university emphasizes practical learning and research in technology and innovation.',
   ARRAY['Engineering', 'Information Technology', 'Architecture', 'Industrial Education', 'Electronics Engineering', 'Mechanical Engineering', 'Civil Engineering', 'Electrical Engineering'],
   '/Images/School Images/tup.jpg',
-  ARRAY['/Images/School Images/tup.jpg', '/Images/School Images/tup.jpg', '/Images/School Images/tup.jpg'],
+  ARRAY['https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg'],
   ARRAY['CHED Recognition – TUP is a government-funded state university under CHED.', 'AACCUP Accreditation – Several engineering and technology programs are accredited, including Level IV accreditation for selected programs.', 'ASAIHL Membership – Member of the Association of Southeast Asian Institutions of Higher Learning.'],
   NULL,
   '1901',

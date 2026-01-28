@@ -5,7 +5,7 @@
 DELETE FROM universities WHERE id = 3;
 
 INSERT INTO universities (
-  id, name, location, province, established, type, rating, students, programs,
+  id, name, location, province, established, type, students, programs,
   description, long_description, subjects, image_url, gallery_images,
   accreditation, campus_size, founded, website, phone, email, address,
   facilities, amenities, achievements, quickfacts, admission_requirements, application_process, admission_status, admission_deadline,
@@ -19,14 +19,13 @@ INSERT INTO universities (
   'Metro Manila',
   '1965',
   'State',
-  NULL,
   '13,000',
   62,
   'The premier city-funded university providing accessible, high-quality education to academically deserving students.',
   'Municipal public university funded by the City of Manila; provides accessible, high-quality tertiary education to academically deserving students and aims to develop professionals and leaders dedicated to national progress.',
   ARRAY['Medicine', 'Law', 'Engineering', 'Education', 'Business Administration', 'Architecture', 'Nursing', 'Physical Therapy', 'Computer Science', 'Information Technology'],
   '/Images/School Images/plm.jpg',
-  ARRAY['/Images/School Images/plm.jpg', '/Images/School Images/plm.jpg', '/Images/School Images/plm.jpg'],
+  ARRAY['https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg'],
   ARRAY['CHED Recognition – PLM is a public higher education institution fully recognized by the Commission on Higher Education (CHED).', 'AACCUP Accreditation – Several undergraduate and graduate programs are accredited by the Accrediting Agency of Chartered Colleges and Universities in the Philippines (AACCUP) at various accreditation levels.', 'ASAIHL & IAU Memberships – Member of the Association of Southeast Asian Institutions of Higher Learning (ASAIHL) and the International Association of Universities (IAU).'],
   NULL,
   '1965',

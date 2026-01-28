@@ -3,7 +3,7 @@
 -- Programs Reference: https://mpc.edu.ph/academics/
 
 INSERT INTO universities (
-  name, location, province, established, type, rating, students, programs,
+  name, location, province, established, type, students, programs,
   description, long_description, subjects, image_url, gallery_images,
   accreditation, campus_size, founded, website, phone, email, address,
   facilities, amenities, achievements, quickfacts, admission_requirements, application_process, admission_status, admission_deadline,
@@ -15,14 +15,13 @@ INSERT INTO universities (
   'Metro Manila',
   '1947', -- established (year)
   'Public',
-  NULL, -- rating (no specific data)
   '5000', -- students (as string)
   25, -- programs
   'A public polytechnic college in Marikina City, Philippines. It is one of the premier polytechnic colleges in the country.',
   'Marikina Polytechnic College is a public polytechnic college in Marikina City, Philippines. It was established in 1947. The college is funded and operated by the City Government of Marikina.',
   ARRAY['Technical Vocational Teacher Education', 'Industrial Technology', 'Electronics Engineering', 'Entrepreneurship', 'Education', 'Technology']::text[], -- subjects (inferred from programs)
-  'https://mpc.edu.ph/images/slides/slide1.jpg', -- image_url
-  ARRAY['https://mpc.edu.ph/images/slides/slide1.jpg', 'https://mpc.edu.ph/images/slides/slide2.jpg']::text[], -- gallery_images
+  'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', -- image_url
+  ARRAY['https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg']::text[], -- gallery_images
   ARRAY['Accredited by the Accrediting Agency of Chartered Colleges and Universities in the Philippines (AACCUP).']::text[], -- accreditation
   NULL, -- campus_size (no specific data)
   '1947', -- founded
@@ -45,11 +44,11 @@ INSERT INTO universities (
     'Take the MPC-AT exam on the scheduled date.',
     'Wait for the release of the MPC-AT results.'
   ]::text[], -- application_process
-  'Varies', -- admission_status
-  'Varies', -- admission_deadline
-  'August', -- academic_semester_start
-  'May', -- academic_semester_end
-  'Varies', -- academic_application_deadline
+  'open', -- admission_status
+  NULL, -- admission_deadline
+  NULL, -- academic_semester_start
+  NULL, -- academic_semester_end
+  NULL, -- academic_application_deadline
   'UniRank 2023', -- ranking_source
   'Ranked among the top 300 universities in the Philippines.', -- ranking_details
   14.629, -- map_location_lat

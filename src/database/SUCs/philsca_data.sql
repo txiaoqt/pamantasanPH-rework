@@ -3,7 +3,7 @@
 -- Programs Reference: https://www.philsca.edu.ph/academics
 
 INSERT INTO universities (
-  name, location, province, established, type, rating, students, programs,
+  name, location, province, established, type, students, programs,
   description, long_description, subjects, image_url, gallery_images,
   accreditation, campus_size, founded, website, phone, email, address,
   facilities, amenities, achievements, quickfacts, admission_requirements, application_process, admission_status, admission_deadline,
@@ -15,14 +15,13 @@ INSERT INTO universities (
   'Metro Manila',
   '1968', -- established (year)
   'Public',
-  NULL, -- rating (no specific data)
   '10000', -- students (as string)
   15, -- programs
   'A state college in the Philippines specializing in aviation and aeronautics.',
   'The Philippine State College of Aeronautics is a state college in the Philippines with a curriculum focused on aviation and aeronautics. Its main campus is in Pasay City. The college has other campuses in the Philippines.',
   ARRAY['Aeronautical Engineering', 'Information Management', 'Aviation Information Technology', 'Air Transportation', 'Aircraft Maintenance Technology', 'Aviation Electronics Technology', 'Aviation Communication', 'Aviation Tourism', 'Aviation Logistics', 'Aviation Safety and Security Management', 'Public Administration', 'Aeronautical Management']::text[], -- subjects (inferred from programs)
-  'https://philsca.edu.ph/wp-content/uploads/2022/01/PhilSCA-Main-Building.jpg', -- image_url
-  ARRAY['https://philsca.edu.ph/wp-content/uploads/2022/01/PhilSCA-Main-Building.jpg', 'https://philsca.edu.ph/wp-content/uploads/2022/01/PhilSCA-Aircraft.jpg']::text[], -- gallery_images
+  'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', -- image_url
+  ARRAY['https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg']::text[], -- gallery_images
   ARRAY['ISO 9001:2015 Certified', 'Accredited by the Accrediting Agency of Chartered Colleges and Universities in the Philippines (AACCUP).']::text[], -- accreditation
   NULL, -- campus_size (no specific data)
   '1968', -- founded
@@ -45,11 +44,11 @@ INSERT INTO universities (
     'Take the PhilSCA-AT exam on the scheduled date.',
     'Wait for the release of the PhilSCA-AT results.'
   ]::text[], -- application_process
-  'Varies', -- admission_status
-  'Varies', -- admission_deadline
-  'August', -- academic_semester_start
-  'May', -- academic_semester_end
-  'Varies', -- academic_application_deadline
+  'open', -- admission_status
+  NULL, -- admission_deadline
+  NULL, -- academic_semester_start
+  NULL, -- academic_semester_end
+  NULL, -- academic_application_deadline
   'UniRank 2023', -- ranking_source
   'Ranked among the top 200 universities in the Philippines.', -- ranking_details
   14.522, -- map_location_lat

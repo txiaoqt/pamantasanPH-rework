@@ -3,7 +3,7 @@
 -- Programs Reference: https://www.pnu.edu.ph/academics/colleges-and-institutes/
 
 INSERT INTO universities (
-  name, location, province, established, type, rating, students, programs,
+  name, location, province, established, type, students, programs,
   description, long_description, subjects, image_url, gallery_images,
   accreditation, campus_size, founded, website, phone, email, address,
   facilities, amenities, achievements, quickfacts, admission_requirements, application_process, admission_status, admission_deadline,
@@ -15,14 +15,13 @@ INSERT INTO universities (
   'Metro Manila',
   '1901', -- established (year)
   'Public',
-  NULL, -- rating (no specific data)
   '15000', -- students (as string)
   50, -- programs
   'The National Center for Teacher Education, a premier institution for teacher education in the Philippines.',
   'The Philippine Normal University is a public research university in Manila, Philippines. It was established in 1901 through Act No. 74 of the Philippine Commission as the Philippine Normal School, a teacher training institution. It is the first and oldest institution for teacher education in the country.',
   ARRAY['Teacher Education', 'Elementary Education', 'Secondary Education', 'Early Childhood Education', 'Library and Information Science', 'Physical Education', 'Technology and Livelihood Education', 'Educational Leadership and Management', 'English Language Education', 'Mathematics Education', 'Science Education', 'Social Studies Education', 'Values Education']::text[], -- subjects (inferred from programs)
-  'https://www.pnu.edu.ph/wp-content/uploads/2021/01/pnu-gate.jpg', -- image_url (first from gallery)
-  ARRAY['https://www.pnu.edu.ph/wp-content/uploads/2021/01/pnu-gate.jpg', 'https://www.pnu.edu.ph/wp-content/uploads/2021/01/pnu-facade.jpg']::text[], -- gallery_images
+  'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', -- image_url (first from gallery)
+  ARRAY['https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg']::text[], -- gallery_images
   ARRAY['Center of Excellence in Teacher Education']::text[], -- accreditation
   NULL, -- campus_size
   '1901', -- founded
@@ -46,10 +45,10 @@ INSERT INTO universities (
     'Wait for the release of the PNUAT results.'
   ]::text[], -- application_process
   'Varies', -- admission_status
-  'Varies', -- admission_deadline (default)
-  'August', -- academic_semester_start
-  'May', -- academic_semester_end
-  'Varies', -- academic_application_deadline
+  NULL, -- admission_deadline
+  NULL, -- academic_semester_start
+  NULL, -- academic_semester_end
+  NULL, -- academic_application_deadline
   'CHED', -- ranking_source
   'Designated as the National Center for Teacher Education.', -- ranking_details
   14.5828, -- map_location_lat

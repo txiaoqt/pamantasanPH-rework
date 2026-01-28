@@ -3,7 +3,7 @@
 -- Programs Reference: https://earist.edu.ph/academic-programs-2/
 
 INSERT INTO universities (
-  name, location, province, established, type, rating, students, programs,
+  name, location, province, established, type, students, programs,
   description, long_description, subjects, image_url, gallery_images,
   accreditation, campus_size, founded, website, phone, email, address,
   facilities, amenities, achievements, quickfacts, admission_requirements, application_process, admission_status, admission_deadline,
@@ -15,14 +15,13 @@ INSERT INTO universities (
   'Metro Manila',
   '1945', -- established (year)
   'Public',
-  NULL, -- rating (no specific data)
   '20000', -- students (as string)
   60, -- programs
   'A state university in Manila, Philippines, that offers a wide range of undergraduate and graduate programs in science, technology, education, and more.',
   'The Eulogio "Amang" Rodriguez Institute of Science and Technology (EARIST) is a public university located in Sampaloc, Manila. The university is known for its programs in science, technology, and education. It was founded in 1945 by the late President Manuel L. Quezon.',
   ARRAY['Psychology', 'Criminology', 'Computer Science', 'Hospitality Management', 'Business Administration', 'Office Administration', 'Information Technology', 'Industrial Technology', 'Applied Physics', 'Architecture', 'Fine Arts', 'Education', 'Special Needs Education', 'Chemical Engineering', 'Civil Engineering', 'Electrical Engineering', 'Electronics and Communication Engineering', 'Mechanical Engineering', 'Computer Engineering', 'Entrepreneurship', 'Mathematics', 'Nursing', 'Industrial Psychology', 'Computer Technology', 'Interior Design', 'Tourism', 'Educational Management', 'Public Administration']::text[], -- subjects (inferred from programs)
-  'https://earist.edu.ph/wp-content/uploads/2021/08/earist-facade.jpg', -- image_url
-  ARRAY['https://earist.edu.ph/wp-content/uploads/2021/08/earist-facade.jpg', 'https://earist.edu.ph/wp-content/uploads/2021/08/earist-campus.jpg']::text[], -- gallery_images
+  'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', -- image_url
+  ARRAY['https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg']::text[], -- gallery_images
   ARRAY['Accredited by the Accrediting Agency of Chartered Colleges and Universities in the Philippines (AACCUP).']::text[], -- accreditation
   NULL, -- campus_size (no specific data)
   '1945', -- founded
@@ -45,11 +44,11 @@ INSERT INTO universities (
     'Take the EARIST-CAT exam on the scheduled date.',
     'Wait for the release of the EARIST-CAT results.'
   ]::text[], -- application_process
-  'Varies', -- admission_status
-  'Varies', -- admission_deadline (default)
-  'August', -- academic_semester_start
-  'May', -- academic_semester_end
-  'Varies', -- academic_application_deadline
+  'open', -- admission_status
+  NULL, -- admission_deadline
+  NULL, -- academic_semester_start
+  NULL, -- academic_semester_end
+  NULL, -- academic_application_deadline
   'UniRank 2023', -- ranking_source
   'Ranked among the top 150 universities in the Philippines.', -- ranking_details
   14.5985, -- map_location_lat

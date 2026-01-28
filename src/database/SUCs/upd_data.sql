@@ -3,7 +3,7 @@
 -- Programs Reference: https://upd.edu.ph/academics/
 
 INSERT INTO universities (
-  name, location, province, established, type, rating, students, programs,
+  name, location, province, established, type, students, programs,
   description, long_description, subjects, image_url, gallery_images,
   accreditation, campus_size, founded, website, phone, email, address,
   facilities, amenities, achievements, quickfacts, admission_requirements, application_process, admission_status, admission_deadline,
@@ -15,14 +15,13 @@ INSERT INTO universities (
   'Metro Manila',
   '1949', -- established (year)
   'Public',
-  NULL, -- rating (no specific data)
   '22000', -- students (as string)
   247, -- programs
   'The flagship campus of the University of the Philippines System, offering a wide range of undergraduate and graduate programs.',
   'The University of the Philippines Diliman, coeval with the University of the Philippines, was established on June 18, 1908 through Act No. 1870 of the Philippine Assembly. The university was created to provide advanced instruction in literature, philosophy, the sciences, and arts, and to give professional and technical training to deserving students.',
   ARRAY['Architecture', 'Business Administration', 'Education', 'Engineering', 'Fine Arts', 'Home Economics', 'Library and Information Science', 'Mass Communication', 'Music', 'Public Administration', 'Science', 'Social Sciences and Philosophy', 'Social Work', 'Statistics', 'Economics', 'Human Kinetics', 'Islamic Studies', 'Labor and Industrial Relations', 'Law', 'Tourism']::text[], -- subjects
-  'https://upd.edu.ph/wp-content/uploads/2021/01/UP-Diliman-Welcome-Sign.jpg', -- image_url (first from gallery)
-  ARRAY['https://upd.edu.ph/wp-content/uploads/2021/01/UP-Diliman-Welcome-Sign.jpg', 'https://upd.edu.ph/wp-content/uploads/2020/02/180112_105-scaled.jpg']::text[], -- gallery_images
+  'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', -- image_url (first from gallery)
+  ARRAY['https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg']::text[], -- gallery_images
   ARRAY['Most of its programs are recognized as Centers of Excellence and Centers of Development by the Commission on Higher Education.']::text[], -- accreditation
   '493-hectare', -- campus_size (extracted from long_description)
   '1908', -- founded (extracted from long_description)
@@ -46,10 +45,10 @@ INSERT INTO universities (
     'Wait for the release of the UPCAT results.'
   ]::text[], -- application_process
   'Varies', -- admission_status
-  'Varies', -- admission_deadline (default)
-  'August', -- academic_semester_start
-  'May', -- academic_semester_end
-  'Varies', -- academic_application_deadline
+  NULL, -- admission_deadline
+  NULL, -- academic_semester_start
+  NULL, -- academic_semester_end
+  NULL, -- academic_application_deadline
   'QS World University Rankings 2024', -- ranking_source
   'Ranked #1 in the Philippines and #404 in the world.', -- ranking_details
   14.6539, -- map_location_lat

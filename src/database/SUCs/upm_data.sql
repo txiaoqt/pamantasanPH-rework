@@ -3,7 +3,7 @@
 -- Programs Reference: College websites under upm.edu.ph
 
 INSERT INTO universities (
-  name, location, province, established, type, rating, students, programs,
+  name, location, province, established, type, students, programs,
   description, long_description, subjects, image_url, gallery_images,
   accreditation, campus_size, founded, website, phone, email, address,
   facilities, amenities, achievements, quickfacts, admission_requirements, application_process, admission_status, admission_deadline,
@@ -15,14 +15,13 @@ INSERT INTO universities (
   'Metro Manila',
   '1905', -- established (year)
   'Public',
-  NULL, -- rating (no specific data)
   '10000', -- students (as string)
   50, -- programs (placeholder)
   'The premier state university in the Philippines in the fields of health and medical sciences.',
   'The University of the Philippines Manila is a public, research university in Manila, Philippines. It is the oldest of the seven constituent universities of the University of the Philippines System, even predating the founding of UP by three years. It is the national university of the Philippines.',
   ARRAY['Occupational Therapy', 'Physical Therapy', 'Speech Pathology', 'Clinical Audiology', 'Rehabilitation Science', 'Applied Physics', 'Behavioral Sciences', 'Biochemistry', 'Biology', 'Computer Science', 'Development Studies', 'Organizational Communication', 'Philippine Arts', 'Political Science', 'Social Science', 'Management', 'Health Policy Studies', 'Health Informatics', 'Dentistry', 'Medicine', 'Nursing', 'Pharmacy', 'Public Health', 'Epidemiology', 'Occupational Health', 'Hospital Administration']::text[], -- subjects (inferred from programs)
-  'https://www.upm.edu.ph/sites/default/files/styles/carousel_image/public/2021-01/upm-pylon.jpg?itok=8c6C4j4M', -- image_url
-  ARRAY['https://www.upm.edu.ph/sites/default/files/styles/carousel_image/public/2021-01/upm-pylon.jpg?itok=8c6C4j4M', 'https://www.upm.edu.ph/sites/default/files/styles/carousel_image/public/2021-01/pgh-facade.jpg?itok=5W5o0b0B']::text[], -- gallery_images
+  'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', -- image_url
+  ARRAY['https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg', 'https://zdixoeqnifczswpxospm.supabase.co/storage/v1/object/public/Images/PUP%20images/PLACEHOLDER.jpg']::text[], -- gallery_images
   ARRAY['Center of Excellence in Medicine, Nursing, and Public Health.']::text[], -- accreditation
   NULL, -- campus_size (no specific data)
   '1905', -- founded
@@ -45,11 +44,11 @@ INSERT INTO universities (
     'Take the UPCAT exam on the scheduled date.',
     'Wait for the release of the UPCAT results.'
   ]::text[], -- application_process
-  'Varies', -- admission_status
-  'Varies', -- admission_deadline (default)
-  'August', -- academic_semester_start
-  'May', -- academic_semester_end
-  'Varies', -- academic_application_deadline
+  'open', -- admission_status
+  NULL, -- admission_deadline
+  NULL, -- academic_semester_start
+  NULL, -- academic_semester_end
+  NULL, -- academic_application_deadline
   'QS World University Rankings 2024', -- ranking_source
   'Ranked #1 in the Philippines for Medicine and Life Sciences.', -- ranking_details
   14.578, -- map_location_lat
