@@ -26,8 +26,10 @@ import ProtectedRoute from './components/common/ProtectedRoute';
 import TermsOfServiceModal from './components/common/TermsOfServiceModal';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from './lib/supabase';
+import { useTheme } from './hooks/useTheme';
 
 function App() {
+  useTheme(); // Apply the theme globally
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
@@ -97,7 +99,7 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
         {showTermsModal && user && (
           <TermsOfServiceModal 
             user={user} 

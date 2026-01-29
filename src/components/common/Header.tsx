@@ -50,7 +50,7 @@ export default function Header({ mobileMenuOpen, setMobileMenuOpen, session }: H
   };
 
   return (
-    <header className="bg-white/95 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
+    <header className="bg-white/95 backdrop-blur-sm border-b border-gray-200 dark:bg-gray-900/95 dark:border-gray-700 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link to="/" className="flex items-center space-x-2">
@@ -58,36 +58,36 @@ export default function Header({ mobileMenuOpen, setMobileMenuOpen, session }: H
               <GraduationCap className="h-6 w-6 text-yellow-400" />
             </div>
             <div>
-              <h1 className="text-lg sm:text-xl font-bold text-red-900">UniCentral - Prototype</h1>
-              <p className="text-xs text-gray-600">Simplifying College Admissions</p>
+              <h1 className="text-lg sm:text-xl font-bold text-red-900 dark:text-[#FF4D4D]">UniCentral - Prototype</h1>
+              <p className="text-xs text-gray-600 dark:text-gray-400">Simplifying College Admissions</p>
             </div>
           </Link>
 
           <div className="flex items-center">
             <nav className="hidden md:flex items-center space-x-8">
-              <Link to="/" className={`transition-colors text-sm font-medium ${isActive('/') ? 'text-maroon-900' : 'text-gray-700 hover:text-maroon-900'}`}>Home</Link>
-              <Link to="/universities" className={`transition-colors text-sm font-medium ${isActive('/universities') ? 'text-maroon-900' : 'text-gray-700 hover:text-maroon-900'}`}>Universities</Link>
-              <Link to="/programs" className={`transition-colors text-sm font-medium ${isActive('/programs') ? 'text-maroon-900' : 'text-gray-700 hover:text-maroon-900'}`}>Programs</Link>
-              <Link to="/compare" className={`transition-colors text-sm font-medium ${isActive('/compare') ? 'text-maroon-900' : 'text-gray-700 hover:text-maroon-900'}`}>Compare</Link>
-              <Link to="/about" className={`transition-colors text-sm font-medium ${isActive('/about') ? 'text-maroon-900' : 'text-gray-700 hover:text-maroon-900'}`}>About</Link>
-              <Link to="/saved" className={`transition-colors text-sm font-medium ${isActive('/saved') ? 'text-maroon-900' : 'text-gray-700 hover:text-maroon-900'}`}>Saved</Link>
+              <Link to="/" className={`transition-colors text-sm font-medium ${isActive('/') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`}>Home</Link>
+              <Link to="/universities" className={`transition-colors text-sm font-medium ${isActive('/universities') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`}>Universities</Link>
+              <Link to="/programs" className={`transition-colors text-sm font-medium ${isActive('/programs') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`}>Programs</Link>
+              <Link to="/compare" className={`transition-colors text-sm font-medium ${isActive('/compare') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`}>Compare</Link>
+              <Link to="/about" className={`transition-colors text-sm font-medium ${isActive('/about') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`}>About</Link>
+              <Link to="/saved" className={`transition-colors text-sm font-medium ${isActive('/saved') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`}>Saved</Link>
             </nav>
 
             <div className="hidden md:flex items-center ml-8">
               {session ? (
                 <div className="relative">
                   <button onClick={() => setProfileMenuOpen(!profileMenuOpen)} className="flex items-center space-x-2 text-sm">
-                    <User className="h-5 w-5 text-gray-700" />
-                    <span>{loadingProfile ? 'Loading...' : (profile?.full_name || session.user.email)}</span>
+                    <User className="h-5 w-5 text-gray-700 dark:text-gray-400" />
+                    <span className="dark:text-gray-400">{loadingProfile ? 'Loading...' : (profile?.full_name || session.user.email)}</span>
                   </button>
                   {profileMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1">
-                      <Link to="/profile" className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                        <Settings className="mr-2 h-4 w-4" />
+                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1">
+                      <Link to="/profile" className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600">
+                        <Settings className="mr-2 h-4 w-4 dark:text-gray-400" />
                         Profile
                       </Link>
-                      <button onClick={handleLogout} className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                        <LogOut className="mr-2 h-4 w-4" />
+                      <button onClick={handleLogout} className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600">
+                        <LogOut className="mr-2 h-4 w-4 dark:text-gray-400" />
                         Logout
                       </button>
                     </div>
@@ -102,41 +102,40 @@ export default function Header({ mobileMenuOpen, setMobileMenuOpen, session }: H
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors ml-4"
+              className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ml-4"
             >
-              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {mobileMenuOpen ? <X className="h-6 w-6 dark:text-white" /> : <Menu className="h-6 w-6 dark:text-white" />}
             </button>
           </div>
         </div>
 
         {mobileMenuOpen && (
-          <div className="md:hidden pb-4">
+          <div className="md:hidden pb-4 bg-white dark:bg-gray-900/95">
             <nav className="flex flex-col space-y-3">
-              <Link to="/" className={`transition-colors text-sm font-medium py-2 ${isActive('/') ? 'text-maroon-900' : 'text-gray-700 hover:text-maroon-900'}`} onClick={() => setMobileMenuOpen(false)}>Home</Link>
-              <Link to="/universities" className={`transition-colors text-sm font-medium py-2 ${isActive('/universities') ? 'text-maroon-900' : 'text-gray-700 hover:text-maroon-900'}`} onClick={() => setMobileMenuOpen(false)}>Universities</Link>
-              <Link to="/programs" className={`transition-colors text-sm font-medium py-2 ${isActive('/programs') ? 'text-maroon-900' : 'text-gray-700 hover:text-maroon-900'}`} onClick={() => setMobileMenuOpen(false)}>Programs</Link>
-              <Link to="/compare" className={`transition-colors text-sm font-medium py-2 ${isActive('/compare') ? 'text-maroon-900' : 'text-gray-700 hover:text-maroon-900'}`} onClick={() => setMobileMenuOpen(false)}>Compare</Link>
-              <Link to="/about" className={`transition-colors text-sm font-medium py-2 ${isActive('/about') ? 'text-maroon-900' : 'text-gray-700 hover:text-maroon-900'}`} onClick={() => setMobileMenuOpen(false)}>About</Link>
-              <Link to="/saved" className={`transition-colors text-sm font-medium py-2 ${isActive('/saved') ? 'text-maroon-900' : 'text-gray-700 hover:text-maroon-900'}`} onClick={() => setMobileMenuOpen(false)}>Saved</Link>
-              <div className="border-t border-gray-200 pt-4">
+              <Link to="/" className={`transition-colors text-sm font-medium py-2 ${isActive('/') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`} onClick={() => setMobileMenuOpen(false)}>Home</Link>
+              <Link to="/universities" className={`transition-colors text-sm font-medium py-2 ${isActive('/universities') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`} onClick={() => setMobileMenuOpen(false)}>Universities</Link>
+              <Link to="/programs" className={`transition-colors text-sm font-medium py-2 ${isActive('/programs') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`} onClick={() => setMobileMenuOpen(false)}>Programs</Link>
+              <Link to="/compare" className={`transition-colors text-sm font-medium py-2 ${isActive('/compare') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`} onClick={() => setMobileMenuOpen(false)}>Compare</Link>
+              <Link to="/about" className={`transition-colors text-sm font-medium py-2 ${isActive('/about') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`} onClick={() => setMobileMenuOpen(false)}>About</Link>
+              <Link to="/saved" className={`transition-colors text-sm font-medium py-2 ${isActive('/saved') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`} onClick={() => setMobileMenuOpen(false)}>Saved</Link>
+              <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
                 {session ? (
                   <div className="space-y-3">
                     <Link 
                       to="/profile" 
-                      className="flex items-center py-2 text-sm text-gray-700 hover:text-maroon-900"
+                      className="flex items-center py-2 text-sm text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white"
                       onClick={() => setMobileMenuOpen(false)} // Close mobile menu
                     >
-                        <Settings className="mr-2 h-5 w-5" />
+                        <Settings className="mr-2 h-5 w-5 dark:text-gray-400" />
                         Profile
                     </Link>
-                    <button 
-                      onClick={() => {
-                        handleLogout();
-                        setMobileMenuOpen(false); // Close mobile menu
-                      }} 
-                      className="flex items-center w-full text-left py-2 text-sm text-gray-700 hover:text-maroon-900"
-                    >
-                        <LogOut className="mr-2 h-5 w-5" />
+                                                                <button 
+                                                                onClick={() => {
+                                                                  handleLogout();
+                                                                  setMobileMenuOpen(false); // Close mobile menu
+                                                                }} 
+                                                                className="flex items-center w-full text-left py-2 text-sm text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white"
+                                                              >                        <LogOut className="mr-2 h-5 w-5 dark:text-gray-400" />
                         Logout
                     </button>
                   </div>

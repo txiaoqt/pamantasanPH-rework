@@ -62,19 +62,19 @@ function AdmissionStatusBadge({ status }: { status: 'open' | 'not-yet-open' | 'c
       case 'open':
         return {
           label: 'Open',
-          color: 'bg-green-100 text-green-800 border-green-200',
+          color: 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900 dark:text-green-200 dark:border-green-700',
           dot: 'bg-green-500'
         };
       case 'not-yet-open':
         return {
           label: 'Soon',
-          color: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+          color: 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900 dark:text-yellow-200 dark:border-yellow-700',
           dot: 'bg-yellow-500'
         };
       case 'closed':
         return {
           label: 'Closed',
-          color: 'bg-red-100 text-red-800 border-red-200',
+          color: 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900 dark:text-red-200 dark:border-red-700',
           dot: 'bg-red-500'
         };
     }
@@ -128,7 +128,7 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
 
   if (viewMode === 'list') {
     return (
-      <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-700">
         {/* Stacked layout on extra small screens, horizontal on larger screens */}
         <div className="flex flex-col">
           <div className="w-full h-20 sm:h-24 md:h-32 flex-shrink-0">
@@ -141,8 +141,8 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
           <div className="p-3 sm:p-4">
             {/* Always visible: Name and Location */}
             <div className="mb-3">
-              <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-1">{university.name}</h3>
-              <div className="flex items-center text-gray-600 text-sm">
+              <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-50 mb-1">{university.name}</h3>
+              <div className="flex items-center text-gray-600 dark:text-gray-400 text-sm">
                 <MapPin className="h-4 w-4 mr-1" />
                 {university.location}, {university.province}
               </div>
@@ -152,12 +152,12 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
             <div className={isExpanded ? 'block' : 'hidden'}>
               <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-3">
                 <div className="mb-2 md:mb-0">
-                  <div className="text-gray-500 text-sm">Est. {university.established}</div>
+                  <div className="text-gray-500 dark:text-gray-400 text-sm">Est. {university.established}</div>
                 </div>
                 <div className="flex items-center space-x-2 md:space-x-4">
-                  <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${university.type === 'Public' ? 'bg-blue-100 text-blue-800' :
-                    university.type === 'State' ? 'bg-green-100 text-green-800' :
-                      'bg-purple-100 text-purple-800'
+                  <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${university.type === 'Public' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
+                    university.type === 'State' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
+                      'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
                     }`}>
                     {university.type}
                   </span>
@@ -166,19 +166,19 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
               </div>
 
               <div className="flex items-center justify-between mb-3 text-sm">
-                <div className="flex items-center text-gray-600">
+                <div className="flex items-center text-gray-600 dark:text-gray-400">
                   <Users className="h-4 w-4 mr-1" />
                   <span className="font-medium">{university.students} students</span>
                 </div>
-                <div className="flex items-center text-gray-600">
+                <div className="flex items-center text-gray-600 dark:text-gray-400">
                   <BookOpen className="h-4 w-4 mr-1" />
-                  <span className="font-medium">{university.programs} programs</span>
+                  <span className="font-medium text-[#EF9A9A]">{university.programs} programs</span>
                 </div>
               </div>
 
-              <p className="text-gray-600 text-sm mb-3 line-clamp-2">{university.description}</p>
+              <p className="text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-2">{university.description}</p>
 
-              <div className="mb-3 text-xs text-gray-600">
+              <div className="mb-3 text-xs text-gray-600 dark:text-gray-400">
                 📅 {university.admissionDeadline}
               </div>
               <div className="mb-4">
@@ -186,13 +186,13 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
                   {university.subjects.slice(0, 4).map((subject, index) => (
                     <span
                       key={index}
-                      className="px-2 py-0.5 bg-maroon-50 text-maroon-700 text-xs rounded-full font-medium hover:bg-maroon-100 transition-colors"
+                      className="px-2 py-0.5 bg-maroon-50 dark:bg-gray-700 text-maroon-700 dark:text-gray-50 text-xs rounded-full font-medium hover:bg-maroon-100 dark:hover:bg-gray-600 transition-colors"
                     >
                       {subject}
                     </span>
                   ))}
                   {university.subjects.length > 4 && (
-                    <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full font-medium">
+                    <span className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs rounded-full font-medium">
                       +{university.subjects.length - 4} more
                     </span>
                   )}
@@ -204,7 +204,7 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
             <div className="mt-3">
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="text-maroon-600 hover:text-maroon-800 font-medium text-sm transition-colors"
+                className="text-maroon-600 dark:text-maroon-400 hover:text-maroon-800 dark:hover:text-maroon-300 font-medium text-sm transition-colors"
               >
                 {isExpanded ? 'See Less' : 'See More'}
               </button>
@@ -217,21 +217,21 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
                 disabled={!isLoaded}
                 className={`p-1.5 border rounded-lg transition-colors ${
                   isSaved(university.id)
-                    ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'
-                    : 'text-maroon-700 border-maroon-200 hover:bg-maroon-50'
+                    ? 'bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-300 border-red-200 dark:border-red-700 hover:bg-red-100 dark:hover:bg-red-900'
+                    : 'text-maroon-700 dark:text-maroon-400 border-maroon-200 dark:border-maroon-700 hover:bg-maroon-50 dark:hover:bg-maroon-950'
                 } ${!isLoaded ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 <Heart className={`h-3.5 w-3.5 ${isSaved(university.id) ? 'fill-current' : ''}`} />
               </button>
               <button
                 onClick={handleCompare}
-                className="p-1.5 text-maroon-700 border border-maroon-200 rounded-lg hover:bg-maroon-50 transition-colors"
+                className="p-1.5 text-maroon-700 dark:text-maroon-400 border border-maroon-200 dark:border-maroon-700 rounded-lg hover:bg-maroon-50 dark:hover:bg-maroon-950 transition-colors"
               >
                 <BarChart3 className="h-3.5 w-3.5" />
               </button>
               <Link
                 to={`/universities/${university.id}`}
-                className="px-3 py-1.5 bg-maroon-800 text-white rounded-lg hover:bg-maroon-700 transition-colors flex items-center text-sm"
+                className="px-3 py-1.5 bg-maroon-800 dark:bg-maroon-700 text-white rounded-lg hover:bg-maroon-700 dark:hover:bg-maroon-600 transition-colors flex items-center text-sm"
               >
                 <ExternalLink className="h-3.5 w-3.5 mr-1" />
                 View
@@ -245,7 +245,7 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
 
   // Grid View
   return (
-    <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group">
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-700 group">
       <div className="relative h-40 sm:h-44 md:h-48">
         <img
           src={university.imageUrl}
@@ -253,9 +253,9 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
         <div className="absolute top-3 left-3">
-          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${university.type === 'Public' ? 'bg-blue-100 text-blue-800' :
-            university.type === 'State' ? 'bg-green-100 text-green-800' :
-              'bg-purple-100 text-purple-800'
+          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${university.type === 'Public' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
+            university.type === 'State' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
+              'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
             }`}>
             {university.type}
           </span>
@@ -267,32 +267,32 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
 
       <div className="p-3 sm:p-4">
         <div className="mb-3">
-          <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-1 group-hover:text-maroon-800 transition-colors">
+          <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-50 mb-1 group-hover:text-maroon-800 dark:group-hover:text-maroon-400 transition-colors">
             {university.name}
           </h3>
-          <div className="flex items-center text-gray-600 text-sm mb-0.5">
+          <div className="flex items-center text-gray-600 dark:text-gray-400 text-sm mb-0.5">
             <MapPin className="h-4 w-4 mr-1" />
             {university.location}, {university.province}
           </div>
-          <div className="text-gray-500 text-sm">Est. {university.established}</div>
+          <div className="text-gray-500 dark:text-gray-400 text-sm">Est. {university.established}</div>
         </div>
 
         <div className="flex items-center justify-between mb-3 text-sm">
-          <div className="flex items-center text-gray-600">
+          <div className="flex items-center text-gray-600 dark:text-gray-400">
             <Users className="h-4 w-4 mr-1" />
             <span className="font-medium">{university.students} students</span>
           </div>
-          <div className="flex items-center text-gray-600">
+          <div className="flex items-center text-gray-600 dark:text-gray-400">
             <BookOpen className="h-4 w-4 mr-1" />
-            <span className="font-medium">{university.programs} programs</span>
+            <span className="font-medium text-[#EF9A9A]">{university.programs} programs</span>
           </div>
         </div>
 
         {/* Hidden on small and medium screens unless expanded */}
         <div className={`lg:block ${isExpanded ? 'block' : 'hidden'}`}>
-          <p className="text-gray-600 text-sm mb-3 leading-relaxed line-clamp-3">{university.description}</p>
+          <p className="text-gray-600 dark:text-gray-400 text-sm mb-3 leading-relaxed line-clamp-3">{university.description}</p>
 
-          <div className="mb-3 text-xs text-gray-600">
+          <div className="mb-3 text-xs text-gray-600 dark:text-gray-400">
             📅 {university.admissionDeadline}
           </div>
           <div className="mb-4">
@@ -300,13 +300,13 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
               {university.subjects.slice(0, 4).map((subject, index) => (
                 <span
                   key={index}
-                  className="px-2 py-0.5 bg-maroon-50 text-maroon-700 text-xs rounded-full font-medium hover:bg-maroon-100 transition-colors"
+                  className="px-2 py-0.5 bg-maroon-50 dark:bg-gray-700 text-maroon-700 dark:text-gray-50 text-xs rounded-full font-medium hover:bg-maroon-100 dark:hover:bg-gray-600 transition-colors"
                 >
                   {subject}
                 </span>
               ))}
               {university.subjects.length > 4 && (
-                <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full font-medium">
+                <span className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs rounded-full font-medium">
                   +{university.subjects.length - 4} more
                 </span>
               )}
@@ -318,7 +318,7 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
         <div className="lg:hidden mb-3">
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="text-maroon-600 hover:text-maroon-800 font-medium text-sm transition-colors"
+            className="text-maroon-600 dark:text-maroon-400 hover:text-maroon-800 dark:hover:text-maroon-300 font-medium text-sm transition-colors"
           >
             {isExpanded ? 'See Less' : 'See More'}
           </button>
@@ -330,8 +330,8 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
             disabled={!isLoaded}
             className={`flex-1 min-w-0 px-2 py-1.5 border rounded-lg transition-colors text-xs sm:text-sm flex items-center ${
               isSaved(university.id)
-                ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'
-                : 'text-maroon-700 border-maroon-200 hover:bg-maroon-50'
+                ? 'bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-300 border-red-200 dark:border-red-700 hover:bg-red-100 dark:hover:bg-red-900'
+                : 'text-maroon-700 dark:text-maroon-400 border-maroon-200 dark:border-maroon-700 hover:bg-maroon-50 dark:hover:bg-maroon-950'
             } ${!isLoaded ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             <Heart className={`h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1 ${isSaved(university.id) ? 'fill-current' : ''}`} />
@@ -339,14 +339,14 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
           </button>
           <button
             onClick={handleCompare}
-            className="flex-1 min-w-0 px-2 py-1.5 text-maroon-700 border border-maroon-200 rounded-lg hover:bg-maroon-50 transition-colors text-xs sm:text-sm flex items-center"
+            className="flex-1 min-w-0 px-2 py-1.5 text-maroon-700 dark:text-maroon-400 border border-maroon-200 dark:border-maroon-700 rounded-lg hover:bg-maroon-50 dark:hover:bg-maroon-950 transition-colors text-xs sm:text-sm flex items-center"
           >
             <BarChart3 className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" />
             <span className="text-xs sm:text-sm">Compare</span>
           </button>
           <Link
             to={`/universities/${university.id}`}
-            className="flex-1 min-w-0 px-2 py-1.5 bg-maroon-800 text-white rounded-lg hover:bg-maroon-700 transition-colors flex items-center justify-center text-xs sm:text-sm"
+            className="flex-1 min-w-0 px-2 py-1.5 bg-maroon-800 dark:bg-maroon-700 text-white rounded-lg hover:bg-maroon-700 dark:hover:bg-maroon-600 transition-colors flex items-center justify-center text-xs sm:text-sm"
           >
             <ExternalLink className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" />
             <span className="text-xs sm:text-sm">View</span>

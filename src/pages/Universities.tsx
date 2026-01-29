@@ -117,21 +117,21 @@ export default function Universities() {
   }, [universities, searchQuery, locationFilter, typeFilter, sortBy, programFilter, programUniversities]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <div className="bg-gradient-to-br from-maroon-900 via-maroon-800 to-red-900 text-white py-8 md:py-16">
+      <div className="bg-gradient-to-br from-maroon-900 via-maroon-800 to-red-900 dark:from-maroon-800 dark:via-maroon-700 dark:to-red-800 text-white py-8 md:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
             {programFilter ? `Universities offering ${decodeURIComponent(programFilter)}` : 'Universities'}
           </h1>
-          <p className={`text-xs sm:text-base md:text-lg lg:text-xl text-maroon-100 max-w-3xl ${programFilter ? 'hidden sm:block' : ''}`}>
+          <p className={`text-xs sm:text-base md:text-lg lg:text-xl text-maroon-100 dark:text-gray-400 max-w-3xl ${programFilter ? 'hidden sm:block' : ''}`}>
             {programFilter
               ? `Find universities that offer ${decodeURIComponent(programFilter)} and explore your options.`
               : 'Discover and explore universities across the Philippines. Find the perfect institution for your educational journey.'
             }
           </p>
           {programFilter && (
-            <div className="mt-4 inline-flex items-center px-4 py-2 bg-maroon-800/50 rounded-lg border border-maroon-700">
+            <div className="mt-4 inline-flex items-center px-4 py-2 bg-maroon-800/50 dark:bg-maroon-900/50 rounded-lg border border-maroon-700 dark:border-maroon-800">
               <span className="text-xs sm:text-sm font-medium">Filtering by program: {decodeURIComponent(programFilter)}</span>
             </div>
           )}
@@ -139,7 +139,7 @@ export default function Universities() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white border-b border-gray-200 lg:sticky lg:top-16 z-40">
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 lg:sticky lg:top-16 z-40">
         <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col gap-4">
             {/* Search - Full width on mobile */}
@@ -150,7 +150,7 @@ export default function Universities() {
                 placeholder="Search universities, programs..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-maroon-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-maroon-500 dark:focus:ring-maroon-400 focus:border-transparent dark:text-gray-50 dark:placeholder-gray-400 dark:bg-gray-800"
               />
             </div>
 
@@ -164,7 +164,7 @@ export default function Universities() {
                   placeholder="Location"
                   value={locationFilter}
                   onChange={(e) => setLocationFilter(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-maroon-500 focus:border-transparent text-sm"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-maroon-500 dark:focus:ring-maroon-400 focus:border-transparent text-sm dark:text-gray-50 dark:placeholder-gray-400 dark:bg-gray-800"
                 />
               </div>
 
@@ -175,7 +175,7 @@ export default function Universities() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-maroon-500 focus:border-transparent text-sm"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-maroon-500 dark:focus:ring-maroon-400 focus:border-transparent text-sm dark:text-gray-50 dark:bg-gray-800"
               >
                 <option value="name">Sort by Name</option>
                 <option value="students">Sort by Students</option>
@@ -188,8 +188,8 @@ export default function Universities() {
                   onClick={() => setViewMode('grid')}
                   className={`p-2 rounded-lg transition-colors ${
                     viewMode === 'grid'
-                      ? 'bg-maroon-100 text-maroon-800'
-                      : 'text-gray-600 hover:bg-gray-100'
+                      ? 'bg-maroon-100 dark:bg-maroon-900 text-maroon-800 dark:text-maroon-100'
+                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
                 >
                   <Grid className="h-5 w-5" />
@@ -198,8 +198,8 @@ export default function Universities() {
                   onClick={() => setViewMode('list')}
                   className={`p-2 rounded-lg transition-colors ${
                     viewMode === 'list'
-                      ? 'bg-maroon-100 text-maroon-800'
-                      : 'text-gray-600 hover:bg-gray-100'
+                      ? 'bg-maroon-100 dark:bg-maroon-900 text-maroon-800 dark:text-maroon-100'
+                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
                 >
                   <List className="h-5 w-5" />
@@ -211,12 +211,12 @@ export default function Universities() {
       </div>
 
       {/* Results */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-white dark:bg-gray-800 rounded-lg shadow-md">
         {isLoading ? (
           <div className="flex justify-center items-center py-20">
             <div className="flex flex-col items-center space-y-4">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-maroon-800"></div>
-              <p className="text-sm text-gray-600">Loading universities...</p>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-maroon-800 dark:border-maroon-500"></div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Loading universities...</p>
             </div>
           </div>
         ) : filteredUniversities.length > 0 ? (
@@ -241,13 +241,13 @@ export default function Universities() {
             <div className="text-gray-400 mb-4">
               <MapPin className="h-16 w-16 mx-auto" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">No universities found</h3>
-            <p className="text-sm text-gray-600 mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-50 mb-2">No universities found</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
               No universities currently offer "{decodeURIComponent(programFilter)}" program.
             </p>
             <button
               onClick={() => window.history.back()}
-              className="px-6 py-3 bg-maroon-600 text-white rounded-lg hover:bg-maroon-700 transition-colors"
+              className="px-6 py-3 bg-maroon-600 dark:bg-maroon-700 text-white rounded-lg hover:bg-maroon-700 dark:hover:bg-maroon-600 transition-colors"
             >
               ← Go Back to Programs
             </button>
@@ -257,8 +257,8 @@ export default function Universities() {
             <div className="text-gray-400 mb-4">
               <MapPin className="h-16 w-16 mx-auto" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">No universities found</h3>
-            <p className="text-sm text-gray-600">Try adjusting your search criteria or filters.</p>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-50 mb-2">No universities found</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Try adjusting your search criteria or filters.</p>
           </div>
         )}
       </div>

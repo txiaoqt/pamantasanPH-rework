@@ -53,7 +53,7 @@ interface TabProps {
 
 function TabNavigation({ activeTab, setActiveTab, tabs }: TabProps) {
   return (
-    <div className="border-b border-gray-200 mb-6">
+    <div className="border-b border-gray-200 dark:border-gray-700 mb-6">
       <style dangerouslySetInnerHTML={{
         __html: `
           .tab-navigation::-webkit-scrollbar {
@@ -67,8 +67,8 @@ function TabNavigation({ activeTab, setActiveTab, tabs }: TabProps) {
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`py-3 px-1 border-b-2 font-medium text-sm transition-colors whitespace-nowrap flex-shrink-0 ${activeTab === tab.id
-              ? 'border-maroon-600 text-maroon-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              ? 'border-maroon-600 dark:border-maroon-400 text-maroon-600 dark:text-maroon-400'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-600'
               }`}
           >
             {tab.label}
@@ -510,14 +510,14 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {showLoginModal && <LoginPromptModal onClose={() => setShowLoginModal(false)} />}
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <Link
             to="/universities"
-            className="inline-flex items-center text-maroon-600 hover:text-maroon-700 mb-4"
+            className="inline-flex items-center text-maroon-600 dark:text-maroon-400 hover:text-maroon-700 dark:hover:text-maroon-300 mb-4"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Universities
@@ -526,30 +526,29 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
             <div className="flex-1">
               <div className="flex items-center mb-2">
-                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mr-4">{university.name}</h1>
-                <span className={`px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-xs sm:text-sm font-medium ${university.type === 'Public' ? 'bg-blue-100 text-blue-800' :
-                  university.type === 'State' ? 'bg-green-100 text-green-800' :
-                    'bg-purple-100 text-purple-800'
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-50 mr-4">{university.name}</h1>
+                <span className={`px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-xs sm:text-sm font-medium ${university.type === 'Public' ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200' :
+                  university.type === 'State' ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' :
+                    'bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200'
                   }`}>
                   {university.type}
                 </span>
               </div>
 
-              <div className="flex items-center text-gray-600 mb-4 text-sm sm:text-base">
+              <div className="flex items-center text-gray-600 dark:text-gray-400 mb-4 text-sm sm:text-base">
                 <MapPin className="h-4 w-4 mr-1" />
                 <span>{university.address || 'Address not available'}</span>
               </div>
 
               <div className="flex items-center space-x-4 text-sm sm:text-base">
-                <div className="flex items-center text-gray-600">
+                <div className="flex items-center text-gray-600 dark:text-gray-400">
                   <Users className="h-4 w-4 mr-1" />
                   <span>{university.students} students</span>
                 </div>
-                <div className="flex items-center text-gray-600">
-                  <BookOpen className="h-4 w-4 mr-1" />
+                <div className="flex items-center text-gray-600 dark:text-gray-400">
                   <span>{dynamicProgramCount !== null ? dynamicProgramCount : university.programs} programs</span>
                 </div>
-                <div className="flex items-center text-gray-600">
+                <div className="flex items-center text-gray-600 dark:text-gray-400">
                   <Calendar className="h-4 w-4 mr-1" />
                   <span>Est. {university.established}</span>
                 </div>
@@ -562,8 +561,8 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
                 disabled={!isLoaded}
                 className={`flex items-center px-3 py-1.5 text-xs sm:text-sm border rounded-lg transition-colors ${
                   isSaved(university.id)
-                    ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'
-                    : 'text-maroon-700 border-maroon-200 hover:bg-maroon-50'
+                    ? 'bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-300 border-red-200 dark:border-red-700 hover:bg-red-100 dark:hover:bg-red-900'
+                    : 'text-maroon-700 dark:text-maroon-400 border-maroon-200 dark:border-maroon-700 hover:bg-maroon-50 dark:hover:bg-maroon-950'
                 } ${!isLoaded ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 <Heart className={`h-3 w-3 sm:h-4 sm:w-4 mr-1 ${isSaved(university.id) ? 'fill-current' : ''}`} />
@@ -571,14 +570,14 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
               </button>
               <button
                 onClick={handleCompare}
-                className="flex items-center px-3 py-1.5 text-xs sm:text-sm text-maroon-700 border border-maroon-200 rounded-lg hover:bg-maroon-50 transition-colors"
+                className="flex items-center px-3 py-1.5 text-xs sm:text-sm text-maroon-700 dark:text-maroon-400 border-maroon-200 dark:border-maroon-700 rounded-lg hover:bg-maroon-50 dark:hover:bg-maroon-950 transition-colors"
               >
                 <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                 Compare
               </button>
               <button
                 onClick={handleShare}
-                className="flex items-center px-3 py-1.5 text-xs sm:text-sm text-maroon-700 border border-maroon-200 rounded-lg hover:bg-maroon-50 transition-colors"
+                className="flex items-center px-3 py-1.5 text-xs sm:text-sm text-maroon-700 dark:text-maroon-400 border-maroon-200 dark:border-maroon-700 rounded-lg hover:bg-maroon-50 dark:hover:bg-maroon-950 transition-colors"
               >
                 <Share2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                 Share
@@ -595,7 +594,7 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
 
       {/* Image Gallery */}
       {hasGalleryImages && (
-        <div className="bg-white">
+        <div className="bg-white dark:bg-gray-800">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
               <div className="lg:col-span-3">
@@ -610,7 +609,7 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
-                    className={`relative h-16 sm:h-20 lg:h-24 rounded-lg overflow-hidden ${selectedImage === index ? 'ring-2 ring-maroon-600' : ''
+                    className={`relative h-16 sm:h-20 lg:h-24 rounded-lg overflow-hidden ${selectedImage === index ? 'ring-2 ring-maroon-600 dark:ring-maroon-400' : ''
                       }`}
                   >
                     <img
@@ -634,26 +633,26 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
           <div className="max-w-7xl mx-auto space-y-8">
             {university.longDescription && (
               <div>
-                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">About {university.name}</h2>
-                <div className="bg-white p-4 sm:p-6 rounded-xl border border-gray-200">
-                  <p className="text-sm sm:text-base text-gray-700 leading-relaxed">{university.longDescription}</p>
+                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50 mb-4">About {university.name}</h2>
+                <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+                  <p className="text-sm sm:text-base text-gray-700 dark:text-gray-400 leading-relaxed">{university.longDescription}</p>
                 </div>
               </div>
             )}
 
             {(university.accreditation?.length > 0 || university.achievements?.length > 0 || university.quickfacts?.length > 0) && (
               <div>
-                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">Key Information</h2>
+                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50 mb-4">Key Information</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {university.accreditation && university.accreditation.length > 0 && (
-                    <div className="bg-white p-4 rounded-xl border border-gray-200">
-                      <h3 className="font-semibold text-gray-800 mb-3 flex items-center">
+                    <div className="bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700">
+                      <h3 className="font-semibold text-gray-800 dark:text-gray-50 mb-3 flex items-center">
                         <Award className="h-5 w-5 mr-2 text-yellow-500" />
                         Accreditation
                       </h3>
                       <ul className="space-y-2">
                         {university.accreditation.map((item, index) => (
-                          <li key={index} className="flex items-start text-sm text-gray-600">
+                          <li key={index} className="flex items-start text-sm text-gray-600 dark:text-gray-400">
                             <span className="mr-2 mt-1">•</span>
                             <span>{item}</span>
                           </li>
@@ -662,14 +661,14 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
                     </div>
                   )}
                   {university.achievements && university.achievements.length > 0 && (
-                    <div className="bg-white p-4 rounded-xl border border-gray-200">
-                      <h3 className="font-semibold text-gray-800 mb-3 flex items-center">
+                    <div className="bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700">
+                      <h3 className="font-semibold text-gray-800 dark:text-gray-50 mb-3 flex items-center">
                         <Star className="h-5 w-5 mr-2 text-yellow-500" />
                         Achievements
                       </h3>
                       <ul className="space-y-2">
                         {university.achievements.map((item, index) => (
-                          <li key={index} className="flex items-start text-sm text-gray-600">
+                          <li key={index} className="flex items-start text-sm text-gray-600 dark:text-gray-400">
                             <span className="mr-2 mt-1">•</span>
                             <span>{item}</span>
                           </li>
@@ -678,14 +677,14 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
                     </div>
                   )}
                   {university.quickfacts && university.quickfacts.length > 0 && (
-                    <div className="bg-white p-4 rounded-xl border border-gray-200">
-                      <h3 className="font-semibold text-gray-800 mb-3 flex items-center">
+                    <div className="bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700">
+                      <h3 className="font-semibold text-gray-800 dark:text-gray-50 mb-3 flex items-center">
                         <TrendingUp className="h-5 w-5 mr-2 text-yellow-500" />
                         Quick Facts
                       </h3>
                       <ul className="space-y-2">
                         {university.quickfacts.map((item, index) => (
-                          <li key={index} className="flex items-start text-sm text-gray-600">
+                          <li key={index} className="flex items-start text-sm text-gray-600 dark:text-gray-400">
                             <span className="mr-2 mt-1">•</span>
                             <span>{item}</span>
                           </li>
@@ -699,10 +698,10 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
 
             {university.rankings?.source && university.rankings?.details && (
               <div>
-                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">Rankings</h2>
-                <div className="bg-white p-6 rounded-xl border border-gray-200">
-                  <h3 className="font-semibold text-lg text-gray-800">{university.rankings.source}</h3>
-                  <div className="mt-2 text-sm text-gray-600">
+                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50 mb-4">Rankings</h2>
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+                  <h3 className="font-semibold text-lg text-gray-800 dark:text-gray-50">{university.rankings.source}</h3>
+                  <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                     {university.rankings.details.split('. ').map((sentence, index) => (
                       <p key={index} className="mb-1 last:mb-0">{sentence}{sentence.endsWith('.') ? '' : '.'}</p>
                     ))}
@@ -714,19 +713,19 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
             {overviewPrograms.length > 0 && (
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Popular Programs</h2>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50">Popular Programs</h2>
                   <button
                     onClick={() => handleTabChange('academic-programs')}
-                    className="px-4 py-2 bg-maroon-800 text-white text-sm rounded-lg hover:bg-maroon-700 transition-colors font-medium"
+                    className="px-4 py-2 bg-maroon-800 dark:bg-maroon-700 text-white text-sm rounded-lg hover:bg-maroon-700 dark:hover:bg-maroon-600 transition-colors font-medium"
                   >
                     View All
                   </button>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {overviewPrograms.map((program) => (
-                    <div key={program.id} className="bg-white p-4 rounded-lg border border-gray-200 hover:border-maroon-200 hover:shadow-md transition-all duration-200">
-                      <h4 className="font-semibold text-gray-800">{program.programName}</h4>
-                      <p className="text-sm text-gray-500 mt-1">{program.collegeName}</p>
+                    <div key={program.id} className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-maroon-200 dark:hover:border-maroon-500 hover:shadow-md transition-all duration-200">
+                      <h4 className="font-semibold text-gray-800 dark:text-gray-50">{program.programName}</h4>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{program.collegeName}</p>
                     </div>
                   ))}
                 </div>
@@ -738,7 +737,7 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
         {activeTab === 'academic-programs' && (
           <div className="max-w-7xl mx-auto">
             <div className="mb-6">
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">Academic Programs</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50 mb-4">Academic Programs</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="md:col-span-2">
                   <input
@@ -746,14 +745,14 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
                     placeholder="Search for a program..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-maroon-500 focus:border-maroon-500"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-maroon-500 dark:focus:ring-maroon-400 focus:border-maroon-500 dark:bg-gray-700 dark:text-gray-50 dark:placeholder-gray-400"
                   />
                 </div>
                 <div>
                   <select
                     value={programLevelFilter}
                     onChange={(e) => setProgramLevelFilter(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-maroon-500 focus:border-maroon-500"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-maroon-500 dark:focus:ring-maroon-400 focus:border-maroon-500 dark:bg-gray-700 dark:text-gray-50"
                   >
                     {degreeLevels.map(level => (
                       <option key={level} value={level}>{level}</option>
@@ -764,42 +763,42 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
             </div>
             {isProgramsLoading ? (
               <div className="flex items-center justify-center py-12">
-                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
-                <span className="ml-3 text-gray-600 text-base">Loading academic programs...</span>
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600 dark:border-indigo-400"></div>
+                <span className="ml-3 text-gray-600 dark:text-gray-400 text-base">Loading academic programs...</span>
               </div>
             ) : Object.keys(filteredAndGroupedPrograms).length > 0 ? (
               <div className="space-y-6">
                 {Object.entries(filteredAndGroupedPrograms).map(([collegeName, programs]) => (
-                  <div key={collegeName} className="bg-white border border-gray-200 rounded-lg">
-                    <div className="px-4 py-3 sm:px-6 sm:py-4 bg-gray-50/50 rounded-t-lg">
-                      <h3 className="text-base sm:text-lg font-semibold text-gray-800">{collegeName}</h3>
-                      <p className="text-gray-500 mt-1 text-sm">{programs.length} program{programs.length !== 1 ? 's' : ''}</p>
+                  <div key={collegeName} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
+                    <div className="px-4 py-3 sm:px-6 sm:py-4 bg-gray-50/50 dark:bg-gray-700/50 rounded-t-lg">
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-800 dark:text-gray-50">{collegeName}</h3>
+                      <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">{programs.length} program{programs.length !== 1 ? 's' : ''}</p>
                     </div>
-                    <div className="divide-y divide-gray-100">
+                    <div className="divide-y divide-gray-100 dark:divide-gray-700">
                       {programs.map((program) => (
-                        <div key={program.id} className="p-4 sm:p-6 hover:bg-gray-50/50 transition-colors duration-150">
+                        <div key={program.id} className="p-4 sm:p-6 hover:bg-gray-50/50 dark:hover:bg-gray-700/50 transition-colors duration-150">
                           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                             <div className="flex-1 mb-2 sm:mb-0">
-                              <h4 className="text-sm font-semibold text-gray-800 leading-tight">
+                              <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-50 leading-tight">
                                 {program.programName}
                               </h4>
                               {program.specializations && program.specializations.length > 0 && (
-                                <p className="text-xs text-gray-500 mt-1">
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                   Specializations: {program.specializations.join(', ')}
                                 </p>
                               )}
                             </div>
                             <div className="flex flex-wrap gap-1 sm:space-x-2 sm:ml-4 mt-2 sm:mt-0">
                               {program.degreeLevel && (
-                                <span className="px-2 py-1 rounded-md text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
+                                <span className="px-2 py-1 rounded-md text-xs font-medium bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
                                   {program.degreeLevel}
                                 </span>
                               )}
                               {program.programType && (
                                 <span className={`px-2 py-1 rounded-md text-xs font-medium border ${
-                                  program.programType === 'undergraduate' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                                  program.programType === 'graduate' ? 'bg-violet-50 text-violet-700 border-violet-200' :
-                                  'bg-gray-100 text-gray-700 border-gray-200'
+                                  program.programType === 'undergraduate' ? 'bg-emerald-50 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800' :
+                                  program.programType === 'graduate' ? 'bg-violet-50 dark:bg-violet-900 text-violet-700 dark:text-violet-300 border-violet-200 dark:border-violet-800' :
+                                  'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-gray-200 dark:border-gray-600'
                                 }`}>
                                   {program.programType}
                                 </span>
@@ -814,11 +813,11 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
               </div>
             ) : (
               <div className="text-center py-16">
-                <div className="text-indigo-100 mb-4 rounded-full w-16 h-16 mx-auto flex items-center justify-center">
-                  <BookOpen className="h-8 w-8 text-indigo-600" />
+                <div className="text-indigo-100 dark:text-indigo-200 mb-4 rounded-full w-16 h-16 mx-auto flex items-center justify-center">
+                  <BookOpen className="h-8 w-8 text-indigo-600 dark:text-indigo-400" />
                 </div>
-                <h3 className="text-xl font-light text-gray-900 mb-3">No matching programs found.</h3>
-                <p className="text-sm text-gray-600 mb-6 max-w-md mx-auto leading-relaxed">
+                <h3 className="text-xl font-light text-gray-900 dark:text-gray-50 mb-3">No matching programs found.</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto leading-relaxed">
                   Try adjusting your search term or filter to find the program you're looking for.
                 </p>
               </div>
@@ -829,40 +828,40 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
         {activeTab === 'academics' && (
           <div className="max-w-7xl mx-auto space-y-8">
             <div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Academic & Campus Life</h2>
-              <p className="text-sm sm:text-base text-gray-600 max-w-3xl">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50 mb-2">Academic & Campus Life</h2>
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 max-w-3xl">
                 Key dates, facilities, and amenities available at {university.name}.
               </p>
             </div>
 
             {university.academicCalendar && (
-              <div className="bg-white p-4 sm:p-6 rounded-xl border border-gray-200">
-                <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">Academic Calendar</h3>
+              <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-50 mb-4">Academic Calendar</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <p className="text-sm font-medium text-gray-500">Semester Start</p>
-                    <p className="text-xl font-bold text-maroon-800 mt-1">{university.academicCalendar.semesterStart || 'TBA'}</p>
+                  <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Semester Start</p>
+                    <p className="text-xl font-bold text-maroon-800 dark:text-maroon-400 mt-1">{university.academicCalendar.semesterStart || 'TBA'}</p>
                   </div>
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <p className="text-sm font-medium text-gray-500">Semester End</p>
-                    <p className="text-xl font-bold text-maroon-800 mt-1">{university.academicCalendar.semesterEnd || 'TBA'}</p>
+                  <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Semester End</p>
+                    <p className="text-xl font-bold text-maroon-800 dark:text-maroon-400 mt-1">{university.academicCalendar.semesterEnd || 'TBA'}</p>
                   </div>
-                  <div className="bg-maroon-50 p-4 rounded-lg border border-maroon-100">
-                    <p className="text-sm font-medium text-maroon-700">Application Deadline</p>
-                    <p className="text-xl font-bold text-maroon-800 mt-1">{university.academicCalendar.applicationDeadline || 'TBA'}</p>
+                  <div className="bg-maroon-50 dark:bg-maroon-900 p-4 rounded-lg border border-maroon-100 dark:border-maroon-800">
+                    <p className="text-sm font-medium text-maroon-700 dark:text-maroon-300">Application Deadline</p>
+                    <p className="text-xl font-bold text-maroon-800 dark:text-maroon-400 mt-1">{university.academicCalendar.applicationDeadline || 'TBA'}</p>
                   </div>
                 </div>
               </div>
             )}
 
             {university.facilities && university.facilities.length > 0 && (
-              <div className="bg-white p-4 sm:p-6 rounded-xl border border-gray-200">
-                <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">Campus Facilities</h3>
+              <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-50 mb-4">Campus Facilities</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                   {university.facilities.map((facility, index) => (
-                    <div key={index} className="flex items-center bg-gray-50 p-3 rounded-lg">
-                      <Building className="h-5 w-5 text-gray-500 mr-3 flex-shrink-0" />
-                      <span className="text-sm text-gray-800 font-medium">{facility}</span>
+                    <div key={index} className="flex items-center bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                      <Building className="h-5 w-5 text-gray-500 dark:text-gray-400 mr-3 flex-shrink-0" />
+                      <span className="text-sm text-gray-800 dark:text-gray-50 font-medium">{facility}</span>
                     </div>
                   ))}
                 </div>
@@ -870,13 +869,13 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
             )}
 
             {university.amenities && university.amenities.length > 0 && (
-              <div className="bg-white p-4 sm:p-6 rounded-xl border border-gray-200">
-                <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">Campus Amenities</h3>
+              <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-50 mb-4">Campus Amenities</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                   {university.amenities.map((amenity, index) => (
-                    <div key={index} className="flex items-center bg-gray-50 p-3 rounded-lg">
-                      <CheckCircle className="h-5 w-5 text-green-600 mr-3 flex-shrink-0" />
-                      <span className="text-sm text-gray-800 font-medium">{amenity}</span>
+                    <div key={index} className="flex items-center bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                      <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 mr-3 flex-shrink-0" />
+                      <span className="text-sm text-gray-800 dark:text-gray-50 font-medium">{amenity}</span>
                     </div>
                   ))}
                 </div>
@@ -884,10 +883,10 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
             )}
 
             {(!university.academicCalendar && (!university.facilities || university.facilities.length === 0)) && (
-              <div className="bg-white p-8 rounded-xl border border-gray-200 text-center">
-                <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-800">More Information Coming Soon</h3>
-                <p className="text-sm text-gray-500 mt-1">Detailed academic and campus life information is being prepared.</p>
+              <div className="bg-white dark:bg-gray-800 p-8 rounded-xl border border-gray-200 dark:border-gray-700 text-center">
+                <Calendar className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-800 dark:text-gray-50">More Information Coming Soon</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Detailed academic and campus life information is being prepared.</p>
               </div>
             )}
           </div>
@@ -899,18 +898,18 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
               {university.admissionRequirements && university.admissionRequirements.length > 0 && (
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Admission Requirements</h2>
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-50">Admission Requirements</h2>
                     {session && university.admissionRequirements && university.admissionRequirements.length > 0 && (
                       <button
                         onClick={handleToggleUniversityTracking}
                         className={`flex items-center px-3 py-1.5 text-xs sm:text-sm border rounded-lg transition-colors ${
                           isUniversityTracked
-                            ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'
-                            : 'bg-green-50 text-green-600 border-green-200 hover:bg-green-100'
+                            ? 'bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-300 border-red-200 dark:border-red-700 hover:bg-red-100 dark:hover:bg-red-900'
+                            : 'bg-green-50 dark:bg-green-950 text-green-600 dark:text-green-300 border-green-200 dark:border-green-700 hover:bg-green-100 dark:hover:bg-green-900'
                         }`}
                       >
                         {isUniversityTracked ? 'Stop Tracking' : 'Track Requirements'}
-                        <Star className={`h-3 w-3 sm:h-4 sm:w-4 ml-1 ${isUniversityTracked ? 'fill-current text-red-600' : 'text-green-600'}`} />
+                        <Star className={`h-3 w-3 sm:h-4 sm:w-4 ml-1 ${isUniversityTracked ? 'fill-current text-red-300' : 'text-green-300'}`} />
                       </button>
                     )}
                   </div>
@@ -918,20 +917,19 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
                     {(() => {
                       const groupedRequirements = groupAdmissionRequirements(university.admissionRequirements);
                       return Object.entries(groupedRequirements).map(([category, requirements]) => (
-                        <div key={category} className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                          <button
-                            onClick={() => toggleCategory(category)}
-                            className="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
-                          >
-                            <span className="text-base sm:text-lg font-semibold text-gray-900">{category}</span>
+                        <div key={category} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                                                      <button
+                                                      onClick={() => toggleCategory(category)}
+                                                      className="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                                                    >                            <span className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-50">{category}</span>
                             <ChevronDown
-                              className={`h-4 w-4 text-gray-500 transition-transform ${
+                              className={`h-4 w-4 text-gray-500 dark:text-gray-400 transition-transform ${
                                 expandedCategories[category] ? 'rotate-180' : ''
                               }`}
                             />
                           </button>
                           {expandedCategories[category] && (
-                            <div className="px-4 pb-3 border-t border-gray-100">
+                            <div className="px-4 pb-3 border-t border-gray-100 dark:border-gray-700">
                               <div className="space-y-2 pt-3">
                                 {requirements.map((requirement, index) => {
                                   // Check if this is a subcategory header
@@ -942,7 +940,7 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
 
                                   if (isSubHeader) {
                                     return (
-                                      <div key={index} className="font-medium text-maroon-700 text-xs sm:text-sm border-l-2 border-maroon-200 pl-2 py-1">
+                                      <div key={index} className="font-medium text-maroon-700 dark:text-maroon-300 text-xs sm:text-sm border-l-2 border-maroon-200 dark:border-maroon-700 pl-2 py-1">
                                         {requirement}
                                       </div>
                                     );
@@ -961,7 +959,7 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
                                         // Display original icon if not logged in
                                         <CheckCircle className="h-3.5 w-3.5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
                                       )}
-                                      <span className={`text-xs sm:text-sm text-gray-700 leading-relaxed ml-2 ${userChecklistProgress.get(requirement) && session ? 'line-through text-gray-500' : ''}`}>
+                                      <span className={`text-xs sm:text-sm text-gray-700 dark:text-gray-400 leading-relaxed ml-2 ${userChecklistProgress.get(requirement) && session ? 'line-through text-gray-500 dark:text-gray-600' : ''}`}>
                                         {requirement}
                                       </span>
                                     </div>
@@ -981,27 +979,27 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
             <div className="space-y-6">
               {university.applicationProcess && university.applicationProcess.length > 0 && (
                 <div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">Application Process</h2>
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-50 mb-4">Application Process</h2>
                   <div className="space-y-3">
-                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
                       <button
                         onClick={() => toggleCategory('application-process')}
-                        className="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
+                        className="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                       >
-                        <span className="text-base sm:text-lg font-semibold text-gray-900">Complete Application Process</span>
+                        <span className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-50">Complete Application Process</span>
                         <ChevronDown
-                          className={`h-4 w-4 text-gray-500 transition-transform ${
+                          className={`h-4 w-4 text-gray-500 dark:text-gray-400 transition-transform ${
                             expandedCategories['application-process'] ? 'rotate-180' : ''
                           }`}
                         />
                       </button>
                       {expandedCategories['application-process'] && (
-                          <div className="px-4 pb-3 border-t border-gray-100">
+                          <div className="px-4 pb-3 border-t border-gray-100 dark:border-gray-700">
                             <div className="space-y-2 pt-3">
                               {university.applicationProcess.map((step, index) => (
                                 <div key={index} className="flex items-start">
                                   <CheckCircle className="h-3.5 w-3.5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                                  <span className="text-xs sm:text-sm text-gray-700 leading-relaxed whitespace-pre-line flex-1">{step}</span>
+                                  <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-400 leading-relaxed whitespace-pre-line flex-1">{step}</span>
                                 </div>
                               ))}
                             </div>
@@ -1021,34 +1019,34 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {hasContactInfo ? (
               <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">Contact Information</h2>
-                <div className="bg-white p-4 sm:p-6 rounded-xl border border-gray-200 space-y-3">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-50 mb-4">Contact Information</h2>
+                <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl border border-gray-200 dark:border-gray-700 space-y-3">
                   <div className="flex items-center">
-                    <MapPin className="h-4 w-4 text-maroon-600 mr-2 shrink-0" />
+                    <MapPin className="h-4 w-4 text-maroon-600 dark:text-maroon-400 mr-2 shrink-0" />
                     <div>
-                      <div className="font-medium text-sm text-gray-900">Address</div>
-                      <div className="text-xs sm:text-sm text-gray-600">{university.address || 'N/A'}</div>
+                      <div className="font-medium text-sm text-gray-900 dark:text-gray-50">Address</div>
+                      <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{university.address || 'N/A'}</div>
                     </div>
                   </div>
                   <div className="flex items-center">
-                    <Phone className="h-4 w-4 text-maroon-600 mr-2 shrink-0" />
+                    <Phone className="h-4 w-4 text-maroon-600 dark:text-maroon-400 mr-2 shrink-0" />
                     <div>
-                      <div className="font-medium text-sm text-gray-900">Phone</div>
-                      <div className="text-xs sm:text-sm text-gray-600">{university.phone || 'N/A'}</div>
+                      <div className="font-medium text-sm text-gray-900 dark:text-gray-50">Phone</div>
+                      <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{university.phone || 'N/A'}</div>
                     </div>
                   </div>
                   <div className="flex items-center">
-                    <Mail className="h-4 w-4 text-maroon-600 mr-2 shrink-0" />
+                    <Mail className="h-4 w-4 text-maroon-600 dark:text-maroon-400 mr-2 shrink-0" />
                     <div>
-                      <div className="font-medium text-sm text-gray-900">Email</div>
-                      <div className="text-xs sm:text-sm text-gray-600">{university.email || 'N/A'}</div>
+                      <div className="font-medium text-sm text-gray-900 dark:text-gray-50">Email</div>
+                      <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{university.email || 'N/A'}</div>
                     </div>
                   </div>
                   <div className="flex items-center">
-                    <Globe className="h-4 w-4 text-maroon-600 mr-2 shrink-0" />
+                    <Globe className="h-4 w-4 text-maroon-600 dark:text-maroon-400 mr-2 shrink-0" />
                     <div>
-                      <div className="font-medium text-sm text-gray-900">Website</div>
-                      <a href={university.website} className="text-maroon-600 hover:text-maroon-700 text-xs sm:text-sm">
+                      <div className="font-medium text-sm text-gray-900 dark:text-gray-50">Website</div>
+                      <a href={university.website} className="text-maroon-600 dark:text-maroon-400 hover:text-maroon-700 dark:hover:text-maroon-300 text-xs sm:text-sm">
                         {university.website || 'N/A'}
                       </a>
                     </div>
@@ -1059,7 +1057,7 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
 
             {mapLocation && mapLocation.lat && mapLocation.lng ? (
               <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">Location Map</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-50 mb-4">Location Map</h2>
                 <div className={`rounded-xl overflow-hidden ${mapClass}`}>
                   <MapContainer
                     center={[mapLocation.lat, mapLocation.lng]}
@@ -1077,7 +1075,7 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
                   </MapContainer>
                 </div>
                 <button
-                  className="mt-3 px-3 py-1.5 text-sm bg-maroon-600 text-white rounded-md hover:bg-maroon-700 transition-colors"
+                  className="mt-3 px-3 py-1.5 text-sm bg-maroon-600 dark:bg-maroon-700 text-white rounded-md hover:bg-maroon-700 dark:hover:bg-maroon-600 transition-colors"
                   onClick={() => setIsExpanded(!isExpanded)}
                 >
                   {isExpanded ? 'Collapse Map' : 'Expand Map'}
@@ -1085,8 +1083,8 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
               </div>
             ) : (
               <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">Location Map</h2>
-                <div className="h-48 sm:h-64 flex items-center justify-center rounded-xl bg-gray-100 text-gray-500 border border-gray-200 text-sm">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-50 mb-4">Location Map</h2>
+                <div className="h-48 sm:h-64 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 text-sm">
                   📍 Location data not available
                 </div>
               </div>

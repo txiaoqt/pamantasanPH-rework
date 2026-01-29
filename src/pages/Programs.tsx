@@ -10,44 +10,44 @@ function ProgramCard({ program, onFindUniversities }: {
 }) {
   const getLevelColor = (level: string) => {
     switch (level) {
-      case 'Bachelors': return 'bg-blue-100 text-blue-800';
-      case 'Masters': return 'bg-purple-100 text-purple-800';
-      case 'Doctorate': return 'bg-indigo-100 text-indigo-800';
-      case 'Diploma': return 'bg-green-100 text-green-800';
-      case 'Certificate': return 'bg-yellow-100 text-yellow-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'Bachelors': return 'bg-blue-100 text-blue-800 dark:bg-blue-600 dark:text-white';
+      case 'Masters': return 'bg-purple-100 text-purple-800 dark:bg-purple-600 dark:text-white';
+      case 'Doctorate': return 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-300';
+      case 'Diploma': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+      case 'Certificate': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
+      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
     }
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-100 group h-full flex flex-col">
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-100 dark:border-gray-700 group h-full flex flex-col">
       <div className="p-5 flex-1 flex flex-col">
         <div className="mb-3">
           <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold tracking-wide ${getLevelColor(program.level)}`}>
             {program.level}
           </span>
         </div>
-        <h3 className="text-lg font-bold text-gray-800 mb-2 group-hover:text-maroon-800 transition-colors">
+        <h3 className="text-lg font-bold text-gray-800 dark:text-gray-50 mb-2 group-hover:text-maroon-800 dark:group-hover:text-maroon-400 transition-colors">
           {program.name}
         </h3>
-        <p className="text-sm text-gray-600 leading-relaxed line-clamp-3 flex-grow">
+        <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed line-clamp-3 flex-grow">
           {program.description}
         </p>
-        <div className="mt-4 pt-4 border-t border-gray-100">
-          <div className="flex items-center text-sm text-gray-500 mb-3">
+        <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+          <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-3">
             <Users className="h-4 w-4 mr-2 text-gray-400" />
-            <span>Offered in <span className="font-bold text-gray-700">{program.universities.length}</span> Universities</span>
+            <span>Offered in <span className="font-bold text-gray-700 dark:text-gray-50">{program.universities.length}</span> Universities</span>
           </div>
-          <div className="flex items-center text-sm text-gray-500">
+          <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
             <BookOpen className="h-4 w-4 mr-2 text-gray-400" />
-            <span>Category: <span className="font-bold text-gray-700">{program.category}</span></span>
+            <span>Category: <span className="font-bold text-gray-700 dark:text-gray-50">{program.category}</span></span>
           </div>
         </div>
       </div>
-      <div className="p-5 bg-gray-50/70 rounded-b-xl">
+      <div className="p-5 bg-gray-50/70 dark:bg-gray-700/70 rounded-b-xl">
         <button
           onClick={() => onFindUniversities(program)}
-          className="w-full px-4 py-2 bg-maroon-800 text-white text-sm font-semibold rounded-lg hover:bg-maroon-700 transition-colors"
+          className="w-full px-4 py-2 bg-maroon-800 dark:bg-maroon-700 text-white text-sm font-semibold rounded-lg hover:bg-maroon-700 dark:hover:bg-maroon-600 transition-colors"
         >
           Find Universities
         </button>
@@ -122,39 +122,39 @@ export default function Programs() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <div className="bg-gradient-to-br from-maroon-900 via-maroon-800 to-red-900 text-white py-8 md:py-16">
+      <div className="bg-gradient-to-br from-maroon-900 via-maroon-800 to-red-900 dark:from-maroon-800 dark:via-maroon-700 dark:to-red-800 text-white py-8 md:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Academic Programs</h1>
-          <p className="text-xs sm:text-base md:text-lg lg:text-xl text-maroon-100 max-w-3xl">
+          <p className="text-xs sm:text-base md:text-lg lg:text-xl text-maroon-100 dark:text-gray-400 max-w-3xl">
             Explore diverse academic programs and find the perfect course for your career goals.
           </p>
         </div>
       </div>
 
       {/* Stats */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-3 gap-4 md:gap-8">
             <div className="text-center">
-              <div className="text-2xl font-bold text-maroon-800 mb-2">{programs.length}</div>
-              <div className="text-gray-600">Unique Programs</div>
+              <div className="text-2xl font-bold text-maroon-800 dark:text-maroon-400 mb-2">{programs.length}</div>
+              <div className="text-gray-600 dark:text-gray-400">Unique Programs</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-maroon-800 mb-2">{categories.length}</div>
-              <div className="text-gray-600">Categories</div>
+              <div className="text-2xl font-bold text-maroon-800 dark:text-maroon-400 mb-2">{categories.length}</div>
+              <div className="text-gray-600 dark:text-gray-400">Categories</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-maroon-800 mb-2">{[...new Set(programs.flatMap(p => p.universities))].length}</div>
-              <div className="text-gray-600">Universities</div>
+              <div className="text-2xl font-bold text-maroon-800 dark:text-maroon-400 mb-2">{[...new Set(programs.flatMap(p => p.universities))].length}</div>
+              <div className="text-gray-600 dark:text-gray-400">Universities</div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white border-b border-gray-200 sticky top-16 z-40">
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-16 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="relative md:col-span-1">
@@ -164,13 +164,13 @@ export default function Programs() {
                 placeholder="Search programs..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-maroon-500 focus:border-maroon-500"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-maroon-500 dark:focus:ring-maroon-400 focus:border-maroon-500 dark:text-gray-50 dark:placeholder-gray-400 dark:bg-gray-800"
               />
             </div>
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-maroon-500 focus:border-maroon-500"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-maroon-500 dark:focus:ring-maroon-400 focus:border-maroon-500 dark:text-gray-50 dark:bg-gray-800"
             >
               <option value="">All Categories</option>
               {categories.map(category => (
@@ -180,7 +180,7 @@ export default function Programs() {
             <select
               value={levelFilter}
               onChange={(e) => setLevelFilter(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-maroon-500 focus:border-maroon-500"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-maroon-500 dark:focus:ring-maroon-400 focus:border-maroon-500 dark:text-gray-50 dark:bg-gray-800"
             >
               <option value="">All Levels</option>
               {levels.map(level => (
@@ -191,11 +191,9 @@ export default function Programs() {
         </div>
       </div>
 
-      {/* Results */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-white dark:bg-gray-800 rounded-lg shadow-md">
         <div className="flex items-center justify-between mb-6">
-          <p className="text-sm text-gray-600">
-            Showing {filteredPrograms.length} of {programs.length} programs
+          <p className="text-sm text-gray-600 dark:text-gray-400">
           </p>
         </div>
 
@@ -214,8 +212,8 @@ export default function Programs() {
             <div className="text-gray-400 mb-4">
               <BookOpen className="h-16 w-16 mx-auto" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">No programs found</h3>
-            <p className="text-sm text-gray-600">Try adjusting your search criteria or filters.</p>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-50 mb-2">No programs found</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Try adjusting your search criteria or filters.</p>
           </div>
         )}
       </div>

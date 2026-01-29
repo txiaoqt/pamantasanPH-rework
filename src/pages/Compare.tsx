@@ -102,12 +102,12 @@ function Compare() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <div className="bg-maroon-800 text-white py-8 md:py-12">
+      <div className="bg-maroon-800 dark:bg-maroon-700 text-white py-8 md:py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-3">Compare Universities</h1>
-          <p className="text-xs sm:text-sm text-maroon-100 max-w-3xl">
+          <p className="text-xs sm:text-sm text-maroon-100 dark:text-gray-400 max-w-3xl">
             Compare universities side-by-side to make an informed decision about your education.
           </p>
         </div>
@@ -117,30 +117,30 @@ function Compare() {
         {selectedUniversities.length > 0 ? (
           <>
             {/* Desktop View */}
-            <div className="hidden lg:block bg-white rounded-xl shadow-lg border border-gray-200">
+            <div className="hidden lg:block bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
               <div className="flex">
-                <div className="w-1/4 p-4 font-semibold text-gray-600 border-r border-gray-200">Feature</div>
+                <div className="w-1/4 p-4 font-semibold text-gray-600 dark:text-gray-400 border-r border-gray-200 dark:border-gray-700">Feature</div>
                 {selectedUniversities.map(uni => (
-                  <div key={uni.id} className="w-1/4 p-4 text-center border-r border-gray-200 last:border-r-0 relative">
+                  <div key={uni.id} className="w-1/4 p-4 text-center border-r border-gray-200 dark:border-gray-700 last:border-r-0 relative">
                     <button
                       onClick={() => handleRemove(uni.id)}
-                      className="absolute top-2 right-2 bg-red-100 text-red-600 rounded-full p-1 hover:bg-red-200 transition-colors"
+                      className="absolute top-2 right-2 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-full p-1 hover:bg-red-200 dark:hover:bg-red-900 transition-colors"
                     >
                       <X className="h-4 w-4" />
                     </button>
                     <img src={uni.imageUrl} alt={uni.name} className="w-24 h-24 rounded-full mx-auto mb-2 object-cover"/>
-                    <p className="font-bold text-gray-800 text-sm">{uni.name}</p>
+                    <p className="font-bold text-gray-800 dark:text-gray-50 text-sm">{uni.name}</p>
                   </div>
                 ))}
               </div>
               {comparisonRows.map(row => (
-                <div key={row.key} className="flex border-t border-gray-200">
-                  <div className="w-1/4 p-4 font-medium text-gray-700 bg-gray-50/70 border-r border-gray-200">{row.label}</div>
+                <div key={row.key} className="flex border-t border-gray-200 dark:border-gray-700">
+                  <div className="w-1/4 p-4 font-medium text-gray-700 dark:text-gray-400 bg-gray-50/70 dark:bg-gray-700/70 border-r border-gray-200 dark:border-gray-700">{row.label}</div>
                   {selectedUniversities.map(uni => {
                     const value = (uni as any)[row.key];
                     const isBest = value && (best as any)[row.key] !== null && parseInt(String(value).replace(/,/g, '')) === (best as any)[row.key];
                     return (
-                      <div key={uni.id} className={`w-1/4 p-4 text-center text-sm text-gray-700 ${isBest ? 'bg-green-50' : ''}`}>
+                      <div key={uni.id} className={`w-1/4 p-4 text-center text-sm text-gray-700 dark:text-gray-400 ${isBest ? 'bg-green-50 dark:bg-green-950' : ''}`}>
                         {Array.isArray(value) ? value.slice(0, 2).join(', ') + (value.length > 2 ? '...' : '') : value}
                       </div>
                     );
@@ -151,12 +151,12 @@ function Compare() {
 
             {/* Mobile View */}
             <div className="lg:hidden">
-              <div className="flex justify-center mb-4 border border-gray-200 rounded-lg p-1 bg-gray-100">
+              <div className="flex justify-center mb-4 border border-gray-200 dark:border-gray-700 rounded-lg p-1 bg-gray-100 dark:bg-gray-700">
                 {selectedUniversities.map((uni, index) => (
                   <button
                     key={uni.id}
                     onClick={() => setMobileActiveIndex(index)}
-                    className={`flex-1 text-center text-sm font-medium py-2 rounded-md transition-colors ${mobileActiveIndex === index ? 'bg-white shadow' : 'text-gray-600'}`}
+                    className={`flex-1 text-center text-sm font-medium py-2 rounded-md transition-colors ${mobileActiveIndex === index ? 'bg-white dark:bg-gray-800 shadow' : 'text-gray-600 dark:text-gray-400'}`}
                   >
                     {uni.name}
                   </button>
@@ -164,21 +164,21 @@ function Compare() {
               </div>
               
               {selectedUniversities[mobileActiveIndex] && (
-                <div className="bg-white rounded-xl shadow-lg border border-gray-200">
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
                   <div className="p-4 text-center relative">
                     <button
                       onClick={() => handleRemove(selectedUniversities[mobileActiveIndex].id)}
-                      className="absolute top-2 right-2 bg-red-100 text-red-600 rounded-full p-1 hover:bg-red-200 transition-colors"
+                      className="absolute top-2 right-2 bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-300 rounded-full p-1 hover:bg-red-200 dark:hover:bg-red-900 transition-colors"
                     >
                       <X className="h-4 w-4" />
                     </button>
                     <img src={selectedUniversities[mobileActiveIndex].imageUrl} alt={selectedUniversities[mobileActiveIndex].name} className="w-24 h-24 rounded-full mx-auto mb-2 object-cover"/>
-                    <p className="font-bold text-gray-800">{selectedUniversities[mobileActiveIndex].name}</p>
+                    <p className="font-bold text-gray-800 dark:text-gray-50">{selectedUniversities[mobileActiveIndex].name}</p>
                   </div>
                   {comparisonRows.map(row => (
-                    <div key={row.key} className="flex justify-between p-4 border-t border-gray-100">
-                      <p className="font-medium text-gray-700">{row.label}</p>
-                      <p className="text-gray-700 text-right">
+                    <div key={row.key} className="flex justify-between p-4 border-t border-gray-100 dark:border-gray-700">
+                      <p className="font-medium text-gray-700 dark:text-gray-400">{row.label}</p>
+                      <p className="text-gray-700 dark:text-gray-400 text-right">
                         {Array.isArray((selectedUniversities[mobileActiveIndex] as any)[row.key])
                           ? ((selectedUniversities[mobileActiveIndex] as any)[row.key]).slice(0, 2).join(', ') + (((selectedUniversities[mobileActiveIndex] as any)[row.key]).length > 2 ? '...' : '')
                           : (selectedUniversities[mobileActiveIndex] as any)[row.key]
@@ -191,13 +191,13 @@ function Compare() {
             </div>
           </>
         ) : (
-          <div className="text-center py-16 bg-white rounded-xl shadow-md border border-gray-200">
+          <div className="text-center py-16 bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
             <BarChart3 className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">Your Comparison List is Empty</h3>
-            <p className="text-gray-500 text-sm mb-6">Add up to 3 universities to compare them side-by-side.</p>
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-50 mb-2">Your Comparison List is Empty</h3>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">Add up to 3 universities to compare them side-by-side.</p>
             <button
               onClick={() => navigate('/universities')}
-              className="px-6 py-2 bg-maroon-800 text-white rounded-lg hover:bg-maroon-700 transition-colors"
+              className="px-6 py-2 bg-maroon-800 dark:bg-maroon-700 text-white rounded-lg hover:bg-maroon-700 dark:hover:bg-maroon-600 transition-colors"
             >
               Browse Universities
             </button>
@@ -205,21 +205,21 @@ function Compare() {
         )}
         
         <div className="mt-12">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-50 mb-6">
               Add More Universities to Compare
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {isLoading ? (
-                 [...Array(4)].map((_, i) => <div key={i} className="bg-white rounded-xl h-64 animate-pulse"></div>)
+                 [...Array(4)].map((_, i) => <div key={i} className="bg-white dark:bg-gray-800 rounded-xl h-64 animate-pulse"></div>)
               ) : (
                 availableUniversities.slice(0, 4).map(uni => (
-                  <div key={uni.id} className="bg-white rounded-xl shadow-md p-4 flex flex-col items-center text-center">
+                  <div key={uni.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 flex flex-col items-center text-center">
                      <img src={uni.imageUrl} alt={uni.name} className="w-20 h-20 rounded-full mb-3 object-cover"/>
-                     <h4 className="font-semibold text-sm flex-grow">{uni.name}</h4>
+                     <h4 className="font-semibold text-sm flex-grow dark:text-gray-50">{uni.name}</h4>
                      <button
                        onClick={() => addUniversity(uni)}
                        disabled={selectedUniversities.length >= 3}
-                       className="w-full mt-4 flex items-center justify-center px-3 py-2 text-sm rounded-lg bg-gray-100 hover:bg-gray-200 disabled:bg-gray-50 disabled:text-gray-400 transition-colors"
+                       className="w-full mt-4 flex items-center justify-center px-3 py-2 text-sm rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:bg-gray-50 dark:disabled:bg-gray-900 disabled:text-gray-400 dark:disabled:text-gray-500 transition-colors"
                      >
                        <Plus className="h-4 w-4 mr-1" />
                        Add to Compare
