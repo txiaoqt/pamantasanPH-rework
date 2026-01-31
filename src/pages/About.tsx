@@ -12,7 +12,7 @@ interface TeamMemberProps {
 function TeamMember({ name, role, image, description }: TeamMemberProps) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden group hover:shadow-xl transition-all duration-300">
-      <div className="h-64 overflow-hidden">
+      <div className="h-64 aspect-w-16 aspect-h-9 overflow-hidden">
         <img
           src={image}
           alt={name}
@@ -82,7 +82,7 @@ export default function About() {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
       {/* Header */}
-      <div className="bg-maroon-800 dark:bg-maroon-700 text-white py-8 md:py-12">
+      <div className="bg-maroon-800 dark:bg-maroon-700 text-white py-6 sm:py-8 md:py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-3 text-center">About UniCentral</h1>
           <p className="text-xs sm:text-sm text-maroon-100 dark:text-gray-400 max-w-3xl mx-auto text-center">
@@ -92,7 +92,7 @@ export default function About() {
       </div>
 
 
-      <section className="py-16 bg-white dark:bg-gray-900">
+      <section className="py-10 sm:py-12 md:py-16 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-50 mb-4">Our Core Values</h2>
@@ -100,7 +100,7 @@ export default function About() {
               Our commitment to providing the best possible support for your academic journey.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-6 md:gap-x-8 md:gap-y-8">
             {values.map((value, index) => (
               <ValueCard key={index} {...value} />
             ))}
@@ -109,7 +109,7 @@ export default function About() {
       </section>
 
       {/* Team Section */}
-      <section className="py-16 bg-gray-50 dark:bg-gray-900">
+      <section className="py-10 sm:py-12 md:py-16 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-50 mb-4">Meet the Visionary Behind UniCentral</h2>
@@ -126,7 +126,7 @@ export default function About() {
       </section>
 
       {/* Story Section - Updated Content */}
-      <section className="py-16 bg-white dark:bg-gray-900">
+      <section className="py-10 sm:py-12 md:py-16 bg-white dark:bg-gray-900">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-50 mb-4">Our Journey</h2>
@@ -135,7 +135,7 @@ export default function About() {
             </p>
           </div>
 
-          <div className="prose prose-lg mx-auto text-gray-700 dark:text-gray-400 space-y-6">
+          <div className="prose mx-auto text-gray-700 dark:text-gray-400 space-y-6">
             <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-50">The Challenge</h3>
             <p>
               Applying to universities requires careful preparation and submission of numerous documents. The research process is time-consuming for Grade 12 students, especially those applying to multiple state universities. Students commonly rely on university websites and other information sources, but each website presents information differently. This requires applicants to navigate from one website to another, tracking requirements, schedules, deadlines, course offerings, and university details. This lack of uniformity increases cognitive load, resulting in stress, inefficiency, and a higher risk of overlooking important application information, particularly with overlapping application periods among state universities in Metro Manila.

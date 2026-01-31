@@ -170,7 +170,7 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
     if (!session) {
       console.log('Showing login modal from handleSaveClick');
       setShowLoginModal(true);
-    } else {
+    } else if (university) {
       toggleSaved(university.id);
     }
   };
@@ -640,9 +640,9 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
               </div>
             )}
 
-            {(university.accreditation?.length > 0 || university.achievements?.length > 0 || university.quickfacts?.length > 0) && (
+            {(university.accreditation?.length > 0 || (university.achievements && university.achievements.length > 0) || (university.quickfacts && university.quickfacts.length > 0)) && (
               <div>
-                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50 mb-4">Key Information</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-50 mb-4">Key Information</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {university.accreditation && university.accreditation.length > 0 && (
                     <div className="bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700">
@@ -698,7 +698,7 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
 
             {university.rankings?.source && university.rankings?.details && (
               <div>
-                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50 mb-4">Rankings</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-50 mb-4">Rankings</h2>
                 <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
                   <h3 className="font-semibold text-lg text-gray-800 dark:text-gray-50">{university.rankings.source}</h3>
                   <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
@@ -713,7 +713,7 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
             {overviewPrograms.length > 0 && (
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50">Popular Programs</h2>
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-50">Popular Programs</h2>
                   <button
                     onClick={() => handleTabChange('academic-programs')}
                     className="px-4 py-2 bg-maroon-800 dark:bg-maroon-700 text-white text-sm rounded-lg hover:bg-maroon-700 dark:hover:bg-maroon-600 transition-colors font-medium"
@@ -736,8 +736,9 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
 
         {activeTab === 'academic-programs' && (
           <div className="max-w-7xl mx-auto">
-            <div className="mb-6">
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50 mb-4">Academic Programs</h2>
+            <div className="mb-8">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50 mb-2">Academic Programs</h2>
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6">Explore our comprehensive range of degree programs</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="md:col-span-2">
                   <input
@@ -745,14 +746,14 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
                     placeholder="Search for a program..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-maroon-500 dark:focus:ring-maroon-400 focus:border-maroon-500 dark:bg-gray-700 dark:text-gray-50 dark:placeholder-gray-400"
+                    className="w-full px-5 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-maroon-500 dark:focus:ring-maroon-400 focus:border-maroon-500 dark:bg-gray-800 dark:text-gray-50 dark:placeholder-gray-400 transition-all shadow-sm hover:shadow-md"
                   />
                 </div>
                 <div>
                   <select
                     value={programLevelFilter}
                     onChange={(e) => setProgramLevelFilter(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-maroon-500 dark:focus:ring-maroon-400 focus:border-maroon-500 dark:bg-gray-700 dark:text-gray-50"
+                    className="w-full px-5 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-maroon-500 dark:focus:ring-maroon-400 focus:border-maroon-500 dark:bg-gray-800 dark:text-gray-50 transition-all shadow-sm hover:shadow-md font-medium"
                   >
                     {degreeLevels.map(level => (
                       <option key={level} value={level}>{level}</option>
@@ -762,43 +763,54 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
               </div>
             </div>
             {isProgramsLoading ? (
-              <div className="flex items-center justify-center py-12">
-                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600 dark:border-indigo-400"></div>
-                <span className="ml-3 text-gray-600 dark:text-gray-400 text-base">Loading academic programs...</span>
+              <div className="flex items-center justify-center py-16">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-maroon-600 dark:border-maroon-400"></div>
+                <span className="ml-4 text-gray-600 dark:text-gray-400 text-lg font-medium">Loading academic programs...</span>
               </div>
             ) : Object.keys(filteredAndGroupedPrograms).length > 0 ? (
               <div className="space-y-6">
                 {Object.entries(filteredAndGroupedPrograms).map(([collegeName, programs]) => (
-                  <div key={collegeName} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
-                    <div className="px-4 py-3 sm:px-6 sm:py-4 bg-gray-50/50 dark:bg-gray-700/50 rounded-t-lg">
-                      <h3 className="text-base sm:text-lg font-semibold text-gray-800 dark:text-gray-50">{collegeName}</h3>
-                      <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">{programs.length} program{programs.length !== 1 ? 's' : ''}</p>
+                  <div key={collegeName} className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border-2 border-maroon-100 dark:border-maroon-900 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+                    <div className="px-4 py-3 bg-gradient-to-r from-maroon-800 to-maroon-700 dark:from-maroon-900 dark:to-maroon-800 relative overflow-hidden">
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-400 opacity-10 rounded-full -mr-16 -mt-16"></div>
+                      <div className="relative">
+                        <h3 className="text-base sm:text-lg font-bold text-white flex items-center">
+                          <BookOpen className="h-5 w-5 mr-2 text-yellow-400" />
+                          {collegeName}
+                        </h3>
+                        <div className="flex items-center mt-2">
+                          <span className="px-3 py-1 bg-yellow-400 text-maroon-900 rounded-full text-xs font-bold">
+                            {programs.length} program{programs.length !== 1 ? 's' : ''}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="divide-y divide-gray-100 dark:divide-gray-700">
+                    <div className="divide-y divide-gray-200 dark:divide-gray-700">
                       {programs.map((program) => (
-                        <div key={program.id} className="p-4 sm:p-6 hover:bg-gray-50/50 dark:hover:bg-gray-700/50 transition-colors duration-150">
-                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                            <div className="flex-1 mb-2 sm:mb-0">
-                              <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-50 leading-tight">
+                        <div key={program.id} className="p-3 sm:p-4 hover:bg-maroon-50/50 dark:hover:bg-maroon-950/30 transition-all duration-200 group">
+                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between">
+                            <div className="flex-1 mb-3 sm:mb-0">
+                              <h4 className="text-sm sm:text-base font-bold text-gray-900 dark:text-gray-50 leading-tight group-hover:text-maroon-700 dark:group-hover:text-maroon-300 transition-colors">
                                 {program.programName}
                               </h4>
                               {program.specializations && program.specializations.length > 0 && (
-                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                  Specializations: {program.specializations.join(', ')}
+                                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 flex items-start">
+                                  <span className="font-semibold text-maroon-700 dark:text-maroon-400 mr-2">Specializations:</span>
+                                  <span>{program.specializations.join(', ')}</span>
                                 </p>
                               )}
                             </div>
-                            <div className="flex flex-wrap gap-1 sm:space-x-2 sm:ml-4 mt-2 sm:mt-0">
+                            <div className="flex flex-wrap gap-2 sm:ml-6 mt-2 sm:mt-0">
                               {program.degreeLevel && (
-                                <span className="px-2 py-1 rounded-md text-xs font-medium bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                                <span className="px-3 py-1.5 rounded-lg text-xs font-bold bg-maroon-100 dark:bg-maroon-900 text-maroon-800 dark:text-maroon-200 border-2 border-maroon-200 dark:border-maroon-800 shadow-sm">
                                   {program.degreeLevel}
                                 </span>
                               )}
                               {program.programType && (
-                                <span className={`px-2 py-1 rounded-md text-xs font-medium border ${
-                                  program.programType === 'undergraduate' ? 'bg-emerald-50 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800' :
-                                  program.programType === 'graduate' ? 'bg-violet-50 dark:bg-violet-900 text-violet-700 dark:text-violet-300 border-violet-200 dark:border-violet-800' :
-                                  'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-gray-200 dark:border-gray-600'
+                                <span className={`px-3 py-1.5 rounded-lg text-xs font-bold border-2 shadow-sm ${
+                                  program.programType === 'undergraduate' ? 'bg-maroon-50 dark:bg-maroon-950 text-maroon-700 dark:text-maroon-300 border-maroon-200 dark:border-maroon-800' :
+                                  program.programType === 'graduate' ? 'bg-maroon-200 dark:bg-maroon-800 text-maroon-900 dark:text-maroon-100 border-maroon-300 dark:border-maroon-700' :
+                                  'bg-maroon-100 dark:bg-maroon-900 text-maroon-800 dark:text-maroon-200 border-maroon-300 dark:border-maroon-700'
                                 }`}>
                                   {program.programType}
                                 </span>
@@ -812,12 +824,12 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-16">
-                <div className="text-indigo-100 dark:text-indigo-200 mb-4 rounded-full w-16 h-16 mx-auto flex items-center justify-center">
-                  <BookOpen className="h-8 w-8 text-indigo-600 dark:text-indigo-400" />
+              <div className="text-center py-20 bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 rounded-2xl border-2 border-gray-200 dark:border-gray-700">
+                <div className="bg-maroon-100 dark:bg-maroon-900 mb-6 rounded-full w-20 h-20 mx-auto flex items-center justify-center shadow-lg">
+                  <BookOpen className="h-10 w-10 text-maroon-600 dark:text-maroon-300" />
                 </div>
-                <h3 className="text-xl font-light text-gray-900 dark:text-gray-50 mb-3">No matching programs found.</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto leading-relaxed">
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-50 mb-3">No matching programs found</h3>
+                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto leading-relaxed">
                   Try adjusting your search term or filter to find the program you're looking for.
                 </p>
               </div>
@@ -828,40 +840,48 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
         {activeTab === 'academics' && (
           <div className="max-w-7xl mx-auto space-y-8">
             <div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50 mb-2">Academic & Campus Life</h2>
-              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 max-w-3xl">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50 mb-3">Academic & Campus Life</h2>
+              <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-3xl">
                 Key dates, facilities, and amenities available at {university.name}.
               </p>
             </div>
 
             {university.academicCalendar && (
-              <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl border border-gray-200 dark:border-gray-700">
-                <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-50 mb-4">Academic Calendar</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-                  <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Semester Start</p>
-                    <p className="text-xl font-bold text-maroon-800 dark:text-maroon-400 mt-1">{university.academicCalendar.semesterStart || 'TBA'}</p>
+              <div className="bg-gradient-to-br from-maroon-50 to-white dark:from-maroon-950 dark:to-gray-900 p-6 sm:p-8 rounded-2xl border-2 border-maroon-200 dark:border-maroon-800 shadow-lg">
+                <h3 className="text-xl sm:text-2xl font-bold text-maroon-900 dark:text-maroon-100 mb-6 flex items-center">
+                  <Calendar className="h-6 w-6 mr-3 text-maroon-700 dark:text-maroon-300" />
+                  Academic Calendar
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 text-center">
+                  <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border-2 border-maroon-200 dark:border-maroon-700 shadow-md hover:shadow-lg transition-shadow">
+                    <p className="text-sm font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-2">Semester Start</p>
+                    <p className="text-xl sm:text-2xl font-bold text-maroon-800 dark:text-maroon-300 mt-2">{university.academicCalendar.semesterStart || 'TBA'}</p>
                   </div>
-                  <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Semester End</p>
-                    <p className="text-xl font-bold text-maroon-800 dark:text-maroon-400 mt-1">{university.academicCalendar.semesterEnd || 'TBA'}</p>
+                  <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border-2 border-maroon-200 dark:border-maroon-700 shadow-md hover:shadow-lg transition-shadow">
+                    <p className="text-sm font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-2">Semester End</p>
+                    <p className="text-xl sm:text-2xl font-bold text-maroon-800 dark:text-maroon-300 mt-2">{university.academicCalendar.semesterEnd || 'TBA'}</p>
                   </div>
-                  <div className="bg-maroon-50 dark:bg-maroon-900 p-4 rounded-lg border border-maroon-100 dark:border-maroon-800">
-                    <p className="text-sm font-medium text-maroon-700 dark:text-maroon-300">Application Deadline</p>
-                    <p className="text-xl font-bold text-maroon-800 dark:text-maroon-400 mt-1">{university.academicCalendar.applicationDeadline || 'TBA'}</p>
+                  <div className="bg-gradient-to-br from-yellow-400 to-yellow-500 p-6 rounded-xl border-2 border-yellow-600 shadow-md hover:shadow-xl transition-all transform hover:scale-105">
+                    <p className="text-sm font-bold text-maroon-900 uppercase tracking-wide mb-2">Application Deadline</p>
+                    <p className="text-xl sm:text-2xl font-bold text-maroon-900 mt-2">{university.academicCalendar.applicationDeadline || 'TBA'}</p>
                   </div>
                 </div>
               </div>
             )}
 
             {university.facilities && university.facilities.length > 0 && (
-              <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl border border-gray-200 dark:border-gray-700">
-                <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-50 mb-4">Campus Facilities</h3>
+              <div className="bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-2xl border-2 border-gray-200 dark:border-gray-700 shadow-lg">
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-50 mb-6 flex items-center">
+                  <Building className="h-6 w-6 mr-3 text-maroon-700 dark:text-maroon-300" />
+                  Campus Facilities
+                </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                   {university.facilities.map((facility, index) => (
-                    <div key={index} className="flex items-center bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
-                      <Building className="h-5 w-5 text-gray-500 dark:text-gray-400 mr-3 flex-shrink-0" />
-                      <span className="text-sm text-gray-800 dark:text-gray-50 font-medium">{facility}</span>
+                    <div key={index} className="flex items-center bg-gradient-to-r from-maroon-50 to-white dark:from-maroon-950 dark:to-gray-800 p-4 rounded-xl border-l-4 border-maroon-600 dark:border-maroon-400 shadow-sm hover:shadow-md transition-all hover:translate-x-1">
+                      <div className="bg-maroon-100 dark:bg-maroon-900 p-2 rounded-lg mr-3">
+                        <Building className="h-5 w-5 text-maroon-700 dark:text-maroon-300" />
+                      </div>
+                      <span className="text-sm text-gray-800 dark:text-gray-50 font-semibold">{facility}</span>
                     </div>
                   ))}
                 </div>
@@ -869,13 +889,18 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
             )}
 
             {university.amenities && university.amenities.length > 0 && (
-              <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-xl border border-gray-200 dark:border-gray-700">
-                <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-50 mb-4">Campus Amenities</h3>
+              <div className="bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-2xl border-2 border-gray-200 dark:border-gray-700 shadow-lg">
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-50 mb-6 flex items-center">
+                  <CheckCircle className="h-6 w-6 mr-3 text-maroon-700 dark:text-maroon-300" />
+                  Campus Amenities
+                </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                   {university.amenities.map((amenity, index) => (
-                    <div key={index} className="flex items-center bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
-                      <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 mr-3 flex-shrink-0" />
-                      <span className="text-sm text-gray-800 dark:text-gray-50 font-medium">{amenity}</span>
+                    <div key={index} className="flex items-center bg-gradient-to-r from-green-50 to-white dark:from-green-950 dark:to-gray-800 p-4 rounded-xl border-l-4 border-green-500 dark:border-green-400 shadow-sm hover:shadow-md transition-all hover:translate-x-1">
+                      <div className="bg-green-100 dark:bg-green-900 p-2 rounded-lg mr-3">
+                        <CheckCircle className="h-5 w-5 text-green-700 dark:text-green-300" />
+                      </div>
+                      <span className="text-sm text-gray-800 dark:text-gray-50 font-semibold">{amenity}</span>
                     </div>
                   ))}
                 </div>
@@ -883,54 +908,67 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
             )}
 
             {(!university.academicCalendar && (!university.facilities || university.facilities.length === 0)) && (
-              <div className="bg-white dark:bg-gray-800 p-8 rounded-xl border border-gray-200 dark:border-gray-700 text-center">
-                <Calendar className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-800 dark:text-gray-50">More Information Coming Soon</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Detailed academic and campus life information is being prepared.</p>
+              <div className="bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 p-12 rounded-2xl border-2 border-gray-200 dark:border-gray-700 text-center shadow-lg">
+                <div className="bg-maroon-100 dark:bg-maroon-900 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                  <Calendar className="h-10 w-10 text-maroon-600 dark:text-maroon-300" />
+                </div>
+                <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-50 mb-2">More Information Coming Soon</h3>
+                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-2">Detailed academic and campus life information is being prepared.</p>
               </div>
             )}
           </div>
         )}
 
         {activeTab === 'admissions' && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="space-y-6">
               {university.admissionRequirements && university.admissionRequirements.length > 0 && (
                 <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-50">Admission Requirements</h2>
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-50 flex items-center">
+                      <div className="bg-maroon-100 dark:bg-maroon-900 p-2 rounded-lg mr-3">
+                        <CheckCircle className="h-6 w-6 text-maroon-700 dark:text-maroon-300" />
+                      </div>
+                      Admission Requirements
+                    </h2>
                     {session && university.admissionRequirements && university.admissionRequirements.length > 0 && (
                       <button
                         onClick={handleToggleUniversityTracking}
-                        className={`flex items-center px-3 py-1.5 text-xs sm:text-sm border rounded-lg transition-colors ${
+                        className={`flex items-center px-4 py-2 text-xs sm:text-sm border-2 rounded-xl transition-all shadow-md hover:shadow-lg font-bold ${
                           isUniversityTracked
-                            ? 'bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-300 border-red-200 dark:border-red-700 hover:bg-red-100 dark:hover:bg-red-900'
-                            : 'bg-green-50 dark:bg-green-950 text-green-600 dark:text-green-300 border-green-200 dark:border-green-700 hover:bg-green-100 dark:hover:bg-green-900'
+                            ? 'bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-300 border-red-300 dark:border-red-700 hover:bg-red-100 dark:hover:bg-red-900'
+                            : 'bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-300 border-green-300 dark:border-green-700 hover:bg-green-100 dark:hover:bg-green-900'
                         }`}
                       >
                         {isUniversityTracked ? 'Stop Tracking' : 'Track Requirements'}
-                        <Star className={`h-3 w-3 sm:h-4 sm:w-4 ml-1 ${isUniversityTracked ? 'fill-current text-red-300' : 'text-green-300'}`} />
+                        <Star className={`h-4 w-4 ml-2 ${isUniversityTracked ? 'fill-current text-red-500' : 'text-green-500'}`} />
                       </button>
                     )}
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {(() => {
                       const groupedRequirements = groupAdmissionRequirements(university.admissionRequirements);
                       return Object.entries(groupedRequirements).map(([category, requirements]) => (
-                        <div key={category} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-                                                      <button
-                                                      onClick={() => toggleCategory(category)}
-                                                      className="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                                                    >                            <span className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-50">{category}</span>
+                        <div key={category} className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border-2 border-maroon-200 dark:border-maroon-800 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all">
+                          <button
+                            onClick={() => toggleCategory(category)}
+                            className="w-full px-5 py-4 text-left flex items-center justify-between bg-gradient-to-r from-maroon-700 to-maroon-600 dark:from-maroon-900 dark:to-maroon-800 hover:from-maroon-600 hover:to-maroon-500 dark:hover:from-maroon-800 dark:hover:to-maroon-700 transition-all group"
+                          >
+                            <span className="text-sm sm:text-base font-bold text-white flex items-center">
+                              <div className="bg-yellow-400 p-1.5 rounded-lg mr-3 group-hover:scale-110 transition-transform">
+                                <Award className="h-4 w-4 text-maroon-900" />
+                              </div>
+                              {category}
+                            </span>
                             <ChevronDown
-                              className={`h-4 w-4 text-gray-500 dark:text-gray-400 transition-transform ${
+                              className={`h-5 w-5 text-yellow-400 transition-transform duration-200 ${
                                 expandedCategories[category] ? 'rotate-180' : ''
                               }`}
                             />
                           </button>
                           {expandedCategories[category] && (
-                            <div className="px-4 pb-3 border-t border-gray-100 dark:border-gray-700">
-                              <div className="space-y-2 pt-3">
+                            <div className="px-5 py-4 border-t-2 border-maroon-100 dark:border-maroon-900">
+                              <div className="space-y-3">
                                 {requirements.map((requirement, index) => {
                                   // Check if this is a subcategory header
                                   const isSubHeader = requirement.startsWith('For ') ||
@@ -940,26 +978,25 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
 
                                   if (isSubHeader) {
                                     return (
-                                      <div key={index} className="font-medium text-maroon-700 dark:text-maroon-300 text-xs sm:text-sm border-l-2 border-maroon-200 dark:border-maroon-700 pl-2 py-1">
+                                      <div key={index} className="font-bold text-maroon-800 dark:text-maroon-200 text-xs sm:text-sm border-l-4 border-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 pl-4 py-2 rounded-r-lg mt-2">
                                         {requirement}
                                       </div>
                                     );
                                   }
 
                                   return (
-                                    <div key={index} className="flex items-start items-center"> {/* Added items-center for alignment */}
-                                      {session ? ( // Render checkbox only if user is logged in
+                                    <div key={index} className="flex items-start bg-white dark:bg-gray-800 p-3 rounded-lg hover:bg-maroon-50 dark:hover:bg-maroon-950/30 transition-colors border border-gray-200 dark:border-gray-700">
+                                      {session ? (
                                         <input
                                           type="checkbox"
                                           checked={userChecklistProgress.get(requirement) || false}
                                           onChange={(e) => handleRequirementToggle(requirement, e.target.checked)}
-                                          className="form-checkbox h-4 w-4 text-green-600 rounded focus:ring-green-500 border-gray-300 cursor-pointer"
+                                          className="form-checkbox h-5 w-5 text-green-600 rounded-md focus:ring-2 focus:ring-green-500 border-2 border-gray-300 cursor-pointer mt-0.5"
                                         />
                                       ) : (
-                                        // Display original icon if not logged in
-                                        <CheckCircle className="h-3.5 w-3.5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                                        <CheckCircle className="h-5 w-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
                                       )}
-                                      <span className={`text-xs sm:text-sm text-gray-700 dark:text-gray-400 leading-relaxed ml-2 ${userChecklistProgress.get(requirement) && session ? 'line-through text-gray-500 dark:text-gray-600' : ''}`}>
+                                      <span className={`text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed ml-3 ${userChecklistProgress.get(requirement) && session ? 'line-through text-gray-500 dark:text-gray-600' : ''}`}>
                                         {requirement}
                                       </span>
                                     </div>
@@ -979,27 +1016,39 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
             <div className="space-y-6">
               {university.applicationProcess && university.applicationProcess.length > 0 && (
                 <div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-50 mb-4">Application Process</h2>
-                  <div className="space-y-3">
-                    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-50 mb-6 flex items-center">
+                    <div className="bg-maroon-100 dark:bg-maroon-900 p-2 rounded-lg mr-3">
+                      <Clock className="h-6 w-6 text-maroon-700 dark:text-maroon-300" />
+                    </div>
+                    Application Process
+                  </h2>
+                  <div className="space-y-4">
+                    <div className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border-2 border-maroon-200 dark:border-maroon-800 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all">
                       <button
                         onClick={() => toggleCategory('application-process')}
-                        className="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                        className="w-full px-5 py-4 text-left flex items-center justify-between bg-gradient-to-r from-maroon-700 to-maroon-600 dark:from-maroon-900 dark:to-maroon-800 hover:from-maroon-600 hover:to-maroon-500 dark:hover:from-maroon-800 dark:hover:to-maroon-700 transition-all group"
                       >
-                        <span className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-50">Complete Application Process</span>
+                        <span className="text-sm sm:text-base font-bold text-white flex items-center">
+                          <div className="bg-yellow-400 p-1.5 rounded-lg mr-3 group-hover:scale-110 transition-transform">
+                            <Clock className="h-4 w-4 text-maroon-900" />
+                          </div>
+                          Complete Application Process
+                        </span>
                         <ChevronDown
-                          className={`h-4 w-4 text-gray-500 dark:text-gray-400 transition-transform ${
+                          className={`h-5 w-5 text-yellow-400 transition-transform duration-200 ${
                             expandedCategories['application-process'] ? 'rotate-180' : ''
                           }`}
                         />
                       </button>
                       {expandedCategories['application-process'] && (
-                          <div className="px-4 pb-3 border-t border-gray-100 dark:border-gray-700">
-                            <div className="space-y-2 pt-3">
+                          <div className="px-5 py-4 border-t-2 border-maroon-100 dark:border-maroon-900">
+                            <div className="space-y-3">
                               {university.applicationProcess.map((step, index) => (
-                                <div key={index} className="flex items-start">
-                                  <CheckCircle className="h-3.5 w-3.5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
-                                  <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-400 leading-relaxed whitespace-pre-line flex-1">{step}</span>
+                                <div key={index} className="flex items-start bg-white dark:bg-gray-800 p-4 rounded-lg hover:bg-maroon-50 dark:hover:bg-maroon-950/30 transition-colors border-l-4 border-green-500 dark:border-green-400 shadow-sm">
+                                  <div className="bg-green-100 dark:bg-green-900 p-1.5 rounded-lg mr-3 flex-shrink-0">
+                                    <CheckCircle className="h-5 w-5 text-green-700 dark:text-green-300" />
+                                  </div>
+                                  <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line flex-1 font-medium">{step}</span>
                                 </div>
                               ))}
                             </div>

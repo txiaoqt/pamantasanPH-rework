@@ -37,12 +37,12 @@ export default function Profile() {
         setUser(user);
         const { data: profileData } = await supabase
           .from('profiles')
-          .select('id, full_name, location, avatar_url')
+          .select('id, full_name, location, avatar_url, updated_at')
           .eq('id', user.id)
           .single();
         
         if (profileData) {
-          setProfile(profileData);
+          setProfile({ ...profileData, updated_at: profileData.updated_at || new Date().toISOString() });
           setFullName(profileData.full_name || '');
           setLocation(profileData.location || '');
           setAvatarUrl(profileData.avatar_url || null);
