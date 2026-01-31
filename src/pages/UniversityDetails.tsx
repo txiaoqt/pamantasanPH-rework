@@ -642,7 +642,7 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
 
             {(university.accreditation?.length > 0 || (university.achievements && university.achievements.length > 0) || (university.quickfacts && university.quickfacts.length > 0)) && (
               <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-50 mb-4">Key Information</h2>
+                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50 mb-4">Key Information</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {university.accreditation && university.accreditation.length > 0 && (
                     <div className="bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700">
@@ -698,7 +698,7 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
 
             {university.rankings?.source && university.rankings?.details && (
               <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-50 mb-4">Rankings</h2>
+                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50 mb-4">Rankings</h2>
                 <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
                   <h3 className="font-semibold text-lg text-gray-800 dark:text-gray-50">{university.rankings.source}</h3>
                   <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
@@ -713,7 +713,7 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
             {overviewPrograms.length > 0 && (
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-50">Popular Programs</h2>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50">Popular Programs</h2>
                   <button
                     onClick={() => handleTabChange('academic-programs')}
                     className="px-4 py-2 bg-maroon-800 dark:bg-maroon-700 text-white text-sm rounded-lg hover:bg-maroon-700 dark:hover:bg-maroon-600 transition-colors font-medium"
@@ -737,8 +737,8 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
         {activeTab === 'academic-programs' && (
           <div className="max-w-7xl mx-auto">
             <div className="mb-8">
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50 mb-2">Academic Programs</h2>
-              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6">Explore our comprehensive range of degree programs</p>
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-50 mb-2">Academic Programs</h2>
+              <p className="text-gray-600 dark:text-gray-400 mb-6">Explore our comprehensive range of degree programs</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="md:col-span-2">
                   <input
@@ -828,8 +828,8 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
                 <div className="bg-maroon-100 dark:bg-maroon-900 mb-6 rounded-full w-20 h-20 mx-auto flex items-center justify-center shadow-lg">
                   <BookOpen className="h-10 w-10 text-maroon-600 dark:text-maroon-300" />
                 </div>
-                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-50 mb-3">No matching programs found</h3>
-                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto leading-relaxed">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-50 mb-3">No matching programs found</h3>
+                <p className="text-base text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto leading-relaxed">
                   Try adjusting your search term or filter to find the program you're looking for.
                 </p>
               </div>
@@ -840,7 +840,7 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
         {activeTab === 'academics' && (
           <div className="max-w-7xl mx-auto space-y-8">
             <div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50 mb-3">Academic & Campus Life</h2>
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-50 mb-3">Academic & Campus Life</h2>
               <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-3xl">
                 Key dates, facilities, and amenities available at {university.name}.
               </p>
@@ -912,8 +912,8 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
                 <div className="bg-maroon-100 dark:bg-maroon-900 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
                   <Calendar className="h-10 w-10 text-maroon-600 dark:text-maroon-300" />
                 </div>
-                <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-50 mb-2">More Information Coming Soon</h3>
-                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-2">Detailed academic and campus life information is being prepared.</p>
+                <h3 className="text-xl font-bold text-gray-800 dark:text-gray-50 mb-2">More Information Coming Soon</h3>
+                <p className="text-base text-gray-600 dark:text-gray-400 mt-2">Detailed academic and campus life information is being prepared.</p>
               </div>
             )}
           </div>
@@ -925,7 +925,7 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
               {university.admissionRequirements && university.admissionRequirements.length > 0 && (
                 <div>
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-50 flex items-center">
+                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50 flex items-center">
                       <div className="bg-maroon-100 dark:bg-maroon-900 p-2 rounded-lg mr-3">
                         <CheckCircle className="h-6 w-6 text-maroon-700 dark:text-maroon-300" />
                       </div>
@@ -1016,7 +1016,7 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
             <div className="space-y-6">
               {university.applicationProcess && university.applicationProcess.length > 0 && (
                 <div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-50 mb-6 flex items-center">
+                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50 mb-6 flex items-center">
                     <div className="bg-maroon-100 dark:bg-maroon-900 p-2 rounded-lg mr-3">
                       <Clock className="h-6 w-6 text-maroon-700 dark:text-maroon-300" />
                     </div>

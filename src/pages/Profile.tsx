@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 import { User } from '@supabase/supabase-js';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme';
-import { User as UserIcon, Shield, Settings, AlertTriangle, LogOut, Camera } from 'lucide-react';
+import { User as UserIcon, Shield, Settings, AlertTriangle, LogOut, Camera, Star, CheckCircle, ChevronDown } from 'lucide-react';
+import { AdmissionRequirementService, UserRequirementChecklistItem } from '../services/admissionRequirementService';
+import LoginPromptModal from '../components/common/LoginPromptModal';
 
 interface ProfileType {
   id: string;
@@ -13,11 +15,22 @@ interface ProfileType {
   updated_at: string;
 }
 
+interface TrackedRequirement extends UserRequirementChecklistItem {
+  universities: {
+    name: string;
+    image_url: string;
+  };
+}
+
 export default function Profile() {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<ProfileType | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('profile');
+  const [trackedRequirements, setTrackedRequirements] = useState<TrackedRequirement[]>([]);
+  const [isLoadingTracked, setIsLoadingTracked] = useState(true);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [expandedUniversities, setExpandedUniversities] = useState<Record<number, boolean>>({});
   
   // Form state
   const [fullName, setFullName] = useState('');
@@ -30,7 +43,7 @@ export default function Profile() {
     const [theme, setTheme] = useTheme();
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchAllData = async () => {
       setLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
@@ -47,13 +60,88 @@ export default function Profile() {
           setLocation(profileData.location || '');
           setAvatarUrl(profileData.avatar_url || null);
         }
+
+        setIsLoadingTracked(true);
+        const data = await AdmissionRequirementService.getAllTrackedRequirements(user.id);
+        setTrackedRequirements(data as TrackedRequirement[]);
+        setIsLoadingTracked(false);
+
       } else {
         navigate('/login');
       }
       setLoading(false);
     };
-    fetchUserData();
+
+    fetchAllData();
   }, [navigate]);
+
+  const handleToggleRequirement = async (requirement: TrackedRequirement, isCompleted: boolean) => {
+    if (!user?.id) {
+      setShowLoginModal(true);
+      return;
+    }
+
+    try {
+      await AdmissionRequirementService.toggleRequirementCompletion(
+        user.id,
+        requirement.university_id,
+        requirement.requirement_text,
+        isCompleted
+      );
+      // Update local state
+      setTrackedRequirements(prev =>
+        prev.map(item =>
+          item.id === requirement.id ? { ...item, is_completed: isCompleted } : item
+        )
+      );
+    } catch (error) {
+      console.error('Failed to toggle requirement completion:', error);
+    }
+  };
+
+  const handleUntrackUniversity = async (universityId: number) => {
+    if (!user?.id) {
+      setShowLoginModal(true);
+      return;
+    }
+
+    try {
+      await AdmissionRequirementService.untrackAllRequirements(user.id, universityId);
+      // Remove untracked university's requirements from local state
+      setTrackedRequirements(prev =>
+        prev.filter(req => req.university_id !== universityId)
+      );
+      // Close the expanded section if it was open
+      setExpandedUniversities(prev => {
+        const newState = { ...prev };
+        delete newState[universityId];
+        return newState;
+      });
+      // Optional: Show a toast or notification that university was untracked
+    } catch (error) {
+      console.error('Failed to untrack university requirements:', error);
+      // Optionally, show an error message
+    }
+  };
+
+  const groupedByUniversity = trackedRequirements.reduce((acc, req) => {
+    if (!acc[req.university_id]) {
+      acc[req.university_id] = {
+        name: req.universities.name,
+        imageUrl: req.universities.image_url,
+        requirements: [],
+      };
+    }
+    acc[req.university_id].requirements.push(req);
+    return acc;
+  }, {} as Record<number, { name: string; imageUrl: string; requirements: TrackedRequirement[] }>);
+
+  const toggleUniversityExpansion = (universityId: number) => {
+    setExpandedUniversities(prev => ({
+      ...prev,
+      [universityId]: !prev[universityId],
+    }));
+  };
 
   const uploadAvatar = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!user) return;
@@ -114,7 +202,7 @@ export default function Profile() {
     }
   };
   
-  if (loading) {
+  if (loading || isLoadingTracked) {
     return <div className="min-h-screen bg-gray-50 flex items-center justify-center">Loading...</div>;
   }
 
@@ -122,6 +210,7 @@ export default function Profile() {
     { id: 'profile', label: 'Edit Profile', icon: UserIcon },
     { id: 'account', label: 'Account Settings', icon: Shield },
     { id: 'settings', label: 'Website Settings', icon: Settings },
+    { id: 'tracked', label: 'Tracked Requirements', icon: Star },
     { id: 'danger', label: 'Danger Zone', icon: AlertTriangle },
   ];
 
@@ -259,6 +348,91 @@ export default function Profile() {
                     <p className="text-sm text-gray-500 dark:text-gray-400">Notification preferences coming soon.</p>
                   </div>
                 </div>
+              </div>
+            )}
+
+            {activeTab === 'tracked' && (
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-50 mb-4">Tracked Requirements</h2>
+                {isLoadingTracked ? (
+                  <div className="flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-maroon-800"></div>
+                  </div>
+                ) : Object.keys(groupedByUniversity).length === 0 ? (
+                  <div className="text-center py-10">
+                    <div className="text-gray-400 mb-4">
+                      <Star className="h-12 w-12 mx-auto" />
+                    </div>
+                    <h3 className="text-md font-semibold text-gray-900 dark:text-gray-50 mb-2">No Tracked Requirements Yet</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+                      Head to university details pages and click "Track Requirements" to get started!
+                    </p>
+                    <Link
+                      to="/universities"
+                      className="bg-maroon-800 text-white px-4 py-2 rounded-lg hover:bg-maroon-700 transition-colors font-semibold"
+                    >
+                      Browse Universities
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {Object.entries(groupedByUniversity).map(([universityId, uniData]) => (
+                      <div key={universityId} className="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg overflow-hidden">
+                        <div
+                          onClick={() => toggleUniversityExpansion(Number(universityId))}
+                          className="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors cursor-pointer"
+                        >
+                          <div className="flex items-center">
+                            <img
+                              src={uniData.imageUrl || 'placeholder-university-logo.png'}
+                              alt={uniData.name}
+                              className="h-8 w-8 rounded-full object-cover mr-3"
+                            />
+                            <span className="text-base font-semibold text-gray-900 dark:text-gray-50">{uniData.name}</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleUntrackUniversity(Number(universityId));
+                              }}
+                              className="flex items-center px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition-colors"
+                              title="Untrack all requirements for this university"
+                            >
+                              Untrack<Star className="h-3 w-3 ml-1 text-red-600" />
+                            </button>
+                            <ChevronDown
+                              className={`h-5 w-5 text-gray-500 dark:text-gray-400 transition-transform ${
+                                expandedUniversities[Number(universityId)] ? 'rotate-180' : ''
+                              }`}
+                            />
+                          </div>
+                        </div>
+                        {expandedUniversities[Number(universityId)] && (
+                          <div className="px-4 pb-3 border-t border-gray-100 dark:border-gray-600">
+                            <div className="space-y-2 pt-3">
+                              {uniData.requirements
+                                .sort((a, b) => a.requirement_text.localeCompare(b.requirement_text))
+                                .map((requirement) => (
+                                <div key={requirement.id} className="flex items-center">
+                                  <input
+                                    type="checkbox"
+                                    checked={requirement.is_completed}
+                                    onChange={(e) => handleToggleRequirement(requirement, e.target.checked)}
+                                    className="form-checkbox h-4 w-4 text-green-600 rounded focus:ring-green-500 border-gray-300 cursor-pointer"
+                                  />
+                                  <span className={`text-sm text-gray-700 dark:text-gray-300 ml-2 ${requirement.is_completed ? 'line-through text-gray-500' : ''}`}>
+                                    {requirement.requirement_text}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 

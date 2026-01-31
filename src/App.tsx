@@ -21,7 +21,6 @@ import UniversityDetails from './pages/UniversityDetails';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import Profile from './pages/Profile';
-import TrackedRequirements from './pages/TrackedRequirements';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import TermsOfServiceModal from './components/common/TermsOfServiceModal';
 import { Session, User } from '@supabase/supabase-js';
@@ -134,7 +133,6 @@ function App() {
             <Route element={<ProtectedRoute session={session} />}>
               <Route path="/saved" element={<Saved />} />
               <Route path="/compare" element={<Compare />} />
-              <Route path="/tracked-requirements" element={<TrackedRequirements session={session} />} />
             </Route>
           </Routes>
         </ScrollToTop>
