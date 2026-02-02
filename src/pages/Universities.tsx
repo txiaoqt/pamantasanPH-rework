@@ -1,9 +1,11 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Search, MapPin, Grid, List } from 'lucide-react';
+import { Search, MapPin, Grid, List, Map } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import UniversityCard, { University } from '../components/university/UniversityCard';
+import MapView from '../components/university/MapView';
 import { UniversityService } from '../services/universityService';
 import { AcademicProgramService } from '../services/academicProgramService';
+import Highlighter from '../components/common/Highlighter';
 
 export default function Universities() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -11,7 +13,7 @@ export default function Universities() {
   const [locationFilter, setLocationFilter] = useState(searchParams.get('location') || '');
   const [programFilter, setProgramFilter] = useState(searchParams.get('program') || '');
   const [typeFilter, setTypeFilter] = useState('');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map'>('grid');
   const [sortBy, setSortBy] = useState('id');
   const [universities, setUniversities] = useState<University[]>([]);
   const [programUniversities, setProgramUniversities] = useState<number[]>([]);
@@ -82,6 +84,7 @@ export default function Universities() {
 
       const matchesSearch =
         university.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (university.acronym && university.acronym.toLowerCase().includes(searchQuery.toLowerCase())) ||
         university.subjects.some((subject: string) =>
           subject.toLowerCase().includes(searchQuery.toLowerCase())
         );
@@ -204,6 +207,16 @@ export default function Universities() {
                 >
                   <List className="h-5 w-5" />
                 </button>
+                <button
+                  onClick={() => setViewMode('map')}
+                  className={`p-2 rounded-lg transition-colors ${
+                    viewMode === 'map'
+                      ? 'bg-maroon-100 dark:bg-maroon-900 text-maroon-800 dark:text-maroon-100'
+                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  <Map className="h-5 w-5" />
+                </button>
               </div>
             </div>
           </div>
@@ -219,6 +232,8 @@ export default function Universities() {
               <p className="text-sm text-gray-600 dark:text-gray-400">Loading universities...</p>
             </div>
           </div>
+        ) : viewMode === 'map' ? (
+          <MapView universities={filteredUniversities} />
         ) : filteredUniversities.length > 0 ? (
           <div
             className={
@@ -232,6 +247,7 @@ export default function Universities() {
                 key={university.id}
                 viewMode={viewMode}
                 {...university}
+                name={university.name}
                 admissionStatus={university.admissionStatus}
               />
             ))}

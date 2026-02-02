@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { GraduationCap, Menu, X, User, LogOut, Settings } from 'lucide-react';
+import { GraduationCap, Menu, X, User, LogOut, Settings, Bookmark, GitCompareArrows, Info } from 'lucide-react';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from '../../lib/supabase';
 
@@ -15,6 +15,19 @@ export default function Header({ mobileMenuOpen, setMobileMenuOpen, session }: H
   const [profile, setProfile] = useState<any>(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const profileMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
+        setProfileMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     if (session?.user) {
@@ -43,7 +56,7 @@ export default function Header({ mobileMenuOpen, setMobileMenuOpen, session }: H
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (!error) {
-      window.location.reload(); // Reload the page to ensure full UI reset
+      window.location.reload(); 
     } else {
       alert('Error logging out: ' + error.message);
     }
@@ -68,31 +81,41 @@ export default function Header({ mobileMenuOpen, setMobileMenuOpen, session }: H
               <Link to="/" className={`transition-colors text-sm font-medium ${isActive('/') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`}>Home</Link>
               <Link to="/universities" className={`transition-colors text-sm font-medium ${isActive('/universities') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`}>Universities</Link>
               <Link to="/programs" className={`transition-colors text-sm font-medium ${isActive('/programs') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`}>Programs</Link>
-              <Link to="/compare" className={`transition-colors text-sm font-medium ${isActive('/compare') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`}>Compare</Link>
               <Link to="/about" className={`transition-colors text-sm font-medium ${isActive('/about') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`}>About</Link>
-              <Link to="/saved" className={`transition-colors text-sm font-medium ${isActive('/saved') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`}>Saved</Link>
+              <Link to="/faq" className={`transition-colors text-sm font-medium ${isActive('/faq') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`}>FAQ</Link>
             </nav>
 
             <div className="hidden md:flex items-center ml-8">
               {session ? (
-                <div className="relative">
-                  <button onClick={() => setProfileMenuOpen(!profileMenuOpen)} className="flex items-center space-x-2 text-sm">
-                    <User className="h-5 w-5 text-gray-700 dark:text-gray-400" />
-                    <span className="dark:text-gray-400">{loadingProfile ? 'Loading...' : (profile?.full_name || session.user.email)}</span>
-                  </button>
-                  {profileMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1">
-                      <Link to="/profile" className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600">
-                        <Settings className="mr-2 h-4 w-4 dark:text-gray-400" />
-                        Profile
-                      </Link>
-                      <button onClick={handleLogout} className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600">
-                        <LogOut className="mr-2 h-4 w-4 dark:text-gray-400" />
-                        Logout
+                (
+                  <>
+                    <Link to="/saved" className={`transition-colors text-sm font-medium mr-6 ${isActive('/saved') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`}>Saved</Link>
+                    <Link to="/compare" className={`transition-colors text-sm font-medium mr-6 ${isActive('/compare') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`}>Compare</Link>
+                    <div className="relative" ref={profileMenuRef}>
+                      <button onClick={() => setProfileMenuOpen(!profileMenuOpen)} className="flex items-center space-x-2 text-sm">
+                        <User className="h-5 w-5 text-gray-700 dark:text-gray-400" />
+                        <span className="dark:text-gray-400">{loadingProfile ? 'Loading...' : (profile?.full_name || session.user.email)}</span>
                       </button>
+                      {profileMenuOpen && (
+                        <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5">
+                          <Link to="/profile" className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <Settings className="mr-3 h-5 w-5" />
+                            Profile
+                          </Link>
+                          <Link to="/saved" className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <Bookmark className="mr-3 h-5 w-5" />
+                            Saved
+                          </Link>
+
+                          <button onClick={handleLogout} className="flex items-center w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
+                            <LogOut className="mr-3 h-5 w-5" />
+                            Logout
+                          </button>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
+                  </>
+                )
               ) : (
                 <Link to="/login" className="px-3 py-1 text-sm border border-transparent font-medium rounded-md text-white bg-maroon-800 hover:bg-maroon-700">
                   Login
@@ -115,27 +138,44 @@ export default function Header({ mobileMenuOpen, setMobileMenuOpen, session }: H
               <Link to="/" className={`transition-colors text-sm font-medium py-2 ${isActive('/') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`} onClick={() => setMobileMenuOpen(false)}>Home</Link>
               <Link to="/universities" className={`transition-colors text-sm font-medium py-2 ${isActive('/universities') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`} onClick={() => setMobileMenuOpen(false)}>Universities</Link>
               <Link to="/programs" className={`transition-colors text-sm font-medium py-2 ${isActive('/programs') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`} onClick={() => setMobileMenuOpen(false)}>Programs</Link>
-              <Link to="/compare" className={`transition-colors text-sm font-medium py-2 ${isActive('/compare') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`} onClick={() => setMobileMenuOpen(false)}>Compare</Link>
               <Link to="/about" className={`transition-colors text-sm font-medium py-2 ${isActive('/about') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`} onClick={() => setMobileMenuOpen(false)}>About</Link>
-              <Link to="/saved" className={`transition-colors text-sm font-medium py-2 ${isActive('/saved') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`} onClick={() => setMobileMenuOpen(false)}>Saved</Link>
+              <Link to="/faq" className={`transition-colors text-sm font-medium py-2 ${isActive('/faq') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`} onClick={() => setMobileMenuOpen(false)}>FAQ</Link>
+            </nav>
               <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
                 {session ? (
                   <div className="space-y-3">
                     <Link 
                       to="/profile" 
                       className="flex items-center py-2 text-sm text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white"
-                      onClick={() => setMobileMenuOpen(false)} // Close mobile menu
+                      onClick={() => setMobileMenuOpen(false)}
                     >
                         <Settings className="mr-2 h-5 w-5 dark:text-gray-400" />
                         Profile
                     </Link>
-                                                                <button 
-                                                                onClick={() => {
-                                                                  handleLogout();
-                                                                  setMobileMenuOpen(false); // Close mobile menu
-                                                                }} 
-                                                                className="flex items-center w-full text-left py-2 text-sm text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white"
-                                                              >                        <LogOut className="mr-2 h-5 w-5 dark:text-gray-400" />
+                    <Link 
+                      to="/saved" 
+                      className="flex items-center py-2 text-sm text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                        <Bookmark className="mr-2 h-5 w-5 dark:text-gray-400" />
+                        Saved
+                    </Link>
+                    <Link 
+                      to="/compare" 
+                      className="flex items-center py-2 text-sm text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                        <GitCompareArrows className="mr-2 h-5 w-5 dark:text-gray-400" />
+                        Compare
+                    </Link>
+                    <button 
+                      onClick={() => {
+                        handleLogout();
+                        setMobileMenuOpen(false);
+                      }} 
+                      className="flex items-center w-full text-left py-2 text-sm text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white"
+                    >
+                        <LogOut className="mr-2 h-5 w-5 dark:text-gray-400" />
                         Logout
                     </button>
                   </div>
@@ -145,7 +185,6 @@ export default function Header({ mobileMenuOpen, setMobileMenuOpen, session }: H
                   </Link>
                 )}
               </div>
-            </nav>
           </div>
         )}
       </div>

@@ -52,7 +52,7 @@ export default function About() {
       name: 'The FullStack VibeCoder',
       role: 'Full stack Vibecoder',
       image: memeImage,
-      description: 'The solo developer behind UniCentral, passionately creating a one-stop portal for university information. Bringing the vision to life with code and creativity.'
+      description: 'VIBECODER PRO MAX'
     }
   ];
 

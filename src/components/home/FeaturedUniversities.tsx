@@ -3,6 +3,7 @@ import { Star, Users, BookOpen, MapPin, Heart, BarChart3, ExternalLink } from 'l
 import { Link, useNavigate } from "react-router-dom";
 import { UniversityService } from '../../services/universityService';
 import { University } from '../university/UniversityCard';
+import { slugify } from '../../lib/utils';
 import { useSavedUniversities } from '../../hooks/useSavedUniversities';
 
 interface UniversityCardProps {
@@ -172,7 +173,7 @@ function UniversityCard({
                         <span className="text-xs sm:text-sm">Compare</span>
                     </button>
                     <Link
-                        to={`/universities/${id}`}
+                        to={`/universities/${slugify(name)}`}
                         className="flex-1 min-w-0 px-2 py-1.5 bg-maroon-800 dark:bg-maroon-700 text-white rounded-lg hover:bg-maroon-700 dark:hover:bg-maroon-600 transition-colors flex items-center justify-center text-xs sm:text-sm"
                     >
                         <ExternalLink className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" />

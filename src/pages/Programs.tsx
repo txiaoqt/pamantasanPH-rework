@@ -3,10 +3,12 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Search, BookOpen, Clock, Users, Award, TrendingUp } from 'lucide-react';
 import { AcademicProgramService, AggregatedProgram } from '../services/academicProgramService';
 import { UniversityService } from '../services/universityService';
+import Highlighter from '../components/common/Highlighter';
 
-function ProgramCard({ program, onFindUniversities }: {
+function ProgramCard({ program, onFindUniversities, searchQuery }: {
   program: AggregatedProgram;
   onFindUniversities: (program: AggregatedProgram) => void;
+  searchQuery: string;
 }) {
   const getLevelColor = (level: string) => {
     switch (level) {
@@ -28,10 +30,10 @@ function ProgramCard({ program, onFindUniversities }: {
           </span>
         </div>
         <h3 className="text-lg font-bold text-gray-800 dark:text-gray-50 mb-2 group-hover:text-maroon-800 dark:group-hover:text-maroon-400 transition-colors">
-          {program.name}
+          <Highlighter text={program.name} highlight={searchQuery} />
         </h3>
         <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed line-clamp-3 flex-grow">
-          {program.description}
+          <Highlighter text={program.description} highlight={searchQuery} />
         </p>
         <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
           <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-3">
@@ -61,7 +63,7 @@ export default function Programs() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [programs, setPrograms] = useState<AggregatedProgram[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
   const [categoryFilter, setCategoryFilter] = useState(searchParams.get('category') || '');
   const [levelFilter, setLevelFilter] = useState('');
   const [sortBy] = useState('popularity');
@@ -203,6 +205,7 @@ export default function Programs() {
               key={program.id}
               program={program}
               onFindUniversities={handleFindUniversities}
+              searchQuery={searchQuery}
             />
           ))}
         </div>

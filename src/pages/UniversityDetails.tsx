@@ -6,6 +6,7 @@ import L from 'leaflet';
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import { Session } from '@supabase/supabase-js';
+import Highlighter from '../components/common/Highlighter';
 
 import { UniversityService } from '../services/universityService';
 import { AcademicProgramService } from '../services/academicProgramService';
@@ -16,6 +17,7 @@ import { AdmissionRequirementService, UserRequirementChecklistItem } from '../se
 import LoginPromptModal from '../components/common/LoginPromptModal';
 
 import { supabase } from '../lib/supabase'; // Make sure supabase is imported
+import { unslugify } from '../lib/utils';
 import {
   ArrowLeft,
   Star,
@@ -85,7 +87,7 @@ interface UniversityDetailsProps {
 
 export default function UniversityDetails({ session }: UniversityDetailsProps) {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
+  const { acronym } = useParams<{ acronym: string }>();
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedImage, setSelectedImage] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -110,20 +112,25 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
 
   const filteredAndGroupedPrograms = React.useMemo(() => {
     const filtered = allPrograms.filter(program => {
-      const matchesSearch = program.programName.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesLevel = programLevelFilter === 'All' || program.degreeLevel === programLevelFilter;
-      return matchesSearch && matchesLevel;
+        const lowerCaseSearchTerm = searchTerm.toLowerCase();
+        const acronym = AcademicProgramService.generateAcronym(program.programName);
+        const keywords = AcademicProgramService.generateSearchKeywords(program.programName, acronym);
+        
+        const matchesSearch = keywords.some(keyword => keyword.toLowerCase().includes(lowerCaseSearchTerm));
+        const matchesLevel = programLevelFilter === 'All' || program.degreeLevel === programLevelFilter;
+        
+        return matchesSearch && matchesLevel;
     });
 
     const grouped: Record<string, AcademicProgram[]> = {};
     filtered.forEach(program => {
-      if (!grouped[program.collegeName]) {
-        grouped[program.collegeName] = [];
-      }
-      grouped[program.collegeName].push(program);
+        if (!grouped[program.collegeName]) {
+            grouped[program.collegeName] = [];
+        }
+        grouped[program.collegeName].push(program);
     });
     return grouped;
-  }, [allPrograms, searchTerm, programLevelFilter]);
+}, [allPrograms, searchTerm, programLevelFilter]);
 
   const degreeLevels = React.useMemo(() => {
     const levels = new Set(allPrograms.map(p => p.degreeLevel).filter(Boolean));
@@ -292,21 +299,23 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
 
   useEffect(() => {
     const fetchUniversity = async () => {
-      if (!id) return;
-
+      if (!acronym) return;
+  
       try {
         setIsLoading(true);
-        const data = await UniversityService.getUniversityById(parseInt(id));
+        const data = await UniversityService.getUniversityByAcronym_CaseInsensitive(acronym);
         setUniversity(data);
-
-        // Also fetch a few programs for the overview
-        try {
-          const programs = await AcademicProgramService.getProgramsByUniversityId(parseInt(id));
-          // Take first 6 programs for overview display
-          const overviewPrograms = programs.slice(0, 6);
-          setOverviewPrograms(overviewPrograms);
-        } catch (error) {
-          console.error('Failed to fetch overview programs:', error);
+  
+        if (data) {
+          // Also fetch a few programs for the overview
+          try {
+            const programs = await AcademicProgramService.getProgramsByUniversityId(data.id);
+            // Take first 6 programs for overview display
+            const overviewPrograms = programs.slice(0, 6);
+            setOverviewPrograms(overviewPrograms);
+          } catch (error) {
+            console.error('Failed to fetch overview programs:', error);
+          }
         }
       } catch (error) {
         console.error('Failed to fetch university:', error);
@@ -315,9 +324,9 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
         setIsLoading(false);
       }
     };
-
+  
     fetchUniversity();
-  }, [id]);
+  }, [name]);
 
   useEffect(() => {
     const fetchDynamicProgramCount = async () => {
@@ -737,8 +746,8 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
         {activeTab === 'academic-programs' && (
           <div className="max-w-7xl mx-auto">
             <div className="mb-8">
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-50 mb-2">Academic Programs</h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">Explore our comprehensive range of degree programs</p>
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50 mb-2">Academic Programs</h2>
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6">Explore our comprehensive range of degree programs</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="md:col-span-2">
                   <input
@@ -791,7 +800,7 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
                           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between">
                             <div className="flex-1 mb-3 sm:mb-0">
                               <h4 className="text-sm sm:text-base font-bold text-gray-900 dark:text-gray-50 leading-tight group-hover:text-maroon-700 dark:group-hover:text-maroon-300 transition-colors">
-                                {program.programName}
+                                <Highlighter text={program.programName} highlight={searchTerm} />
                               </h4>
                               {program.specializations && program.specializations.length > 0 && (
                                 <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 flex items-start">
@@ -828,8 +837,8 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
                 <div className="bg-maroon-100 dark:bg-maroon-900 mb-6 rounded-full w-20 h-20 mx-auto flex items-center justify-center shadow-lg">
                   <BookOpen className="h-10 w-10 text-maroon-600 dark:text-maroon-300" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-50 mb-3">No matching programs found</h3>
-                <p className="text-base text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto leading-relaxed">
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-50 mb-3">No matching programs found</h3>
+                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto leading-relaxed">
                   Try adjusting your search term or filter to find the program you're looking for.
                 </p>
               </div>
@@ -840,7 +849,7 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
         {activeTab === 'academics' && (
           <div className="max-w-7xl mx-auto space-y-8">
             <div>
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-50 mb-3">Academic & Campus Life</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50 mb-3">Academic & Campus Life</h2>
               <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-3xl">
                 Key dates, facilities, and amenities available at {university.name}.
               </p>
@@ -912,8 +921,8 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
                 <div className="bg-maroon-100 dark:bg-maroon-900 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
                   <Calendar className="h-10 w-10 text-maroon-600 dark:text-maroon-300" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-800 dark:text-gray-50 mb-2">More Information Coming Soon</h3>
-                <p className="text-base text-gray-600 dark:text-gray-400 mt-2">Detailed academic and campus life information is being prepared.</p>
+                <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-50 mb-2">More Information Coming Soon</h3>
+                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-2">Detailed academic and campus life information is being prepared.</p>
               </div>
             )}
           </div>
@@ -925,7 +934,7 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
               {university.admissionRequirements && university.admissionRequirements.length > 0 && (
                 <div>
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50 flex items-center">
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-50 flex items-center">
                       <div className="bg-maroon-100 dark:bg-maroon-900 p-2 rounded-lg mr-3">
                         <CheckCircle className="h-6 w-6 text-maroon-700 dark:text-maroon-300" />
                       </div>
@@ -1016,7 +1025,7 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
             <div className="space-y-6">
               {university.applicationProcess && university.applicationProcess.length > 0 && (
                 <div>
-                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50 mb-6 flex items-center">
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-50 mb-6 flex items-center">
                     <div className="bg-maroon-100 dark:bg-maroon-900 p-2 rounded-lg mr-3">
                       <Clock className="h-6 w-6 text-maroon-700 dark:text-maroon-300" />
                     </div>

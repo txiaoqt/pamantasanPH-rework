@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { MapPin, Star, Users, BookOpen, Heart, BarChart3, ExternalLink } from 'lucide-react';
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from 'react-router-dom';
+import { MapPin, Users, BookOpen, Heart, BarChart3, ExternalLink } from 'lucide-react';
+import { slugify } from '../../lib/utils';
 import { useSavedUniversities } from '../../hooks/useSavedUniversities';
 import { AcademicProgram } from '../../lib/supabase';
 
 export interface University {
   id: number;
   name: string;
+  acronym?: string;
   location: string;
   province: string;
   established: string;
@@ -230,7 +232,7 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
                 <BarChart3 className="h-3.5 w-3.5" />
               </button>
               <Link
-                to={`/universities/${university.id}`}
+                to={`/universities/${university.acronym ? university.acronym.toLowerCase() : slugify(university.name)}`}
                 className="px-3 py-1.5 bg-maroon-800 dark:bg-maroon-700 text-white rounded-lg hover:bg-maroon-700 dark:hover:bg-maroon-600 transition-colors flex items-center text-sm"
               >
                 <ExternalLink className="h-3.5 w-3.5 mr-1" />
@@ -345,7 +347,7 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
             <span className="text-xs sm:text-sm">Compare</span>
           </button>
           <Link
-            to={`/universities/${university.id}`}
+            to={`/universities/${university.acronym ? university.acronym.toLowerCase() : slugify(university.name)}`}
             className="flex-1 min-w-0 px-2 py-1.5 bg-maroon-800 dark:bg-maroon-700 text-white rounded-lg hover:bg-maroon-700 dark:hover:bg-maroon-600 transition-colors flex items-center justify-center text-xs sm:text-sm"
           >
             <ExternalLink className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" />

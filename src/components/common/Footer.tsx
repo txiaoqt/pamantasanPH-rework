@@ -1,38 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import { GraduationCap, Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin } from 'lucide-react';
-import { AcademicProgramService } from '../../services/academicProgramService';
 
 export default function Footer() {
-  const navigate = useNavigate();
-  const [programCategories, setProgramCategories] = useState<string[]>([]);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const programs = await AcademicProgramService.getAggregatedPrograms();
-        const categories = [...new Set(programs.map(p => p.category))];
-        // Take only first 4 categories
-        setProgramCategories(categories.slice(0, 4));
-      } catch (error) {
-        console.error('Failed to fetch program categories:', error);
-        // Fallback to some default categories
-        setProgramCategories(['Technology', 'Business', 'Engineering', 'Healthcare']);
-      }
-    };
-
-    fetchCategories();
-  }, []);
-
-  const handleCategoryClick = (category: string) => {
-    navigate(`/programs?category=${encodeURIComponent(category)}`);
-  };
   return (
-    <footer className="bg-gray-900 text-white">
+    <footer className="bg-gray-900 text-white relative z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
           {/* Brand */}
-          <div className="space-y-3 sm:space-y-4">
+          <div className="space-y-3 sm:space-y-4 lg:col-span-2">
             <div className="flex items-center space-x-2">
               <div className="bg-gradient-to-br from-red-600 to-red-500 p-2 rounded-lg">
                 <GraduationCap className="h-6 w-6 text-yellow-400" />
@@ -51,34 +27,6 @@ export default function Footer() {
               <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"><Instagram className="h-5 w-5 text-gray-400 hover:text-white cursor-pointer transition-colors" /></a>
               <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"><Youtube className="h-5 w-5 text-gray-400 hover:text-white cursor-pointer transition-colors" /></a>
             </div>
-          </div>
-
-          {/* Quick Links */}
-          <div>
-            <h3 className="text-base sm:text-lg font-semibold mb-3 text-yellow-400">Quick Links</h3>
-            <ul className="space-y-2">
-              <li><Link to="/universities" className="text-gray-400 hover:text-white text-sm transition-colors">Find Universities</Link></li>
-              <li><Link to="/compare" className="text-gray-400 hover:text-white text-sm transition-colors">Compare Programs</Link></li>
-              <li><Link to="/about" className="text-gray-400 hover:text-white text-sm transition-colors">About Us</Link></li>
-              <li><Link to="/map" className="text-gray-400 hover:text-white text-sm transition-colors">Universities Map</Link></li>
-            </ul>
-          </div>
-
-          {/* Program Categories */}
-          <div>
-            <h3 className="text-base sm:text-lg font-semibold mb-3 text-yellow-400">Program Categories</h3>
-            <ul className="space-y-2">
-              {programCategories.map((category) => (
-                <li key={category}>
-                  <button
-                    onClick={() => handleCategoryClick(category)}
-                    className="text-gray-400 hover:text-white text-sm transition-colors text-left"
-                  >
-                    {category}
-                  </button>
-                </li>
-              ))}
-            </ul>
           </div>
 
           {/* Contact */}
@@ -109,7 +57,7 @@ export default function Footer() {
             <div className="flex space-x-4 mt-4 md:mt-0">
               <Link to="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors">Privacy Policy</Link>
               <Link to="/terms" className="text-gray-400 hover:text-white text-sm transition-colors">Terms of Service</Link>
-              <Link to="/about" className="text-gray-400 hover:text-white text-sm transition-colors">About Us</Link>
+              <Link to="/sitemap" className="text-gray-400 hover:text-white text-sm transition-colors">Sitemap</Link>
             </div>
           </div>
         </div>

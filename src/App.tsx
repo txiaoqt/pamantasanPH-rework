@@ -15,7 +15,7 @@ import About from './pages/About';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import Saved from './pages/Saved';
-import MapView from './pages/MapView';
+import Locations from './pages/Locations';
 import ScrollToTop from './ScrollToTop';
 import UniversityDetails from './pages/UniversityDetails';
 import Login from './pages/Login';
@@ -25,6 +25,8 @@ import ProtectedRoute from './components/common/ProtectedRoute';
 import TermsOfServiceModal from './components/common/TermsOfServiceModal';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from './lib/supabase';
+import Sitemap from './pages/Sitemap';
+import FAQ from './pages/FAQ';
 import { useTheme } from './hooks/useTheme';
 
 function App() {
@@ -34,6 +36,7 @@ function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [showTermsModal, setShowTermsModal] = useState(false);
+  const [chatbotOpen, setChatbotOpen] = useState(false); // State for chatbot visibility
 
   useEffect(() => {
     setLoading(true);
@@ -98,7 +101,7 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+      <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 flex flex-col">
         {showTermsModal && user && (
           <TermsOfServiceModal 
             user={user} 
@@ -107,37 +110,41 @@ function App() {
           />
         )}
         <Header mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} session={session} />
-        <ScrollToTop>
-          <Routes>
-            <Route path="/" element={
-              <main>
-                <HeroSection />
-                <PlatformOverview />
-                <FeaturedUniversities />
-                <ExploreTools />
-                <Newsletter />
-              </main>
-            } />
-            <Route path="/universities" element={<Universities />} />
-            <Route path="/programs" element={<Programs />} />
-            <Route path="/map" element={<MapView />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/universities/:id" element={<UniversityDetails session={session} />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/profile" element={<Profile />} />
+        <main className="flex-grow">
+          <ScrollToTop>
+            <Routes>
+              <Route path="/" element={
+                <>
+                  <HeroSection />
+                  <PlatformOverview />
+                  <FeaturedUniversities />
+                  <ExploreTools />
+                  <Newsletter />
+                </>
+              } />
+              <Route path="/universities" element={<Universities />} />
+              <Route path="/programs" element={<Programs />} />
+              <Route path="/locations" element={<Locations />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/sitemap" element={<Sitemap isChatbotOpen={chatbotOpen} />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/universities/:acronym" element={<UniversityDetails session={session} />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/profile" element={<Profile />} />
 
-            {/* Protected Routes */}
-            <Route element={<ProtectedRoute session={session} />}>
-              <Route path="/saved" element={<Saved />} />
-              <Route path="/compare" element={<Compare />} />
-            </Route>
-          </Routes>
-        </ScrollToTop>
+              {/* Protected Routes */}
+              <Route element={<ProtectedRoute session={session} />}>
+                <Route path="/saved" element={<Saved />} />
+                <Route path="/compare" element={<Compare />} />
+              </Route>
+            </Routes>
+          </ScrollToTop>
+        </main>
         <Footer />
-        <Chatbot />
+        <Chatbot isOpen={chatbotOpen} setIsOpen={setChatbotOpen} />
       </div>
     </Router>
   );

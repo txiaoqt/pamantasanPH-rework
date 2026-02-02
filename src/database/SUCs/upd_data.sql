@@ -129,7 +129,7 @@ VALUES
   ((SELECT id from universities where name = 'University of the Philippines Diliman'), 'Bachelor of Sports Science', 'College of Human Kinetics', 'undergraduate', 'Bachelors', NULL);
 
 -- UPD Graduate Programs
-INSERT INTO academic_programs (university_id, programName, collegeName, programType, degreeLevel, specializations)
+INSERT INTO academic_programs (university_id, program_name, college_name, program_type, degree_level, specializations)
 VALUES
   ((SELECT id from universities where name = 'University of the Philippines Diliman'), 'Master of Architecture', 'College of Architecture', 'graduate', 'Masters', NULL),
   ((SELECT id from universities where name = 'University of the Philippines Diliman'), 'Master of Tropical Landscape Architecture', 'College of Architecture', 'graduate', 'Masters', NULL),
@@ -264,7 +264,7 @@ VALUES
   ((SELECT id from universities where name = 'University of the Philippines Diliman'), 'Doctor of Public Administration', 'National College of Public Administration and Governance', 'graduate', 'Doctorate', NULL);
 
 -- UPD Diploma Programs
-INSERT INTO academic_programs (university_id, programName, collegeName, programType, degreeLevel, specializations)
+INSERT INTO academic_programs (university_id, program_name, college_name, program_type, degree_level, specializations)
 VALUES
   ((SELECT id from universities where name = 'University of the Philippines Diliman'), 'Diploma in Industrial Relations', 'School of Labor and Industrial Relations', 'diploma', 'Diploma', NULL),
   ((SELECT id from universities where name = 'University of the Philippines Diliman'), 'Diploma in Librarianship', 'School of Library and Information Studies', 'diploma', 'Diploma', NULL),
@@ -291,7 +291,7 @@ VALUES
   ((SELECT id from universities where name = 'University of the Philippines Diliman'), 'Diploma in Exercise and Sport Sciences', 'College of Human Kinetics', 'diploma', 'Diploma', NULL);
 
 -- UPD Certificate Programs
-INSERT INTO academic_programs (university_id, programName, collegeName, programType, degreeLevel, specializations)
+INSERT INTO academic_programs (university_id, program_name, college_name, program_type, degree_level, specializations)
 VALUES
   ((SELECT id from universities where name = 'University of the Philippines Diliman'), 'Certificate in Building Technology', 'College of Architecture', 'diploma', 'Certificate', NULL),
   ((SELECT id from universities where name = 'University of the Philippines Diliman'), 'Certificate in Theater Arts (Performance; Technical Theater & Management)', 'College of Arts and Letters', 'diploma', 'Certificate', NULL),

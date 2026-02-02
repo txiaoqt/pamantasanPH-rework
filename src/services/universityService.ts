@@ -49,6 +49,85 @@ export class UniversityService {
   }
 
   /**
+   * Fetch a single university by name
+   */
+  static async getUniversityByName(name: string): Promise<University | null> {
+    try {
+      const { data, error } = await supabase
+        .from('universities')
+        .select('*')
+        .eq('name', name)
+        .single()
+
+      if (error) {
+        console.error('Error fetching university by name:', error)
+        throw error
+      }
+
+      return transformDbUniversityToUniversity(data as DatabaseUniversity)
+    } catch (error) {
+      console.error('Failed to fetch university by name:', error)
+      throw error // Let components handle the error
+    }
+  }
+
+
+  /**
+   * Fetch a single university by acronym (case-insensitive)
+   */
+  static async getUniversityByAcronym_CaseInsensitive(acronym: string): Promise<University | null> {
+    try {
+      const { data, error } = await supabase
+        .from('universities')
+        .select('*')
+        .ilike('acronym', acronym)
+        .single() // Expect a single result for an acronym
+
+      if (error) {
+        // If no rows found, Supabase returns an error with code 'PGRST116'
+        // We should treat this as no university found, not an actual error
+        if (error.code === 'PGRST116') {
+          return null;
+        }
+        console.error('Error fetching university by acronym (case-insensitive):', error)
+        throw error
+      }
+
+      return transformDbUniversityToUniversity(data as DatabaseUniversity)
+    } catch (error) {
+      console.error('Failed to fetch university by acronym (case-insensitive):', error)
+      throw error // Let components handle the error
+    }
+  }
+
+  /**
+   * Fetch a single university by name (case-insensitive)
+   */
+  static async getUniversityByName_CaseInsensitive(name: string): Promise<University | null> {
+    try {
+      const { data, error } = await supabase
+        .from('universities')
+        .select('*')
+        .ilike('name', name)
+        .single() // Assuming 'name' is unique enough for a single result
+
+      if (error) {
+        // If no rows found, Supabase returns an error with code 'PGRST116'
+        if (error.code === 'PGRST116') {
+          return null;
+        }
+        console.error('Error fetching university by name (case-insensitive):', error)
+        throw error
+      }
+
+      return transformDbUniversityToUniversity(data as DatabaseUniversity)
+    } catch (error) {
+      console.error('Failed to fetch university by name (case-insensitive):', error)
+      throw error // Let components handle the error
+    }
+  }
+
+  /**
    * Fetch multiple universities by an array of IDs
    */
   static async getUniversitiesByIds(ids: number[]): Promise<University[]> {

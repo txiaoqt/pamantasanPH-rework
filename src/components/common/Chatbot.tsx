@@ -6,6 +6,12 @@ import { AcademicProgramService } from '../../services/academicProgramService';
 import { University } from '../university/UniversityCard';
 import OpenAI from 'openai';
 
+interface ChatbotProps {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+}
+
+
 // --- SECURITY WARNING ---
 // The following code initializes the OpenAI API client on the client-side.
 // This is NOT a secure practice for production environments as it exposes
@@ -61,8 +67,7 @@ interface ConversationContext {
   userPreferences: string[];
 }
 
-export default function Chatbot() {
-  const [isOpen, setIsOpen] = useState(false);
+export default function Chatbot({ isOpen, setIsOpen }: ChatbotProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',

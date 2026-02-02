@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, MapPin, Building, Users, BookOpen, X } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Search, MapPin, Building, BookOpen } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { University } from '../university/UniversityCard';
 import { UniversityService } from '../../services/universityService';
+import { AcademicProgramService } from '../../services/academicProgramService';
 import trollfaceImage from '../../assets/Images/Trollface.png';
+import Fuse from 'fuse.js';
+import { slugify } from '../../lib/utils';
 
 export default function HeroSection() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -13,7 +16,6 @@ export default function HeroSection() {
   const [showSearchSuggestions, setShowSearchSuggestions] = useState(false);
   const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
   const [allUniversities, setAllUniversities] = useState<University[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [stats, setStats] = useState({
     universities: 0,
     locations: 0,
@@ -23,6 +25,7 @@ export default function HeroSection() {
   const navigate = useNavigate();
   const searchInputRef = useRef<HTMLInputElement>(null);
   const locationInputRef = useRef<HTMLInputElement>(null);
+  const fuseRef = useRef<Fuse<University> | null>(null);
 
   // Fetch universities on mount
   useEffect(() => {
@@ -37,35 +40,55 @@ export default function HeroSection() {
     fetchUniversities();
   }, []);
 
-  // Calculate stats when universities data is available
+  // Initialize Fuse.js
   useEffect(() => {
     if (allUniversities.length > 0) {
-      const locations = new Set(allUniversities.map(uni => uni.location));
-      const totalPrograms = allUniversities.reduce((sum, uni) => sum + uni.programs, 0);
-
-      setStats({
-        universities: allUniversities.length,
-        locations: locations.size,
-        programs: totalPrograms
+      fuseRef.current = new Fuse(allUniversities, {
+        keys: ['name', 'acronym', 'subjects'],
+        includeScore: true,
+        threshold: 0.4,
       });
     }
   }, [allUniversities]);
 
+  // Calculate stats when universities data is available
+  useEffect(() => {
+    const fetchStats = async () => {
+      if (allUniversities.length > 0) {
+        const locations = new Set(allUniversities.map(uni => uni.location));
+        
+        try {
+          const aggregatedPrograms = await AcademicProgramService.getAggregatedPrograms();
+          setStats({
+            universities: allUniversities.length,
+            locations: locations.size,
+            programs: aggregatedPrograms.length
+          });
+        } catch (error) {
+          console.error('Failed to fetch aggregated programs:', error);
+          // Fallback to total programs if fetching unique fails
+          const totalPrograms = allUniversities.reduce((sum, uni) => sum + uni.programs, 0);
+          setStats({
+            universities: allUniversities.length,
+            locations: locations.size,
+            programs: totalPrograms
+          });
+        }
+      }
+    };
+    fetchStats();
+  }, [allUniversities]);
+
   // Handle search suggestions
   useEffect(() => {
-    if (searchQuery.trim().length > 1) {
-      const filtered = allUniversities.filter(university =>
-        university.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        university.subjects.some((subject: string) =>
-          subject.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      ).slice(0, 5); // Limit to 5 suggestions
-      setSearchSuggestions(filtered);
+    if (searchQuery.trim().length > 1 && fuseRef.current) {
+      const results = fuseRef.current.search(searchQuery.trim());
+      setSearchSuggestions(results.map(result => result.item).slice(0, 5));
       setShowSearchSuggestions(true);
     } else {
       setShowSearchSuggestions(false);
     }
-  }, [searchQuery, allUniversities]);
+  }, [searchQuery]);
 
   // Handle location suggestions
   useEffect(() => {
@@ -97,13 +120,20 @@ export default function HeroSection() {
 
   // Handle suggestion selection
   const handleSearchSuggestionSelect = (university: University) => {
-    setSearchQuery(university.name);
-    setShowSearchSuggestions(false);
+    navigate(`/universities/${slugify(university.name)}`);
   };
 
   const handleLocationSuggestionSelect = (province: string) => {
     setLocation(province);
     setShowLocationSuggestions(false);
+  };
+
+  const handleSearchSubmit = () => {
+    if (searchQuery.trim()) {
+      navigate(`/programs?search=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      navigate('/programs');
+    }
   };
 
   // Handle clicks outside to close suggestions
@@ -160,11 +190,17 @@ export default function HeroSection() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => searchQuery.trim().length > 1 && setShowSearchSuggestions(true)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleSearchSubmit();
+                    }
+                  }}
                   className="w-full pl-10 pr-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 placeholder-gray-500 text-base"
                 />
-                {/* Search Suggestions */}
-                {showSearchSuggestions && searchSuggestions.length > 0 && (
+                {/* Quick Results Overlay */}
+                {showSearchSuggestions && searchQuery.trim().length > 0 && searchSuggestions.length > 0 && (
                   <div className="absolute top-full left-0 right-0 z-50 bg-white border border-gray-300 rounded-xl shadow-lg mt-1 max-h-64 overflow-y-auto">
+                    <div className="px-3 py-2 text-xs font-semibold text-gray-500 border-b border-gray-100">Quick Results</div>
                     {searchSuggestions.map((university) => (
                       <div
                         key={university.id}
@@ -238,7 +274,7 @@ export default function HeroSection() {
 
           {/* Stats */}
           <div className="grid grid-cols-3 gap-3 md:gap-6 max-w-4xl mx-auto mb-6">
-            <div className="text-center">
+            <Link to="/universities" className="text-center">
               <div className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 bg-yellow-400 rounded-full mb-1 sm:mb-2 md:mb-4">
                 <Building className="h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8 text-red-900" />
               </div>
@@ -246,9 +282,9 @@ export default function HeroSection() {
                 {stats.universities > 0 ? stats.universities : '200+'}
               </div>
               <div className="text-xs sm:text-sm md:text-base text-gray-200">Universities</div>
-            </div>
+            </Link>
 
-            <div className="text-center">
+            <Link to="/locations" className="text-center">
               <div className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 bg-yellow-400 rounded-full mb-1 sm:mb-2 md:mb-4">
                 <MapPin className="h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8 text-red-900" />
               </div>
@@ -256,9 +292,9 @@ export default function HeroSection() {
                 {stats.locations > 0 ? stats.locations : '17'}
               </div>
               <div className="text-xs sm:text-sm md:text-base text-gray-200">Locations</div>
-            </div>
+            </Link>
 
-            <div className="text-center">
+            <Link to="/programs" className="text-center">
               <div className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 bg-yellow-400 rounded-full mb-1 sm:mb-2 md:mb-4">
                 <BookOpen className="h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8 text-red-900" />
               </div>
@@ -266,7 +302,7 @@ export default function HeroSection() {
                 {stats.programs > 0 ? stats.programs : '1,500+'}
               </div>
               <div className="text-xs sm:text-sm md:text-base text-gray-200">Programs</div>
-            </div>
+            </Link>
           </div>
         </div>
       </div>

@@ -12,6 +12,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 export interface DatabaseUniversity {
   id: number
   name: string
+  acronym: string | null
   location: string | null
   province: string | null
   established: string | null
@@ -56,6 +57,7 @@ export interface DatabaseAcademicProgram {
   college_name: string
   degree_level: string | null
   program_name: string
+  keywords: string[] | null
   specializations: string[] | null
   program_type: string | null
   created_at: string
@@ -69,6 +71,7 @@ export interface AcademicProgram {
   collegeName: string
   degreeLevel?: string
   programName: string
+  keywords?: string[]
   specializations?: string[]
   programType?: string
 }
@@ -78,6 +81,7 @@ export const transformDbUniversityToUniversity = (dbUni: DatabaseUniversity): Un
   return {
     id: dbUni.id,
     name: dbUni.name,
+    acronym: dbUni.acronym || undefined,
     location: dbUni.location || '',
     province: dbUni.province || '',
     established: dbUni.established || '',
@@ -129,6 +133,7 @@ export const transformDbAcademicProgramToAcademicProgram = (dbProgram: DatabaseA
     collegeName: dbProgram.college_name,
     degreeLevel: dbProgram.degree_level || undefined,
     programName: dbProgram.program_name,
+    keywords: dbProgram.keywords || undefined,
     specializations: dbProgram.specializations || undefined,
     programType: dbProgram.program_type || undefined,
   }

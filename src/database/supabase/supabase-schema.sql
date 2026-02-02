@@ -5,6 +5,7 @@
 CREATE TABLE universities (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
+  acronym VARCHAR(255),
   location VARCHAR(100),
   province VARCHAR(100),
   established VARCHAR(10),
@@ -50,6 +51,7 @@ CREATE TABLE academic_programs (
   college_name VARCHAR(255) NOT NULL, -- e.g., "Graduate School", "College of Accountancy and Finance"
   degree_level VARCHAR(100), -- e.g., "Doctorate Degree Programs", "Bachelor's Degree Programs"
   program_name VARCHAR(255) NOT NULL, -- e.g., "Doctor of Philosophy in Communication"
+  keywords TEXT[], -- Array of keywords (e.g., BSIT, HRM)
   specializations TEXT[], -- Array of specializations like ["Data Analytics", "Structural Engineering"]
   program_type VARCHAR(50), -- 'undergraduate', 'graduate', 'diploma', 'certificate'
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),

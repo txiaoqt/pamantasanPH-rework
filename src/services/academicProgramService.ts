@@ -460,7 +460,7 @@ export class AcademicProgramService {
     return normalized;
   }
 
-  private static generateAcronym(programName: string): string {
+  public static generateAcronym(programName: string): string {
     // Clean the program name by removing parentheses and their contents
     const cleanedName = programName.replace(/\s*\([^)]*\)/g, '').trim();
     const name = cleanedName.toLowerCase();
@@ -523,7 +523,7 @@ export class AcademicProgramService {
     return acronym || cleanedName.substring(0, 4).toUpperCase();
   }
 
-  private static generateSearchKeywords(programName: string, acronym: string): string[] {
+  public static generateSearchKeywords(programName: string, acronym: string): string[] {
     const keywords = new Set<string>();
 
     // Add the full program name
@@ -585,6 +585,12 @@ export class AcademicProgramService {
     if (name.includes('architecture')) {
       keywords.add('arch');
       keywords.add('bsarch');
+    }
+
+    if (name.includes('human resource management')) {
+      keywords.add('hrm');
+      keywords.add('human resources');
+      keywords.add('hr management');
     }
 
     // Add individual words from program name
