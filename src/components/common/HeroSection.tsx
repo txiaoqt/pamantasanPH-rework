@@ -3,7 +3,7 @@ import { Search, MapPin, Building, BookOpen } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { University } from '../university/UniversityCard';
 import { UniversityService } from '../../services/universityService';
-import { AcademicProgramService } from '../../services/academicProgramService';
+import { AcademicProgramService, AggregatedProgram } from '../../services/academicProgramService';
 import trollfaceImage from '../../assets/Images/Trollface.png';
 import Fuse from 'fuse.js';
 import { slugify } from '../../lib/utils';
@@ -16,6 +16,9 @@ export default function HeroSection() {
   const [showSearchSuggestions, setShowSearchSuggestions] = useState(false);
   const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
   const [allUniversities, setAllUniversities] = useState<University[]>([]);
+  const [allPrograms, setAllPrograms] = useState<AggregatedProgram[]>([]);
+  const [universityAcronyms, setUniversityAcronyms] = useState<string[]>([]);
+  const [programAcronyms, setProgramAcronyms] = useState<string[]>([]);
   const [stats, setStats] = useState({
     universities: 0,
     locations: 0,
@@ -27,18 +30,35 @@ export default function HeroSection() {
   const locationInputRef = useRef<HTMLInputElement>(null);
   const fuseRef = useRef<Fuse<University> | null>(null);
 
-  // Fetch universities on mount
+  // Fetch universities and programs on mount
   useEffect(() => {
-    const fetchUniversities = async () => {
+    const fetchData = async () => {
       try {
         const universities = await UniversityService.getAllUniversities();
         setAllUniversities(universities);
+
+        const programs = await AcademicProgramService.getAggregatedPrograms();
+        setAllPrograms(programs);
       } catch (error) {
-        console.error('Failed to fetch universities:', error);
+        console.error('Failed to fetch data:', error);
       }
     };
-    fetchUniversities();
+    fetchData();
   }, []);
+
+  // Populate acronym lists
+  useEffect(() => {
+    if (allUniversities.length > 0) {
+      const uniAcronyms = allUniversities
+        .map(uni => uni.acronym)
+        .filter((acronym): acronym is string => !!acronym);
+      setUniversityAcronyms(uniAcronyms);
+    }
+    if (allPrograms.length > 0) {
+      const progAcronyms = allPrograms.flatMap(program => program.searchKeywords);
+      setProgramAcronyms(progAcronyms);
+    }
+  }, [allUniversities, allPrograms]);
 
   // Initialize Fuse.js
   useEffect(() => {
@@ -53,31 +73,15 @@ export default function HeroSection() {
 
   // Calculate stats when universities data is available
   useEffect(() => {
-    const fetchStats = async () => {
-      if (allUniversities.length > 0) {
-        const locations = new Set(allUniversities.map(uni => uni.location));
-        
-        try {
-          const aggregatedPrograms = await AcademicProgramService.getAggregatedPrograms();
-          setStats({
-            universities: allUniversities.length,
-            locations: locations.size,
-            programs: aggregatedPrograms.length
-          });
-        } catch (error) {
-          console.error('Failed to fetch aggregated programs:', error);
-          // Fallback to total programs if fetching unique fails
-          const totalPrograms = allUniversities.reduce((sum, uni) => sum + uni.programs, 0);
-          setStats({
-            universities: allUniversities.length,
-            locations: locations.size,
-            programs: totalPrograms
-          });
-        }
-      }
-    };
-    fetchStats();
-  }, [allUniversities]);
+    if (allUniversities.length > 0 && allPrograms.length > 0) {
+      const locations = new Set(allUniversities.map(uni => uni.location));
+      setStats({
+        universities: allUniversities.length,
+        locations: locations.size,
+        programs: allPrograms.length
+      });
+    }
+  }, [allUniversities, allPrograms]);
 
   // Handle search suggestions
   useEffect(() => {
@@ -106,11 +110,17 @@ export default function HeroSection() {
 
   // Handle search submission
   const handleSearch = () => {
-    const params = new URLSearchParams();
-    if (searchQuery.trim()) params.set('search', searchQuery.trim());
-    if (location.trim()) params.set('location', location.trim());
-
-    navigate(`/universities?${params.toString()}`);
+    const query = searchQuery.trim().toUpperCase();
+    if (universityAcronyms.includes(query)) {
+      navigate(`/universities?search=${encodeURIComponent(searchQuery.trim())}`);
+    } else if (programAcronyms.includes(query)) {
+      navigate(`/programs?search=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      const params = new URLSearchParams();
+      if (searchQuery.trim()) params.set('search', searchQuery.trim());
+      if (location.trim()) params.set('location', location.trim());
+      navigate(`/universities?${params.toString()}`);
+    }
   };
 
   // Handle browse all
@@ -120,7 +130,10 @@ export default function HeroSection() {
 
   // Handle suggestion selection
   const handleSearchSuggestionSelect = (university: University) => {
-    navigate(`/universities/${slugify(university.name)}`);
+    const universityUrl = university.acronym
+      ? university.acronym.toLowerCase()
+      : slugify(university.name);
+    navigate(`/universities/${universityUrl}`);
   };
 
   const handleLocationSuggestionSelect = (province: string) => {
@@ -128,7 +141,7 @@ export default function HeroSection() {
     setShowLocationSuggestions(false);
   };
 
-  const handleSearchSubmit = () => {
+  const handleProgramSearch = () => {
     if (searchQuery.trim()) {
       navigate(`/programs?search=${encodeURIComponent(searchQuery.trim())}`);
     } else {
@@ -150,7 +163,7 @@ export default function HeroSection() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
+  
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background with overlay */}
@@ -180,7 +193,13 @@ export default function HeroSection() {
           </p>
 
           {/* Search Form */}
-          <div className="bg-white/95 backdrop-blur-sm p-4 sm:p-6 rounded-2xl shadow-2xl mb-10 sm:mb-12 max-w-4xl mx-auto">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSearch();
+            }}
+            className="bg-white/95 backdrop-blur-sm p-4 sm:p-6 rounded-2xl shadow-2xl mb-10 sm:mb-12 max-w-4xl mx-auto"
+          >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
               <div className="relative" ref={searchInputRef}>
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 sm:h-5 sm:w-5" />
@@ -190,11 +209,6 @@ export default function HeroSection() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => searchQuery.trim().length > 1 && setShowSearchSuggestions(true)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      handleSearchSubmit();
-                    }
-                  }}
                   className="w-full pl-10 pr-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 placeholder-gray-500 text-base"
                 />
                 {/* Quick Results Overlay */}
@@ -257,7 +271,7 @@ export default function HeroSection() {
             
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <button
-                onClick={handleSearch}
+                type="submit"
                 className="flex-1 bg-gradient-to-r from-red-900 to-red-700 text-white px-6 py-3 rounded-xl hover:from-red-800 hover:to-red-600 transition-all duration-300 font-semibold text-base shadow-lg hover:shadow-xl"
               >
                 <Search className="inline h-4 w-4 sm:h-5 sm:w-5 mr-2" />
@@ -270,7 +284,7 @@ export default function HeroSection() {
                 Browse All
               </button>
             </div>
-          </div>
+          </form>
 
           {/* Stats */}
           <div className="grid grid-cols-3 gap-3 md:gap-6 max-w-4xl mx-auto mb-6">

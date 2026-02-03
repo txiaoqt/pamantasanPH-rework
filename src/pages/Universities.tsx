@@ -13,7 +13,9 @@ export default function Universities() {
   const [locationFilter, setLocationFilter] = useState(searchParams.get('location') || '');
   const [programFilter, setProgramFilter] = useState(searchParams.get('program') || '');
   const [typeFilter, setTypeFilter] = useState('');
-  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map'>(
+    searchParams.get('view') === 'map' ? 'map' : 'grid'
+  );
   const [sortBy, setSortBy] = useState('id');
   const [universities, setUniversities] = useState<University[]>([]);
   const [programUniversities, setProgramUniversities] = useState<number[]>([]);

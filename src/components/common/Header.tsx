@@ -89,8 +89,7 @@ export default function Header({ mobileMenuOpen, setMobileMenuOpen, session }: H
               {session ? (
                 (
                   <>
-                    <Link to="/saved" className={`transition-colors text-sm font-medium mr-6 ${isActive('/saved') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`}>Saved</Link>
-                    <Link to="/compare" className={`transition-colors text-sm font-medium mr-6 ${isActive('/compare') ? 'text-maroon-900 dark:text-white' : 'text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white'}`}>Compare</Link>
+
                     <div className="relative" ref={profileMenuRef}>
                       <button onClick={() => setProfileMenuOpen(!profileMenuOpen)} className="flex items-center space-x-2 text-sm">
                         <User className="h-5 w-5 text-gray-700 dark:text-gray-400" />
@@ -105,6 +104,10 @@ export default function Header({ mobileMenuOpen, setMobileMenuOpen, session }: H
                           <Link to="/saved" className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                             <Bookmark className="mr-3 h-5 w-5" />
                             Saved
+                          </Link>
+                          <Link to="/compare" className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <GitCompareArrows className="mr-3 h-5 w-5" />
+                            Compare
                           </Link>
 
                           <button onClick={handleLogout} className="flex items-center w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">

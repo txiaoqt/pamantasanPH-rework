@@ -587,6 +587,11 @@ export class AcademicProgramService {
       keywords.add('bsarch');
     }
 
+    if (name.includes('hospitality management')) {
+      keywords.add('hrim');
+      keywords.add('HRIM');
+    }
+
     if (name.includes('human resource management')) {
       keywords.add('hrm');
       keywords.add('human resources');

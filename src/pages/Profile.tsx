@@ -334,9 +334,10 @@ export default function Profile() {
                           checked={theme === 'dark'}
                           onChange={() => setTheme('dark')}
                           className="focus:ring-maroon-500 dark:focus:ring-maroon-400 h-4 w-4 text-maroon-600 border-gray-300 dark:border-gray-600"
+                          disabled 
                         />
                         <label htmlFor="dark-theme" className="ml-2 block text-sm text-gray-900 dark:text-gray-50">
-                          Dark
+                          Dark <span className="text-gray-400">(Coming Soon)</span>
                         </label>
                       </div>
                     </div>

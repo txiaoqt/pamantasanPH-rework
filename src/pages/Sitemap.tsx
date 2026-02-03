@@ -32,7 +32,7 @@ const sitemapData = [
     category: 'Resources',
     icon: <BookOpen className="h-6 w-6 text-red-500" />,
     links: [
-      { name: 'Universities Map', path: '/map', icon: <Map className="h-5 w-5 mr-3 text-gray-400" /> },
+      { name: 'Universities Map', path: '/universities?view=map', icon: <Map className="h-5 w-5 mr-3 text-gray-400" /> },
       { name: 'Blog', path: '/blog', icon: <Rss className="h-5 w-5 mr-3 text-gray-400" /> },
       { name: 'FAQ', path: '/faq', icon: <HelpCircle className="h-5 w-5 mr-3 text-gray-400" /> },
     ],
@@ -43,7 +43,7 @@ const sitemapData = [
     links: [
       { name: 'Privacy Policy', path: '/privacy', icon: <Shield className="h-5 w-5 mr-3 text-gray-400" /> },
       { name: 'Terms of Service', path: '/terms', icon: <FileText className="h-5 w-5 mr-3 text-gray-400" /> },
-      { name: 'Careers', path: '/careers', icon: <Briefcase className="h-5 w-5 mr-3 text-gray-400" /> },
+
     ],
   },
 ];

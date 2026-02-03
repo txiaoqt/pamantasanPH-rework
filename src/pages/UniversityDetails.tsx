@@ -987,7 +987,7 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
 
                                   if (isSubHeader) {
                                     return (
-                                      <div key={index} className="font-bold text-maroon-800 dark:text-maroon-200 text-xs sm:text-sm border-l-4 border-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 pl-4 py-2 rounded-r-lg mt-2">
+                                      <div key={index} className="font-bold text-maroon-800 dark:text-maroon-200 text-xs sm:text-sm border-l-4 border-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 pl-4 py-2 rounded-r-lg mt-2 font-bold">
                                         {requirement}
                                       </div>
                                     );

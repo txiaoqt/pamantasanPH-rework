@@ -25,6 +25,7 @@ import ProtectedRoute from './components/common/ProtectedRoute';
 import TermsOfServiceModal from './components/common/TermsOfServiceModal';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from './lib/supabase';
+import RedirectIfAuthenticated from './components/common/RedirectIfAuthenticated';
 import Sitemap from './pages/Sitemap';
 import FAQ from './pages/FAQ';
 import { useTheme } from './hooks/useTheme';
@@ -131,8 +132,8 @@ function App() {
               <Route path="/sitemap" element={<Sitemap isChatbotOpen={chatbotOpen} />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/universities/:acronym" element={<UniversityDetails session={session} />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<SignUp />} />
+              <Route path="/login" element={<RedirectIfAuthenticated><Login /></RedirectIfAuthenticated>} />
+              <Route path="/signup" element={<RedirectIfAuthenticated><SignUp /></RedirectIfAuthenticated>} />
               <Route path="/profile" element={<Profile />} />
 
               {/* Protected Routes */}
@@ -151,3 +152,4 @@ function App() {
 }
 
 export default App;
+
