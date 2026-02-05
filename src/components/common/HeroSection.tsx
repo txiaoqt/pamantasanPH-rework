@@ -101,7 +101,20 @@ export default function HeroSection() {
   const handleSearch = () => {
     const query = searchQuery.trim().toUpperCase();
     if (KNOWN_UNIVERSITY_ACRONYMS.includes(query)) {
-      navigate(`/universities?search=${encodeURIComponent(searchQuery.trim())}`);
+      // Find the matching university and navigate directly to its page
+      const matchingUniversity = allUniversities.find(uni => 
+        uni.acronym && uni.acronym.toUpperCase() === query
+      );
+      
+      if (matchingUniversity) {
+        const universityUrl = matchingUniversity.acronym
+          ? matchingUniversity.acronym.toLowerCase()
+          : slugify(matchingUniversity.name);
+        navigate(`/universities/${universityUrl}`);
+      } else {
+        // Fallback to search if no exact match found
+        navigate(`/universities?search=${encodeURIComponent(searchQuery.trim())}`);
+      }
     } else {
       // If it's not a known university acronym, redirect to programs page with the search query
       navigate(`/programs?search=${encodeURIComponent(searchQuery.trim())}`);

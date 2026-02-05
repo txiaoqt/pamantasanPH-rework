@@ -21,6 +21,7 @@ interface UniversityCardProps {
     tuitionRange: string;
     accreditation: string[];
     admissionStatus: 'open' | 'not-yet-open' | 'closed';
+    acronym?: string;
     admissionDeadline: string;
 }
 
@@ -28,6 +29,7 @@ interface UniversityCardProps {
 function UniversityCard({
     id,
     name,
+    acronym,
     location,
     established,
     type,
@@ -173,7 +175,7 @@ function UniversityCard({
                         <span className="text-xs sm:text-sm">Compare</span>
                     </button>
                     <Link
-                        to={`/universities/${slugify(name)}`}
+                        to={`/universities/${acronym ? acronym.toLowerCase() : slugify(name)}`}
                         className="flex-1 min-w-0 px-2 py-1.5 bg-maroon-800 dark:bg-maroon-700 text-white rounded-lg hover:bg-maroon-700 dark:hover:bg-maroon-600 transition-colors flex items-center justify-center text-xs sm:text-sm"
                     >
                         <ExternalLink className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" />
