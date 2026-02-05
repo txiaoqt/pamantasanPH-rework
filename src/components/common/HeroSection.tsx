@@ -8,6 +8,10 @@ import trollfaceImage from '../../assets/Images/Trollface.png';
 import Fuse from 'fuse.js';
 import { slugify } from '../../lib/utils';
 
+const KNOWN_UNIVERSITY_ACRONYMS = [
+  'PUP', 'PUPQC', 'PUP-Parañaque', 'PUPSJ', 'PUPT', 'RTU', 'RTU-Pasig', 'TUP', 'TUP-T', 'EARIST', 'MPC', 'PhilSCA', 'PLM', 'PNU', 'UPD', 'UPM'
+];
+
 export default function HeroSection() {
   const [searchQuery, setSearchQuery] = useState('');
   const [location, setLocation] = useState('');
@@ -17,8 +21,7 @@ export default function HeroSection() {
   const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
   const [allUniversities, setAllUniversities] = useState<University[]>([]);
   const [allPrograms, setAllPrograms] = useState<AggregatedProgram[]>([]);
-  const [universityAcronyms, setUniversityAcronyms] = useState<string[]>([]);
-  const [programAcronyms, setProgramAcronyms] = useState<string[]>([]);
+
   const [stats, setStats] = useState({
     universities: 0,
     locations: 0,
@@ -45,20 +48,6 @@ export default function HeroSection() {
     };
     fetchData();
   }, []);
-
-  // Populate acronym lists
-  useEffect(() => {
-    if (allUniversities.length > 0) {
-      const uniAcronyms = allUniversities
-        .map(uni => uni.acronym)
-        .filter((acronym): acronym is string => !!acronym);
-      setUniversityAcronyms(uniAcronyms);
-    }
-    if (allPrograms.length > 0) {
-      const progAcronyms = allPrograms.flatMap(program => program.searchKeywords);
-      setProgramAcronyms(progAcronyms);
-    }
-  }, [allUniversities, allPrograms]);
 
   // Initialize Fuse.js
   useEffect(() => {
@@ -111,15 +100,11 @@ export default function HeroSection() {
   // Handle search submission
   const handleSearch = () => {
     const query = searchQuery.trim().toUpperCase();
-    if (universityAcronyms.includes(query)) {
+    if (KNOWN_UNIVERSITY_ACRONYMS.includes(query)) {
       navigate(`/universities?search=${encodeURIComponent(searchQuery.trim())}`);
-    } else if (programAcronyms.includes(query)) {
-      navigate(`/programs?search=${encodeURIComponent(searchQuery.trim())}`);
     } else {
-      const params = new URLSearchParams();
-      if (searchQuery.trim()) params.set('search', searchQuery.trim());
-      if (location.trim()) params.set('location', location.trim());
-      navigate(`/universities?${params.toString()}`);
+      // If it's not a known university acronym, redirect to programs page with the search query
+      navigate(`/programs?search=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
 
@@ -141,13 +126,6 @@ export default function HeroSection() {
     setShowLocationSuggestions(false);
   };
 
-  const handleProgramSearch = () => {
-    if (searchQuery.trim()) {
-      navigate(`/programs?search=${encodeURIComponent(searchQuery.trim())}`);
-    } else {
-      navigate('/programs');
-    }
-  };
 
   // Handle clicks outside to close suggestions
   useEffect(() => {
