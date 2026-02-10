@@ -7,8 +7,8 @@ import FeaturedUniversities from './components/home/FeaturedUniversities';
 import ExploreTools from './components/home/ExploreTools';
 import Newsletter from './components/common/Newsletter';
 import Footer from './components/common/Footer';
-import Chatbot from './components/common/Chatbot';
 import Universities from './pages/Universities';
+import ChatbotPage from './pages/ChatbotPage'; // Import ChatbotPage
 import Programs from './pages/Programs';
 import Compare from './pages/Compare';
 import About from './pages/About';
@@ -37,7 +37,6 @@ function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [showTermsModal, setShowTermsModal] = useState(false);
-  const [chatbotOpen, setChatbotOpen] = useState(false); // State for chatbot visibility
 
   useEffect(() => {
     setLoading(true);
@@ -129,8 +128,9 @@ function App() {
               <Route path="/about" element={<About />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
-              <Route path="/sitemap" element={<Sitemap isChatbotOpen={chatbotOpen} />} />
+              <Route path="/sitemap" element={<Sitemap />} />
               <Route path="/faq" element={<FAQ />} />
+              <Route path="/chatbot" element={<ChatbotPage />} /> {/* New route for ChatbotPage */}
               <Route path="/universities/:acronym" element={<UniversityDetails session={session} />} />
               <Route path="/login" element={<RedirectIfAuthenticated><Login /></RedirectIfAuthenticated>} />
               <Route path="/signup" element={<RedirectIfAuthenticated><SignUp /></RedirectIfAuthenticated>} />
@@ -145,7 +145,6 @@ function App() {
           </ScrollToTop>
         </main>
         <Footer />
-        <Chatbot isOpen={chatbotOpen} setIsOpen={setChatbotOpen} />
       </div>
     </Router>
   );

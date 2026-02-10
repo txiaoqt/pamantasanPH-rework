@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { GraduationCap, Menu, X, User, LogOut, Settings, Bookmark, GitCompareArrows, Info } from 'lucide-react';
+import { GraduationCap, Menu, X, User, LogOut, Settings, Bookmark, GitCompareArrows, Info, MessageCircle } from 'lucide-react'; // Added MessageCircle
 import { Session } from '@supabase/supabase-js';
 import { supabase } from '../../lib/supabase';
 
@@ -110,6 +110,15 @@ export default function Header({ mobileMenuOpen, setMobileMenuOpen, session }: H
                             Compare
                           </Link>
 
+                          <Link
+                            to="/chatbot" // Link to the new chatbot page
+                            onClick={() => setProfileMenuOpen(false)} // Close profile menu when navigating
+                            className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                          >
+                            <MessageCircle className="mr-3 h-5 w-5" />
+                            Chatbot
+                          </Link>
+
                           <button onClick={handleLogout} className="flex items-center w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
                             <LogOut className="mr-3 h-5 w-5" />
                             Logout
@@ -163,20 +172,27 @@ export default function Header({ mobileMenuOpen, setMobileMenuOpen, session }: H
                         <Bookmark className="mr-2 h-5 w-5 dark:text-gray-400" />
                         Saved
                     </Link>
-                    <Link 
-                      to="/compare" 
-                      className="flex items-center py-2 text-sm text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                        <GitCompareArrows className="mr-2 h-5 w-5 dark:text-gray-400" />
-                        Compare
-                    </Link>
-                    <button 
-                      onClick={() => {
-                        handleLogout();
-                        setMobileMenuOpen(false);
-                      }} 
-                      className="flex items-center w-full text-left py-2 text-sm text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white"
+                                        <Link
+                                          to="/compare"
+                                          className="flex items-center py-2 text-sm text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white"
+                                          onClick={() => setMobileMenuOpen(false)}
+                                        >
+                                            <GitCompareArrows className="mr-2 h-5 w-5 dark:text-gray-400" />
+                                            Compare
+                                        </Link>
+                                        <Link
+                                          to="/chatbot" // Added Chatbot link to mobile menu
+                                          className="flex items-center py-2 text-sm text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white"
+                                          onClick={() => setMobileMenuOpen(false)}
+                                        >
+                                            <MessageCircle className="mr-2 h-5 w-5 dark:text-gray-400" />
+                                            Chatbot
+                                        </Link>
+                                        <button
+                                          onClick={() => {
+                                            handleLogout();
+                                            setMobileMenuOpen(false);
+                                          }}                      className="flex items-center w-full text-left py-2 text-sm text-gray-700 dark:text-gray-400 hover:text-maroon-900 dark:hover:text-white"
                     >
                         <LogOut className="mr-2 h-5 w-5 dark:text-gray-400" />
                         Logout
