@@ -1,5 +1,5 @@
 import React from 'react';
-import { Users, Target, Heart, Globe, BookOpen, TrendingUp, Shield } from 'lucide-react';
+import { Target, Heart, Globe, Shield } from 'lucide-react';
 import memeImage from '../assets/Images/meme.png';
 
 interface TeamMemberProps {

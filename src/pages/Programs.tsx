@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Search, BookOpen, Clock, Users, Award, TrendingUp } from 'lucide-react';
+import { Search, BookOpen, Users } from 'lucide-react';
 import { AcademicProgramService, AggregatedProgram } from '../services/academicProgramService';
-import { UniversityService } from '../services/universityService';
 import Highlighter from '../components/common/Highlighter';
 
 function ProgramCard({ program, onFindUniversities, searchQuery }: {
@@ -60,28 +59,24 @@ function ProgramCard({ program, onFindUniversities, searchQuery }: {
 
 export default function Programs() {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [programs, setPrograms] = useState<AggregatedProgram[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
   const [categoryFilter, setCategoryFilter] = useState(searchParams.get('category') || '');
   const [levelFilter, setLevelFilter] = useState('');
-  const [sortBy] = useState('popularity');
 
 
   // Fetch programs data
   useEffect(() => {
     const fetchPrograms = async () => {
       try {
-        setIsLoading(true);
         const [aggregatedData] = await Promise.all([
           AcademicProgramService.getAggregatedPrograms(),
           AcademicProgramService.getAllPrograms()
         ]);
-                  setPrograms(aggregatedData);      } catch (error) {
+        setPrograms(aggregatedData);
+      } catch (error) {
         console.error('Failed to fetch programs:', error);
-      } finally {
-        setIsLoading(false);
       }
     };
 

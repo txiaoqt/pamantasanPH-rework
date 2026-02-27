@@ -91,21 +91,21 @@ export const knowledgeBase = {
       },
       {
         question: 'Which universities are featured on this platform?',
-        answer: 'We feature a growing list of State Universities and Colleges (SUCs) in Metro Manila. Our database includes, but is not limited to: Polytechnic University of the Philippines (PUP), Technological University of the Philippines (TUP), Pamantasan ng Lungsod ng Maynila (PLM), Rizal Technological University (RTU), University of the Philippines (UP), Philippine Normal University (PNU), Eulogio \"Amang\" Rodriguez Institute of Science and Technology (EARIST), Marikina Polytechnic College (MPC), and Philippine State College of Aeronautics (PhilsCA). We are continuously working to add more universities.',
+        answer: 'We feature a growing list of State Universities and Colleges (SUCs) in Metro Manila. Our database includes, but is not limited to: Polytechnic University of the Philippines (PUP), Technological University of the Philippines (TUP), Pamantasan ng Lungsod ng Maynila (PLM), Rizal Technological University (RTU), University of the Philippines (UP), Philippine Normal University (PNU), Eulogio "Amang" Rodriguez Institute of Science and Technology (EARIST), Marikina Polytechnic College (MPC), and Philippine State College of Aeronautics (PhilsCA). We are continuously working to add more universities.',
       },
     ],
     website: [
       {
         question: 'How do I search for universities?',
-        answer: 'You can use the \"Universities\" link in the main navigation to browse a list of all featured institutions. You can also use the search bar to find universities by name.',
+        answer: 'You can use the "Universities" link in the main navigation to browse a list of all featured institutions. You can also use the search bar to find universities by name.',
       },
       {
-        question: 'How does the \"Compare\" feature work?',
-        answer: 'The \"Compare\" tool allows you to select up to three universities and view their details side-by-side. This includes information on programs, tuition fees, admission requirements, and campus facilities, helping you make an informed decision.',
+        question: 'How does the "Compare" feature work?',
+        answer: 'The "Compare" tool allows you to select up to three universities and view their details side-by-side. This includes information on programs, tuition fees, admission requirements, and campus facilities, helping you make an informed decision.',
       },
       {
-        question: 'What is the \"Saved\" page for?',
-        answer: 'By creating a free account, you can save universities and programs that you are interested in. The \"Saved\" page provides a personalized list for you to easily access and review your top choices.',
+        question: 'What is the "Saved" page for?',
+        answer: 'By creating a free account, you can save universities and programs that you are interested in. The "Saved" page provides a personalized list for you to easily access and review your top choices.',
       }
     ],
     universityInfo: [

@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Plus, X, BookOpen, MapPin, Users, Building, ShieldCheck, BarChart3
+  Plus, X, BarChart3
 } from 'lucide-react';
 import { UniversityService } from '../services/universityService';
 import { University } from '../components/university/UniversityCard';
 
-// This is a simplified interface for the comparison data
-interface ComparisonUniversity extends University {
-  // We can add more specific fields for comparison if needed
-}
+type ComparisonUniversity = University;
 
 function Compare() {
   const navigate = useNavigate();
@@ -22,7 +19,7 @@ function Compare() {
     const fetchUniversities = async () => {
       try {
         setIsLoading(true);
-        const storedIds = JSON.parse(localStorage.getItem('compareUniversities') || '[]').map((u: any) => u.id);
+        const storedIds = JSON.parse(localStorage.getItem('compareUniversities') || '[]').map((u: { id: number }) => u.id);
         
         const allData = await UniversityService.getAllUniversities();
         setAllUniversities(allData);
@@ -44,7 +41,7 @@ function Compare() {
     const updatedSelection = selectedUniversities.filter(u => u.id !== id);
     setSelectedUniversities(updatedSelection);
     
-    const storedItems = JSON.parse(localStorage.getItem('compareUniversities') || '[]').filter((u: any) => u.id !== id);
+    const storedItems = JSON.parse(localStorage.getItem('compareUniversities') || '[]').filter((u: { id: number }) => u.id !== id);
     localStorage.setItem('compareUniversities', JSON.stringify(storedItems));
     
     if (mobileActiveIndex >= updatedSelection.length) {
@@ -137,8 +134,8 @@ function Compare() {
                 <div key={row.key} className="flex border-t border-gray-200 dark:border-gray-700">
                   <div className="w-1/4 p-4 font-medium text-gray-700 dark:text-gray-400 bg-gray-50/70 dark:bg-gray-700/70 border-r border-gray-200 dark:border-gray-700">{row.label}</div>
                   {selectedUniversities.map(uni => {
-                    const value = (uni as any)[row.key];
-                    const isBest = value && (best as any)[row.key] !== null && parseInt(String(value).replace(/,/g, '')) === (best as any)[row.key];
+                    const value = uni[row.key as keyof ComparisonUniversity];
+                    const isBest = value && (best as Record<string, number | null>)[row.key] !== null && parseInt(String(value).replace(/,/g, '')) === (best as Record<string, number | null>)[row.key];
                     return (
                       <div key={uni.id} className={`w-1/4 p-4 text-center text-sm text-gray-700 dark:text-gray-400 ${isBest ? 'bg-green-50 dark:bg-green-950' : ''}`}>
                         {Array.isArray(value) ? value.slice(0, 2).join(', ') + (value.length > 2 ? '...' : '') : value}
@@ -179,9 +176,9 @@ function Compare() {
                     <div key={row.key} className="flex justify-between p-4 border-t border-gray-100 dark:border-gray-700">
                       <p className="font-medium text-gray-700 dark:text-gray-400">{row.label}</p>
                       <p className="text-gray-700 dark:text-gray-400 text-right">
-                        {Array.isArray((selectedUniversities[mobileActiveIndex] as any)[row.key])
-                          ? ((selectedUniversities[mobileActiveIndex] as any)[row.key]).slice(0, 2).join(', ') + (((selectedUniversities[mobileActiveIndex] as any)[row.key]).length > 2 ? '...' : '')
-                          : (selectedUniversities[mobileActiveIndex] as any)[row.key]
+                        {Array.isArray(selectedUniversities[mobileActiveIndex][row.key as keyof ComparisonUniversity])
+                          ? (selectedUniversities[mobileActiveIndex][row.key as keyof ComparisonUniversity] as string[]).slice(0, 2).join(', ') + ((selectedUniversities[mobileActiveIndex][row.key as keyof ComparisonUniversity] as string[]).length > 2 ? '...' : '')
+                          : selectedUniversities[mobileActiveIndex][row.key as keyof ComparisonUniversity]
                         }
                       </p>
                     </div>

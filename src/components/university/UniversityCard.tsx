@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { MapPin, Users, BookOpen, Heart, BarChart3, ExternalLink } from 'lucide-react';
 import { slugify } from '../../lib/utils';
 import { useSavedUniversities } from '../../hooks/useSavedUniversities';
-import { AcademicProgram } from '../../lib/supabase';
 
 export interface University {
   id: number;
@@ -108,7 +107,7 @@ export default function UniversityCard({ viewMode, ...university }: UniversityCa
     };
 
     // Check if university is already in compare list
-    const existingIndex = compareList.findIndex((item: any) => item.id === university.id);
+    const existingIndex = compareList.findIndex((item: { id: number }) => item.id === university.id);
 
     if (existingIndex >= 0) {
       // Remove from compare list

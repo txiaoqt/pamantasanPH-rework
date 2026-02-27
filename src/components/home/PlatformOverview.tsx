@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { MapPin, BookOpen, Building, Users } from 'lucide-react'; // Added Users icon
+import { MapPin, Building, Users } from 'lucide-react'; // Added Users icon
 import { UniversityService } from '../../services/universityService';
-import { University } from '../university/UniversityCard';
 
 interface StatCardProps {
   title: string;
@@ -35,7 +34,6 @@ function StatCard({ title, value, subtitle, highlight, icon }: StatCardProps) {
 }
 
 export default function PlatformOverview() {
-  const [universities, setUniversities] = useState<University[]>([]);
   const [stats, setStats] = useState([
     {
       title: 'Total Universities',
@@ -62,7 +60,6 @@ export default function PlatformOverview() {
     const fetchUniversities = async () => {
       try {
         const data = await UniversityService.getAllUniversities();
-        setUniversities(data);
 
         // Calculate real stats
         const locations = new Set(data.map(uni => uni.location));

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Star, Users, BookOpen, MapPin, Heart, BarChart3, ExternalLink } from 'lucide-react';
+import { Users, BookOpen, MapPin, Heart, BarChart3, ExternalLink } from 'lucide-react';
 import { Link, useNavigate } from "react-router-dom";
 import { UniversityService } from '../../services/universityService';
 import { University } from '../university/UniversityCard';
@@ -205,7 +205,7 @@ export default function FeaturedUniversities() {
         };
 
         // Check if university is already in compare list
-        const existingIndex = compareList.findIndex((item: any) => item.id === university.id);
+        const existingIndex = compareList.findIndex((item: { id: number }) => item.id === university.id);
 
         if (existingIndex >= 0) {
             // Remove from compare list

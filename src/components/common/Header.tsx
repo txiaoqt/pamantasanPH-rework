@@ -1,8 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { GraduationCap, Menu, X, User, LogOut, Settings, Bookmark, GitCompareArrows, Info, MessageCircle } from 'lucide-react'; // Added MessageCircle
+import { GraduationCap, Menu, X, User, LogOut, Settings, Bookmark, GitCompareArrows, MessageCircle } from 'lucide-react'; // Added MessageCircle
 import { Session } from '@supabase/supabase-js';
 import { supabase } from '../../lib/supabase';
+
+interface UserProfile {
+  full_name?: string;
+  avatar_url?: string;
+}
 
 interface HeaderProps {
   mobileMenuOpen: boolean;
@@ -12,7 +17,7 @@ interface HeaderProps {
 
 export default function Header({ mobileMenuOpen, setMobileMenuOpen, session }: HeaderProps) {
   const location = useLocation();
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement>(null);
@@ -33,7 +38,7 @@ export default function Header({ mobileMenuOpen, setMobileMenuOpen, session }: H
     if (session?.user) {
       setLoadingProfile(true);
       const fetchProfile = async () => {
-        const { data, error } = await supabase
+        const { data } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', session.user.id)

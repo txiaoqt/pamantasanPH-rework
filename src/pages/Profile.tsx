@@ -3,17 +3,8 @@ import { supabase } from '../lib/supabase';
 import { User } from '@supabase/supabase-js';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme';
-import { User as UserIcon, Shield, Settings, AlertTriangle, LogOut, Camera, Star, CheckCircle, ChevronDown } from 'lucide-react';
+import { User as UserIcon, Shield, Settings, AlertTriangle, LogOut, Camera, Star, ChevronDown } from 'lucide-react';
 import { AdmissionRequirementService, UserRequirementChecklistItem } from '../services/admissionRequirementService';
-import LoginPromptModal from '../components/common/LoginPromptModal';
-
-interface ProfileType {
-  id: string;
-  full_name: string;
-  location: string;
-  avatar_url: string;
-  updated_at: string;
-}
 
 interface TrackedRequirement extends UserRequirementChecklistItem {
   universities: {
@@ -24,12 +15,10 @@ interface TrackedRequirement extends UserRequirementChecklistItem {
 
 export default function Profile() {
   const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<ProfileType | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('profile');
   const [trackedRequirements, setTrackedRequirements] = useState<TrackedRequirement[]>([]);
   const [isLoadingTracked, setIsLoadingTracked] = useState(true);
-  const [showLoginModal, setShowLoginModal] = useState(false);
   const [expandedUniversities, setExpandedUniversities] = useState<Record<number, boolean>>({});
   
   // Form state
@@ -55,7 +44,6 @@ export default function Profile() {
           .single();
         
         if (profileData) {
-          setProfile({ ...profileData, updated_at: profileData.updated_at || new Date().toISOString() });
           setFullName(profileData.full_name || '');
           setLocation(profileData.location || '');
           setAvatarUrl(profileData.avatar_url || null);
@@ -77,7 +65,6 @@ export default function Profile() {
 
   const handleToggleRequirement = async (requirement: TrackedRequirement, isCompleted: boolean) => {
     if (!user?.id) {
-      setShowLoginModal(true);
       return;
     }
 
@@ -101,7 +88,6 @@ export default function Profile() {
 
   const handleUntrackUniversity = async (universityId: number) => {
     if (!user?.id) {
-      setShowLoginModal(true);
       return;
     }
 

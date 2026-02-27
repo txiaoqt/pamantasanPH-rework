@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Briefcase, Users, Code, PenTool, Lightbulb, TrendingUp, Sparkles, MapPin, Building, Target, Zap, Award } from 'lucide-react';
-import Footer from '../components/common/Footer';
+import { Users, Lightbulb, Sparkles, MapPin, Award } from 'lucide-react';
 import alyssaImage from '../assets/Images/alyssa.jpg';
 import daniImage from '../assets/Images/dani.png';
 import namiImage from '../assets/Images/nami.jpg';

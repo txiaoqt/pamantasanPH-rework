@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { MessageCircle, X, Send, Bot, User, ExternalLink } from 'lucide-react';
+import { MessageCircle, X, Send, Bot, User } from 'lucide-react';
 import { UniversityService } from '../../services/universityService';
 import { AcademicProgramService } from '../../services/academicProgramService';
 import { University } from '../university/UniversityCard';
@@ -33,16 +33,6 @@ interface Message {
   suggestions?: string[];
 }
 
-interface ConversationFlow {
-  [key: string]: {
-    pattern: RegExp;
-    responses: string[];
-    suggestions?: string[];
-    nextFlow?: string;
-    action?: () => void;
-  };
-}
-
 interface KnowledgeBase {
   [key: string]: {
     pattern: RegExp;
@@ -51,14 +41,6 @@ interface KnowledgeBase {
     nextFlow?: string;
     action?: () => void;
   };
-}
-
-interface ConversationContext {
-  exploredUniversities: string[];
-  currentUniversity: string | null;
-  lastTopic: string | null;
-  explorationLevel: 'overview' | 'detailed' | 'deep';
-  userPreferences: string[];
 }
 
 export default function Chatbot() {
@@ -80,15 +62,6 @@ export default function Chatbot() {
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  // Context tracking for conversational flow
-  const [conversationContext, setConversationContext] = useState<ConversationContext>({
-    exploredUniversities: [],
-    currentUniversity: null,
-    lastTopic: null,
-    explorationLevel: 'overview',
-    userPreferences: []
-  });
 
   // Dynamic rule-based knowledge base that only uses real universities from database
   const knowledgeBase: KnowledgeBase = {
@@ -643,7 +616,7 @@ export default function Chatbot() {
   };
   
   const handleRuleBasedQuery = (userMessage: string) => {
-    for (const [key, value] of Object.entries(knowledgeBase)) {
+    for (const [, value] of Object.entries(knowledgeBase)) {
       if (value.pattern.test(userMessage)) {
         const randomResponse = value.responses[Math.floor(Math.random() * value.responses.length)];
         return {
@@ -704,7 +677,7 @@ ${u.name}:
 
       const cleanAiResponse = aiResponse.replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*(.*?)\*/g, '$1').replace(/^\d+\.\s*/gm, '').replace(/^-\s*/gm, '').replace(/^###\s*/gm, '').replace(/^##\s*/gm, '').replace(/^#\s*/gm, '').replace(/^\s*[-*+]\s+/gm, '').trim();
 
-      let suggestions: string[] = [];
+      const suggestions: string[] = [];
       if (aiResponse.toLowerCase().includes('program')) {
         suggestions.push('Explore programs');
       }
@@ -838,7 +811,7 @@ ${u.name}:
           const tup = universities.find(u => u.name.toLowerCase().includes('technological') || u.name.toLowerCase().includes('tup'));
           const plm = universities.find(u => u.name.toLowerCase().includes('lungsod') || u.name.toLowerCase().includes('maynila') || u.name.toLowerCase().includes('plm'));
 
-          let techPrograms = [];
+          const techPrograms = [];
 
           if (pup) {
             const pupPrograms = await AcademicProgramService.getProgramsByUniversityId(pup.id);
@@ -874,7 +847,7 @@ ${u.name}:
 
           response = `🤖💻 You're interested in Technology and IT programs! 📚\n\nHere are some top programs offered by our universities:\n\n${techPrograms.slice(0, 8).map(name => `• ${name}`).join('\n')}${techPrograms.length > 8 ? `\n...and ${techPrograms.length - 8} more programs` : ''}\n\nTUP specializes in engineering and technology programs, PUP offers comprehensive IT education, and PLM provides strong computer science programs. These programs prepare you for exciting careers in software development, data analysis, cybersecurity, and more!\n\nWhich of these programs resonates with you? 🤔`;
           suggestions = ['Suggest a course', 'Get admission requirements', 'Compare with other universities'];
-        } catch (error) {
+        } catch {
           response = '🤖💻 You\'re interested in Technology and IT programs! 📚\n\nAll our universities offer excellent technology programs:\n\n• Computer Science (PUP, TUP, PLM)\n• Information Technology (PUP, TUP, PLM)\n• Computer Engineering (PUP, TUP, PLM)\n• Information Systems (PUP, TUP)\n• Electronics Engineering (TUP, PLM)\n\nTUP is particularly strong in engineering technology, PUP offers comprehensive IT education, and PLM provides excellent computer science programs.\n\nWhat specific technology area interests you most? 🤔';
           suggestions = ['Computer Science', 'IT programs', 'Engineering tech', 'Programming courses'];
         }
@@ -886,7 +859,7 @@ ${u.name}:
           const tup = universities.find(u => u.name.toLowerCase().includes('technological') || u.name.toLowerCase().includes('tup'));
           const plm = universities.find(u => u.name.toLowerCase().includes('lungsod') || u.name.toLowerCase().includes('maynila') || u.name.toLowerCase().includes('plm'));
 
-          let businessPrograms = [];
+          const businessPrograms = [];
 
           if (pup) {
             const pupPrograms = await AcademicProgramService.getProgramsByUniversityId(pup.id);
@@ -928,7 +901,7 @@ ${u.name}:
 
           response = `💼📊 You're interested in Business & Finance programs! 📈\n\nHere are some top programs offered by our universities:\n\n${businessPrograms.slice(0, 10).map(name => `• ${name}`).join('\n')}${businessPrograms.length > 10 ? `\n...and ${businessPrograms.length - 10} more programs` : ''}\n\nPLM excels in business and finance programs, PUP offers comprehensive business administration, and TUP provides strong management and entrepreneurship programs. These programs prepare you for careers in accounting, finance, management, entrepreneurship, and business leadership!\n\nWhich business path interests you most? 🤔`;
           suggestions = ['Suggest a course', 'Get admission requirements', 'Compare with other universities'];
-        } catch (error) {
+        } catch {
           response = '💼📊 You\'re interested in Business & Finance programs! 📈\n\nAll our universities offer excellent business programs:\n\n• Business Administration (PUP, PLM)\n• Accountancy (PUP, PLM)\n• Entrepreneurship (PUP, TUP, PLM)\n• Financial Management (PUP, PLM)\n• Hospitality Management (TUP, PLM)\n• Tourism Management (PLM)\n\nPLM is particularly strong in business and finance, PUP offers comprehensive business education, and TUP provides excellent management programs.\n\nWhat business area excites you most? 🤔';
           suggestions = ['Accountancy', 'Business Admin', 'Entrepreneurship', 'Tourism Management'];
         }
@@ -940,7 +913,7 @@ ${u.name}:
           const tup = universities.find(u => u.name.toLowerCase().includes('technological') || u.name.toLowerCase().includes('tup'));
           const plm = universities.find(u => u.name.toLowerCase().includes('lungsod') || u.name.toLowerCase().includes('maynila') || u.name.toLowerCase().includes('plm'));
 
-          let engineeringPrograms = [];
+          const engineeringPrograms = [];
 
           if (pup) {
             const pupPrograms = await AcademicProgramService.getProgramsByUniversityId(pup.id);
@@ -985,7 +958,7 @@ ${u.name}:
 
           response = `🔧⚙️ You're interested in Engineering fields! 🏗️\n\nHere are some top programs offered by our universities:\n\n${engineeringPrograms.slice(0, 12).map(name => `• ${name}`).join('\n')}${engineeringPrograms.length > 12 ? `\n...and ${engineeringPrograms.length - 12} more programs` : ''}\n\nTUP is the engineering powerhouse with extensive technology programs, PUP offers solid engineering education, and PLM provides excellent engineering programs. These programs prepare you for careers in construction, manufacturing, technology, infrastructure, and innovation!\n\nWhich engineering discipline interests you most? 🤔`;
           suggestions = ['Suggest a course', 'Get admission requirements', 'Compare with other universities'];
-        } catch (error) {
+        } catch {
           response = '🔧⚙️ You\'re interested in Engineering fields! 🏗️\n\nAll our universities offer excellent engineering programs:\n\n• Civil Engineering (PUP, TUP, PLM)\n• Mechanical Engineering (PUP, TUP, PLM)\n• Electrical Engineering (PUP, TUP, PLM)\n• Electronics Engineering (PUP, TUP, PLM)\n• Computer Engineering (PUP, TUP, PLM)\n• Chemical Engineering (PLM)\n• Industrial Engineering (PUP)\n• Railway Engineering (PUP, TUP)\n\nTUP specializes in engineering and technology, PUP offers comprehensive engineering education, and PLM provides excellent professional engineering programs.\n\nWhat engineering field excites you most? 🤔';
           suggestions = ['Civil Engineering', 'Computer Engineering', 'Mechanical Engineering', 'Electrical Engineering'];
         }
@@ -994,10 +967,9 @@ ${u.name}:
         try {
           const universities = await UniversityService.getAllUniversities();
           const pup = universities.find(u => u.name.toLowerCase().includes('polytechnic') || u.name.toLowerCase().includes('pup'));
-          const tup = universities.find(u => u.name.toLowerCase().includes('technological') || u.name.toLowerCase().includes('tup'));
           const plm = universities.find(u => u.name.toLowerCase().includes('lungsod') || u.name.toLowerCase().includes('maynila') || u.name.toLowerCase().includes('plm'));
 
-          let healthcarePrograms = [];
+          const healthcarePrograms = [];
 
           if (pup) {
             const pupPrograms = await AcademicProgramService.getProgramsByUniversityId(pup.id);
@@ -1021,7 +993,7 @@ ${u.name}:
 
           response = `🏥⚕️ You're interested in Healthcare programs! 👩‍⚕️\n\nHere are some top programs offered by our universities:\n\n${healthcarePrograms.slice(0, 6).map(name => `• ${name}`).join('\n')}${healthcarePrograms.length > 6 ? `\n...and ${healthcarePrograms.length - 6} more programs` : ''}\n\nPLM is the leader in healthcare education with their renowned Doctor of Medicine program and excellent nursing courses! 🩺 PUP also offers strong nutrition and dietetics programs. These programs prepare you for rewarding careers in medicine, nursing, therapy, and healthcare!\n\nWhich healthcare path interests you most? 🤔`;
           suggestions = ['Suggest a course', 'Get admission requirements', 'Compare with other universities'];
-        } catch (error) {
+        } catch {
           response = '🏥⚕️ You\'re interested in Healthcare programs! 👩‍⚕️\n\nPLM leads in healthcare education with their renowned Doctor of Medicine program and excellent nursing courses! 🩺 PUP also offers strong nutrition and dietetics programs.\n\n• Doctor of Medicine (PLM)\n• Bachelor of Science in Nursing (PLM)\n• Bachelor of Science in Physical Therapy (PLM)\n• Bachelor of Science in Nutrition and Dietetics (PUP)\n\nThese programs prepare you for rewarding careers in medicine, nursing, therapy, and healthcare!\n\nWhich healthcare path interests you most? 🤔';
           suggestions = ['PLM programs', 'PUP programs', 'Admission requirements', 'Nursing programs'];
         }
@@ -1032,7 +1004,7 @@ ${u.name}:
           const pup = universities.find(u => u.name.toLowerCase().includes('polytechnic') || u.name.toLowerCase().includes('pup'));
           const plm = universities.find(u => u.name.toLowerCase().includes('lungsod') || u.name.toLowerCase().includes('maynila') || u.name.toLowerCase().includes('plm'));
 
-          let educationPrograms = [];
+          const educationPrograms = [];
 
           if (pup) {
             const pupPrograms = await AcademicProgramService.getProgramsByUniversityId(pup.id);
@@ -1060,7 +1032,7 @@ ${u.name}:
 
           response = `📚🎓 You're interested in Education programs! 👨‍🏫\n\nHere are some top programs offered by our universities:\n\n${educationPrograms.slice(0, 12).map(name => `• ${name}`).join('\n')}${educationPrograms.length > 12 ? `\n...and ${educationPrograms.length - 12} more programs` : ''}\n\nPUP offers the most comprehensive education programs, while PLM provides excellent teacher education and specialized education courses. These programs prepare you for rewarding careers in teaching, educational administration, and educational technology!\n\nWhich education specialization interests you most? 🤔`;
           suggestions = ['Suggest a course', 'Get admission requirements', 'Compare with other universities'];
-        } catch (error) {
+        } catch {
           response = '📚🎓 You\'re interested in Education programs! 👨‍🏫\n\nBoth PUP and PLM offer excellent education programs:\n\n• Bachelor of Elementary Education (PUP, PLM)\n• Bachelor of Secondary Education (PUP, PLM)\n• Bachelor of Technology and Livelihood Education (PUP)\n• Bachelor of Library and Information Science (PUP)\n• Bachelor of Physical Education (PUP, PLM)\n• Bachelor of Early Childhood Education (PLM)\n\nPUP has extensive education offerings, while PLM specializes in professional teacher education. These programs prepare you for fulfilling careers in education!\n\nWhat type of education interests you most? 🤔';
           suggestions = ['PUP programs', 'PLM programs', 'Admission requirements', 'Teacher education'];
         }
@@ -1072,7 +1044,7 @@ ${u.name}:
           const tup = universities.find(u => u.name.toLowerCase().includes('technological') || u.name.toLowerCase().includes('tup'));
           const plm = universities.find(u => u.name.toLowerCase().includes('lungsod') || u.name.toLowerCase().includes('maynila') || u.name.toLowerCase().includes('plm'));
 
-          let artsSciencesPrograms = [];
+          const artsSciencesPrograms = [];
 
           if (pup) {
             const pupPrograms = await AcademicProgramService.getProgramsByUniversityId(pup.id);
@@ -1120,7 +1092,7 @@ ${u.name}:
 
           response = `🎨🔬 You're interested in Arts & Sciences programs! 📖\n\nHere are some top programs offered by our universities:\n\n${artsSciencesPrograms.slice(0, 15).map(name => `• ${name}`).join('\n')}${artsSciencesPrograms.length > 15 ? `\n...and ${artsSciencesPrograms.length - 15} more programs` : ''}\n\nPUP offers the broadest range of arts and sciences programs, from humanities and social sciences to natural sciences. PLM provides excellent science programs and liberal arts education. TUP focuses on applied sciences and technology-related fields. These programs prepare you for diverse careers in research, education, communication, and scientific fields!\n\nWhich area of arts or sciences interests you most? 🤔`;
           suggestions = ['Suggest a course', 'Get admission requirements', 'Compare with other universities'];
-        } catch (error) {
+        } catch {
           response = '🎨🔬 You\'re interested in Arts & Sciences programs! 📖\n\nOur universities offer excellent programs in arts and sciences:\n\n• Psychology (PUP, PLM)\n• Biology (PUP, PLM)\n• Chemistry (PUP, PLM)\n• Mathematics (PUP, PLM)\n• Communication (PUP, PLM)\n• Sociology (PUP)\n• History (PUP)\n• Economics (PUP, PLM)\n• English Language Studies (PUP)\n• Filipino Language Studies (PUP)\n\nPUP has the most comprehensive offerings, while PLM excels in sciences and professional programs. These programs prepare you for careers in research, education, media, and various scientific fields!\n\nWhat specific field interests you most? 🤔';
           suggestions = ['Psychology', 'Biology programs', 'Communication programs', 'PUP programs'];
         }
@@ -1165,7 +1137,7 @@ ${u.name}:
 Want me to dive deeper into programs, admission, or facilities for either university?`;
             suggestions = ['PUP programs', 'TUP programs', 'PUP admission', 'TUP admission', 'Go to Compare Page'];
           }
-        } catch (error) {
+        } catch {
           response = 'I\'d love to compare PUP and TUP for you! Both are excellent state universities. PUP offers broader program variety while TUP specializes in engineering excellence. Would you like me to show you their comparison tool or specific details about either university?';
           suggestions = ['Go to Compare Page', 'PUP details', 'TUP information'];
         }
@@ -1204,7 +1176,7 @@ Want me to dive deeper into programs, admission, or facilities for either univer
 Want me to explore programs, admission requirements, or campus life for either university?`;
             suggestions = ['PUP programs', 'PLM programs', 'PUP admission', 'PLM admission', 'Go to Compare Page'];
           }
-        } catch (error) {
+        } catch {
           response = 'Both PUP and PLM are outstanding choices! PUP offers broader program variety while PLM specializes in professional programs like medicine and law. Would you like me to show their detailed comparison or specific information about either university?';
           suggestions = ['Go to Compare Page', 'PUP details', 'PLM programs'];
         }
@@ -1243,7 +1215,7 @@ Want me to explore programs, admission requirements, or campus life for either u
 Want me to dive deeper into their programs, admission processes, or campus facilities?`;
             suggestions = ['TUP programs', 'PLM programs', 'TUP admission', 'PLM admission', 'Go to Compare Page'];
           }
-        } catch (error) {
+        } catch {
           response = 'TUP and PLM both offer excellent specialized education! TUP focuses on engineering excellence while PLM specializes in professional programs. Would you like me to show their comparison tool or detailed information about either university?';
           suggestions = ['Go to Compare Page', 'TUP information', 'PLM programs'];
         }
@@ -1262,9 +1234,6 @@ Want me to dive deeper into their programs, admission processes, or campus facil
       } else if (suggestion === 'TUP programs') {
         response = 'TUP is engineering heaven! 🔧 They focus on technology and industrial programs with around 40+ specialized courses. Civil Engineering, Electrical Engineering, Computer Science, and Food Technology are their stars. Exciting technical programs! ⚡ Want to see their admission details?';
         suggestions = ['List undergraduate programs', 'Show graduate programs', 'TUP admission', 'TUP facilities'];
-      } else if (suggestion === 'PLM programs') {
-        response = 'PLM offers exceptional professional programs! 🏥 Their Doctor of Medicine, Juris Doctor (Law), Nursing, and various business programs are top-notch. Located in beautiful Intramuros, they combine history with modern education. Impressive! 📚 What interests you most?';
-        suggestions = ['List undergraduate programs', 'Show graduate programs', 'PLM admission', 'PLM facilities'];
       } else if (suggestion === 'Go to Compare Page') {
         response = `Perfect! 🎯 Let's head to our comparison tool where you can compare up to 3 universities side-by-side. Click the link below to get started:\n\n🔗 **[Go to Compare Page](/compare)**\n\nYou'll be able to select universities and see tuition, programs, location, facilities, and admission requirements all in one view! 📊`;
         suggestions = ['What can I help you more with today?'];

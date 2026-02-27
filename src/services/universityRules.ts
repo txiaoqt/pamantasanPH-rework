@@ -1,5 +1,5 @@
 import { universities, academic_programs } from '@/data/universityData';
-import { University, AcademicProgram } from '@/types/University';
+import { University } from '@/types/University';
 
 type Rule = {
   pattern: RegExp;

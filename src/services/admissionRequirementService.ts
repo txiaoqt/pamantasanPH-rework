@@ -51,7 +51,7 @@ export class AdmissionRequirementService {
     requirementText: string,
     isCompleted: boolean
   ): Promise<void> {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('user_requirement_checklist')
       .upsert(
         {

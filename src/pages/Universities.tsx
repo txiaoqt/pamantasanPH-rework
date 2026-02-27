@@ -5,14 +5,13 @@ import UniversityCard, { University } from '../components/university/UniversityC
 import MapView from '../components/university/MapView';
 import { UniversityService } from '../services/universityService';
 import { AcademicProgramService } from '../services/academicProgramService';
-import Highlighter from '../components/common/Highlighter';
 
 export default function Universities() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
   const [locationFilter, setLocationFilter] = useState(searchParams.get('location') || '');
-  const [programFilter, setProgramFilter] = useState(searchParams.get('program') || '');
-  const [typeFilter, setTypeFilter] = useState('');
+  const [programFilter] = useState(searchParams.get('program') || '');
+  const [typeFilter] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map'>(
     searchParams.get('view') === 'map' ? 'map' : 'grid'
   );
@@ -78,7 +77,7 @@ export default function Universities() {
   }, [programFilter]);
 
   const filteredUniversities = useMemo(() => {
-    let filtered = universities.filter(university => {
+    const filtered = universities.filter(university => {
       // If program filter is active, only show universities that offer the program
       if (programFilter) {
         return programUniversities.includes(university.id);

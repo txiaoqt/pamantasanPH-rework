@@ -222,7 +222,7 @@ export class AcademicProgramService {
       });
 
       // Convert to aggregated programs
-      const aggregatedPrograms: AggregatedProgram[] = Object.entries(programGroups).map(([key, programs]) => {
+      const aggregatedPrograms: AggregatedProgram[] = Object.entries(programGroups).map(([, programs]) => {
         const firstProgram = programs[0];
         const universityNames = programs.map(p => universityMap.get(p.universityId) || 'Unknown').filter((name, index, arr) => arr.indexOf(name) === index);
         const acronym = this.generateAcronym(firstProgram.programName);

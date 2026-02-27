@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, FileText } from 'lucide-react';
 
 export default function Terms() {
   return (

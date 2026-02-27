@@ -13,11 +13,9 @@ import { AcademicProgramService } from '../services/academicProgramService';
 import { University } from '../components/university/UniversityCard';
 import { AcademicProgram } from '../lib/supabase';
 import { useSavedUniversities } from '../hooks/useSavedUniversities';
-import { AdmissionRequirementService, UserRequirementChecklistItem } from '../services/admissionRequirementService';
+import { AdmissionRequirementService } from '../services/admissionRequirementService';
 import LoginPromptModal from '../components/common/LoginPromptModal';
 
-import { supabase } from '../lib/supabase'; // Make sure supabase is imported
-import { unslugify } from '../lib/utils';
 import {
   ArrowLeft,
   Star,
@@ -92,7 +90,6 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
   const [selectedImage, setSelectedImage] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
   const [university, setUniversity] = useState<University | null>(null);
-  const [academicPrograms, setAcademicPrograms] = useState<Record<string, AcademicProgram[]>>({});
   const [allPrograms, setAllPrograms] = useState<AcademicProgram[]>([]);
   const [overviewPrograms, setOverviewPrograms] = useState<AcademicProgram[]>([]);
   const [dynamicProgramCount, setDynamicProgramCount] = useState<number | null>(null);
@@ -102,8 +99,6 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
-  const [expandedColleges, setExpandedColleges] = useState<Record<string, boolean>>({});
-  const [expandedAmenities, setExpandedAmenities] = useState<Record<string, boolean>>({});
   const [userChecklistProgress, setUserChecklistProgress] = useState<Map<string, boolean>>(new Map());
   const [isUniversityTracked, setIsUniversityTracked] = useState<boolean>(false);
 
@@ -157,7 +152,7 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
           text: `Check out ${university.name} on our university platform!`,
           url,
         });
-      } catch (error) {
+      } catch {
         // User cancelled share or error occurred
         console.log('Share cancelled or failed');
       }
@@ -202,7 +197,7 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
     };
 
     // Check if university is already in compare list
-    const existingIndex = compareList.findIndex((item: any) => item.id === university.id);
+    const existingIndex = compareList.findIndex((item: { id: number }) => item.id === university.id);
 
     if (existingIndex >= 0) {
       // Remove from compare list
@@ -326,7 +321,7 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
     };
   
     fetchUniversity();
-  }, [name]);
+  }, [acronym]);
 
   useEffect(() => {
     const fetchDynamicProgramCount = async () => {
@@ -501,20 +496,6 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
     setExpandedCategories(prev => ({
       ...prev,
       [category]: !prev[category]
-    }));
-  };
-
-  const toggleCollege = (collegeName: string) => {
-    setExpandedColleges(prev => ({
-      ...prev,
-      [collegeName]: !prev[collegeName]
-    }));
-  };
-
-  const toggleAmenity = (sectionName: string) => {
-    setExpandedAmenities(prev => ({
-      ...prev,
-      [sectionName]: !prev[sectionName]
     }));
   };
 

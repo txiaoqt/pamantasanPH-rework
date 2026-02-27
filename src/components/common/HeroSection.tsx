@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { University } from '../university/UniversityCard';
 import { UniversityService } from '../../services/universityService';
 import { AcademicProgramService, AggregatedProgram } from '../../services/academicProgramService';
-import trollfaceImage from '../../assets/Images/Trollface.png';
+
 import Fuse from 'fuse.js';
 import { slugify } from '../../lib/utils';
 
@@ -159,11 +159,7 @@ export default function HeroSection() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background with overlay */}
       <div className="absolute inset-0">
-        <img
-          src={trollfaceImage}
-          alt="University campus"
-          className="w-full h-full object-cover"
-        />
+      
         <div className="absolute inset-0 bg-gradient-to-br from-red-900/90 via-red-800/85 to-amber-900/80"></div>
       </div>
 

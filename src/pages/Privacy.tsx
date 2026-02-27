@@ -1,6 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowLeft, Shield } from 'lucide-react';
 
 export default function Privacy() {
   return (

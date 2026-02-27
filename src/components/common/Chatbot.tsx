@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Search, GitCompareArrows, ClipboardList, GraduationCap, SendHorizontal, Sparkles, RotateCcw, MessageSquarePlus, Clock, Bookmark, Menu, X
+  Search, GitCompareArrows, ClipboardList, GraduationCap, SendHorizontal, Sparkles, RotateCcw, MessageSquarePlus, Clock, Menu, X
 } from 'lucide-react';
 import { UniversityService } from '../../services/universityService';
 import { AcademicProgramService } from '../../services/academicProgramService';
@@ -15,7 +15,7 @@ function cn(...args: (string | undefined)[]) {
 }
 
 // --- Avatar Components (Simplified for direct integration) ---
-interface AvatarProps extends React.HTMLAttributes<HTMLDivElement> { }
+type AvatarProps = React.ComponentPropsWithoutRef<'div'>;
 
 const Avatar: React.FC<AvatarProps> = ({ className, ...props }) => (
   <div
@@ -27,7 +27,7 @@ const Avatar: React.FC<AvatarProps> = ({ className, ...props }) => (
   />
 );
 
-interface AvatarFallbackProps extends React.HTMLAttributes<HTMLSpanElement> { }
+type AvatarFallbackProps = React.ComponentPropsWithoutRef<'span'>;
 
 const AvatarFallback: React.FC<AvatarFallbackProps> = ({ className, ...props }) => (
   <span
@@ -107,11 +107,6 @@ const emptyStateSuggestions = [
 //
 // For development purposes, you can set the API key in a .env file:
 // VITE_OPENAI_API_KEY=your-openrouter-api-key
-const openai = new OpenAI({
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-  baseURL: "https://openrouter.ai/api/v1",
-  dangerouslyAllowBrowser: true
-});
 
 interface ChatbotMessage { // Updated Message interface
   id: string;
@@ -119,16 +114,6 @@ interface ChatbotMessage { // Updated Message interface
   content: string;
   timestamp: Date;
   suggestions?: string[]; // Retained for internal logic, but will not be rendered visually as separate buttons
-}
-
-interface ConversationFlow {
-  [key: string]: {
-    pattern: RegExp;
-    responses: string[];
-    suggestions?: string[];
-    nextFlow?: string;
-    action?: () => void;
-  };
 }
 
 interface KnowledgeBase {
@@ -139,14 +124,6 @@ interface KnowledgeBase {
     nextFlow?: string;
     action?: () => void;
   };
-}
-
-interface ConversationContext {
-  exploredUniversities: string[];
-  currentUniversity: null | string;
-  lastTopic: null | string;
-  explorationLevel: 'overview' | 'detailed' | 'deep';
-  userPreferences: string[];
 }
 
 // --- Local Storage Helper Functions ---
@@ -187,15 +164,6 @@ export default function Chatbot() {
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-
-  // Context tracking for conversational flow (retained)
-  const [conversationContext, setConversationContext] = useState<ConversationContext>({
-    exploredUniversities: [],
-    currentUniversity: null,
-    lastTopic: null,
-    explorationLevel: 'overview',
-    userPreferences: []
-  });
 
   // Original knowledgeBase (retained)
   const knowledgeBase: KnowledgeBase = {
@@ -760,7 +728,7 @@ export default function Chatbot() {
   };
   
   const handleRuleBasedQuery = (userMessage: string) => {
-    for (const [key, value] of Object.entries(knowledgeBase)) {
+    for (const [, value] of Object.entries(knowledgeBase)) {
       if (value.pattern.test(userMessage)) {
         const randomResponse = value.responses[Math.floor(Math.random() * value.responses.length)];
         return {
@@ -1045,8 +1013,6 @@ ${u.name}:
     });
   };
 
-  const isCurrentConversationSaved = currentConversationId ? savedConversations.some(conv => conv.id === currentConversationId && conv.isSaved) : false;
-
 
   return (
     <div className="flex flex-1 overflow-hidden bg-background">
@@ -1123,7 +1089,7 @@ ${u.name}:
             </div>
           ) : (
             <div className="mx-auto w-full max-w-3xl px-4 py-6">
-              {messages.map((msg, i) => (
+              {messages.map((msg) => (
                 <div key={msg.id} className={cn("mb-6 flex gap-3", msg.role === "user" ? "flex-row-reverse" : "flex-row")}>
                   <Avatar className="mt-0.5 h-8 w-8 shrink-0">
                     <AvatarFallback className={cn("text-xs font-semibold", msg.role === "assistant" ? "bg-maroon-600 text-white" : "bg-blue-500 text-white")}>
