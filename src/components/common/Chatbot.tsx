@@ -593,13 +593,10 @@ export default function Chatbot() {
       const universityMatch = message.match(/learn more about (pup|tup|plm)/i);
       if (universityMatch) {
         const uni = universityMatch[1].toUpperCase();
-        let universityId = 1; // Default PUP
-
-        if (uni === 'TUP') universityId = 2;
-        else if (uni === 'PLM') universityId = 3;
+        const acronym = uni.toLowerCase();
 
         return {
-          response: `Perfect! 📖 Let's explore ${uni} in detail. Click the link below to view their complete profile, programs, admission requirements, facilities, and more:\n\n🔗 **[View ${uni} Details](/universities/${universityId})**\n\nYou'll find everything you need to know about ${uni}! 🏛️`,
+          response: `Perfect! 📖 Let's explore ${uni} in detail. Click the link below to view their complete profile, programs, admission requirements, facilities, and more:\n\n🔗 **[View ${uni} Details](/universities/${acronym})**\n\nYou'll find everything you need to know about ${uni}! 🏛️`,
           suggestions: [] // No suggestions returned directly
         };
       }

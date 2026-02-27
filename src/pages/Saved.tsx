@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { UniversityService } from '../services/universityService';
 import { University } from '../components/university/UniversityCard';
 import { useSavedUniversities } from '../hooks/useSavedUniversities';
+import { slugify } from '../lib/utils';
 
 export default function Saved() {
   const { savedUniversities, toggleSaved, clearAll } = useSavedUniversities();
@@ -176,7 +177,7 @@ export default function Saved() {
                           Compare
                         </button>
                         <Link
-                          to={`/universities/${university.id}`}
+                          to={`/universities/${university.acronym ? university.acronym.toLowerCase() : slugify(university.name)}`}
                           className="flex-1 flex items-center justify-center px-3 py-2 bg-maroon-800 dark:bg-maroon-700 text-white rounded-lg hover:bg-maroon-700 dark:hover:bg-maroon-600 transition-colors"
                         >
                           <ExternalLink className="h-4 w-4 mr-1" />

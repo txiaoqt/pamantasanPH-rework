@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { useNavigate } from 'react-router-dom';
 import { University } from './UniversityCard';
 import { MapPin } from 'lucide-react';
+import { slugify } from '../../lib/utils';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
@@ -97,7 +98,7 @@ export default function MapView({ universities }: MapViewProps) {
                         <span className="ml-1">{university.programs} programs</span>
                       </div>
                       <button
-                        onClick={() => navigate(`/universities/${university.id}`)}
+                        onClick={() => navigate(`/universities/${university.acronym ? university.acronym.toLowerCase() : slugify(university.name)}`)}
                         className="w-full bg-maroon-800 text-white text-xs py-2 px-3 rounded hover:bg-maroon-700 transition-colors"
                       >
                         View Details →
