@@ -348,16 +348,6 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
         setIsProgramsLoading(true);
         const programs = await AcademicProgramService.getProgramsByUniversityId(university.id);
         setAllPrograms(programs);
-
-        // Group programs by college for initial display
-        const grouped: Record<string, AcademicProgram[]> = {};
-        programs.forEach(program => {
-          if (!grouped[program.collegeName]) {
-            grouped[program.collegeName] = [];
-          }
-          grouped[program.collegeName].push(program);
-        });
-        setAcademicPrograms(grouped);
       } catch (error) {
         console.error('Failed to fetch academic programs:', error);
       } finally {
@@ -367,20 +357,6 @@ export default function UniversityDetails({ session }: UniversityDetailsProps) {
 
     fetchAcademicPrograms();
   }, [university, activeTab, allPrograms]);
-
-  // Group programs by college
-  useEffect(() => {
-    if (allPrograms.length === 0) return;
-
-    const grouped: Record<string, AcademicProgram[]> = {};
-    allPrograms.forEach(program => {
-      if (!grouped[program.collegeName]) {
-        grouped[program.collegeName] = [];
-      }
-      grouped[program.collegeName].push(program);
-    });
-    setAcademicPrograms(grouped);
-  }, [allPrograms]);
 
   // Fetch user's admission requirement checklist progress
   useEffect(() => {
