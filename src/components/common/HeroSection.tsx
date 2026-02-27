@@ -306,7 +306,7 @@ export default function HeroSection() {
               <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-0.5 sm:mb-1 md:mb-2">
                 {stats.programs > 0 ? stats.programs : '1,500+'}
               </div>
-              <div className="text-xs sm:text-sm md:text-base text-gray-200">Programs</div>
+              <div className="text-xs sm:text-sm md:text-base text-gray-200">Programss</div>
             </Link>
           </div>
         </div>
